@@ -1,24 +1,16 @@
-import { Outlet, Link } from "react-router";
+import { Outlet } from "react-router";
+import Navbar from "../components/Navbar";
 
 const BasicLayout = () => {
 	return (
-		<div>
-			<nav className='p-4 bg-gray-100 flex justify-between'>
-				<Link to='/'>Home</Link>
-				<div>
-					<Link
-						to='/login'
-						className='mr-4'
-					>
-						Login
-					</Link>
-					<Link to='/register'>Register</Link>
-				</div>
-			</nav>
+		<>
+			<header className='sticky top-0 z-50 w-full bg-gray-200/95 backdrop-blur supports-[backdrop-filter]:bg-gray-200/60 border-b'>
+				<Navbar />
+			</header>
 			<main>
 				<Outlet />
 			</main>
-		</div>
+		</>
 	);
 };
 

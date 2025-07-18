@@ -1,2 +1,15 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@import url("https://fonts.googleapis.com/css2?family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&display=swap");
+
+body {
+	font-family: "Intel One Mono", monospace;
+}
+
+.bg-gradient {
+	@apply bg-gradient-to-br from-blue-500 to-green-500 text-white backdrop-blur-2xl shadow;
+}
+
+.text-gradient {
+	@apply bg-linear-to-br from-blue-500 to-green-500 bg-clip-text text-transparent;
+}

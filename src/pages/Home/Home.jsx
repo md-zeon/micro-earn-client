@@ -1,7 +1,11 @@
+import { Skeleton } from "@radix-ui/themes";
+
 const Home = () => {
 	return (
 		<div className='text-center mt-10'>
-			<h1 className='text-3xl font-bold'>Welcome to the Home Page</h1>
+			{/* <Skeleton loading={true}> */}
+				<span>Home Page dksjdksjk</span>
+			{/* </Skeleton> */}
 		</div>
 	);
 };
