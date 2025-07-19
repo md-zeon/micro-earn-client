@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUser, LuUserPlus, LuVoicemail } from "react-icons/lu";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
+import GoogleSignIn from "./GoogleSignIn";
+import { Link } from "react-router";
 
 const Register = () => {
 	const { loading } = useAuth();
@@ -22,14 +24,14 @@ const Register = () => {
 		// const formData = new FormData();
 		// formData.append("image", data.photo[0]);
 		// console.log(data, formData);
-        console.log(data);
+		console.log(data);
 		setShowPassword(false);
-        setShowConfirmPassword(false);
+		setShowConfirmPassword(false);
 		reset();
 	};
 
 	return (
-		<div className='bg-gradient py-12'>
+		<div className='bg-gradient py-12 min-h-screen flex justify-center items-center'>
 			<div className='max-w-md mx-auto p-6 border rounded-xl bg-white shadow text-black'>
 				<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
 					<LuUserPlus />
@@ -140,9 +142,10 @@ const Register = () => {
 										message: "At least one uppercase and one special character",
 									},
 								})}
-								placeholder='Enter Your Password'
+								placeholder='Enter your password'
+								autoComplete='new-password'
 							/>
-							{showPassword ? (
+							{!showPassword ? (
 								<LuEye
 									className='text-lg cursor-pointer'
 									onClick={() => setShowPassword(!showPassword)}
@@ -181,9 +184,10 @@ const Register = () => {
 									minLength: { value: 6, message: "Min 6 characters" },
 									validate: (value) => value === password || "Password did not match",
 								})}
-								placeholder='Enter Your Password'
+								placeholder='Confirm your password'
+								autoComplete='new-password'
 							/>
-							{showConfirmPassword ? (
+							{!showConfirmPassword ? (
 								<LuEye
 									className='text-lg cursor-pointer'
 									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -202,9 +206,22 @@ const Register = () => {
 						type='submit'
 						className='btn w-full bg-gradient text-white'
 					>
-						{loading ? "Registering..." : "Register"}
+						{loading ? "Registering..." : "Create Account"}
 					</button>
 				</form>
+				<GoogleSignIn />
+				{/* Login Link */}
+				<div className='mt-6 text-center'>
+					<p className='text-sm text-gray-400'>
+						Already have an account?{" "}
+						<Link
+							to='/login'
+							className='text-accent hover:underline font-medium'
+						>
+							Sign in here
+						</Link>
+					</p>
+				</div>
 			</div>
 		</div>
 	);
