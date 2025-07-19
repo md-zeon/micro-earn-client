@@ -67,7 +67,7 @@ const Navbar = () => {
 					<div className='flex gap-4'>
 						<Link to='/login' className='btn btn-ghost'>Login</Link>
 						<Link to='/register' className='btn btn-ghost bg-gradient'>Register</Link>
-						<a className='btn bg-white'>Join As Developer</a>
+						<a href="https://github.com/md-zeon" target="_blank" rel="noreferrer" className='btn bg-white'>Join As Developer</a>
 					</div>
 				</div>
 			</nav>
