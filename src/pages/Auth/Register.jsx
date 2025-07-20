@@ -4,12 +4,14 @@ import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
 import { Link } from "react-router";
-import { imageUpload } from "../../api/utils";
+import { imageUpload, saveUserInDb } from "../../api/utils";
+import toast from "react-hot-toast";
 
 const Register = () => {
-	const { loading, createUser, updateUserProfile, loginWithGoogle } = useAuth();
+	const { createUser, updateUserProfile } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	const {
 		register,
@@ -22,11 +24,11 @@ const Register = () => {
 	const password = watch("password");
 
 	const onSubmit = async (data) => {
-		// const imageUrl = await imageUpload(data?.photo[0]);
-		// console.log(data, imageUrl);
-		let imageUrl;
+		const imageUrl = await imageUpload(data?.photo[0]);
+		console.log(data, imageUrl);
 
 		try {
+			setLoading(true);
 			// User Register
 			const result = await createUser(data?.email, data?.password);
 			// Update User Profile
@@ -34,21 +36,26 @@ const Register = () => {
 			console.log(result);
 			// save user in DB
 			const newUser = {
+				uid: result?.uid,
 				name: data?.name,
 				email: data?.email,
 				role: data?.role,
 				photoURL: imageUrl,
-				coins: data?.role === "Buyer" ? 50 : 10,
-				createdAt: new Date(),
 			};
 			console.log(newUser);
+			// Save User In DB
+			await saveUserInDb(newUser);
+
+			setShowPassword(false);
+			setShowConfirmPassword(false);
+			toast.success("User Created Successfully");
+			reset();
 		} catch (error) {
 			console.log(error);
+			toast.error(error?.message);
+		} finally {
+			setLoading(false);
 		}
-
-		setShowPassword(false);
-		setShowConfirmPassword(false);
-		reset();
 	};
 
 	return (
@@ -231,7 +238,10 @@ const Register = () => {
 						{loading ? "Registering..." : "Create Account"}
 					</button>
 				</form>
-				<GoogleSignIn />
+				<GoogleSignIn
+					loading={loading}
+					setLoading={setLoading}
+				/>
 				{/* Login Link */}
 				<div className='mt-6 text-center'>
 					<p className='text-sm text-gray-400'>

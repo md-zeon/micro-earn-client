@@ -1,7 +1,39 @@
-const GoogleSignIn = () => {
+import toast from "react-hot-toast";
+import { saveUserInDb } from "../../api/utils";
+import useAuth from "../../hooks/useAuth";
+
+const GoogleSignIn = ({ loading, setLoading }) => {
+	const { signInWithGoogle } = useAuth();
+	const handleGoogleSignIn = async () => {
+		try {
+			setLoading(true);
+			const result = await signInWithGoogle();
+			const user = result.user;
+			console.log(user);
+			// save user in DB
+			const userData = {
+				name: user.displayName,
+				email: user.email,
+				photoURL: user.photoURL,
+				uid: user.uid,
+			};
+			console.log(userData);
+			// Save User In DB
+			await saveUserInDb(userData);
+			toast(`Welcome ${user.displayName}`)
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
+	};
 	return (
-		<div className="mt-3">
-			<button className="btn btn-outline w-full">
+		<div className='mt-3'>
+			<button
+				className='btn btn-outline w-full'
+				onClick={handleGoogleSignIn}
+				disabled={loading}
+			>
 				<svg
 					className='w-4 h-4 mr-2'
 					viewBox='0 0 24 24'
@@ -23,7 +55,7 @@ const GoogleSignIn = () => {
 						d='M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z'
 					/>
 				</svg>
-				Continue with Google
+				{loading ? "Please wait..." : "Continue with Google"}
 			</button>
 		</div>
 	);

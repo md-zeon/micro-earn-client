@@ -6,8 +6,9 @@ import GoogleSignIn from "./GoogleSignIn";
 import { Link } from "react-router";
 
 const Login = () => {
-	const { loading } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
+	const [loading, setLoading] = useState(false);
+
 
 	const {
 		register,
@@ -107,7 +108,7 @@ const Login = () => {
 						{loading ? "Signing In..." : "Sign In"}
 					</button>
 				</form>
-				<GoogleSignIn />
+				<GoogleSignIn loading={loading} setLoading={setLoading} />
 				{/* Login Link */}
 				<div className='mt-6 text-center'>
 					<p className='text-sm text-gray-400'>
