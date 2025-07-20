@@ -1,8 +1,10 @@
 import { LuCoins, LuHandCoins } from "react-icons/lu";
 import { Link, NavLink } from "react-router";
 import Container from "./Container";
+import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
+	const { user } = useAuth();
 	const navLinks = (
 		<>
 			<li>
@@ -13,6 +15,16 @@ const Navbar = () => {
 					Home
 				</NavLink>
 			</li>
+			{user && (
+				<li>
+					<NavLink
+						to={`/dashboard`}
+						className={({ isActive }) => (isActive ? "text-gradient" : "text-black")}
+					>
+						Dashboard
+					</NavLink>
+				</li>
+			)}
 		</>
 	);
 
@@ -65,9 +77,26 @@ const Navbar = () => {
 				</div>
 				<div className='navbar-end'>
 					<div className='flex gap-4'>
-						<Link to='/login' className='btn btn-ghost'>Login</Link>
-						<Link to='/register' className='btn btn-ghost bg-gradient'>Register</Link>
-						<a href="https://github.com/md-zeon" target="_blank" rel="noreferrer" className='btn btn-outline'>Join As Developer</a>
+						<Link
+							to='/login'
+							className='btn btn-ghost'
+						>
+							Login
+						</Link>
+						<Link
+							to='/register'
+							className='btn btn-ghost bg-gradient'
+						>
+							Register
+						</Link>
+						<a
+							href='https://github.com/md-zeon'
+							target='_blank'
+							rel='noreferrer'
+							className='btn btn-outline'
+						>
+							Join As Developer
+						</a>
 					</div>
 				</div>
 			</nav>

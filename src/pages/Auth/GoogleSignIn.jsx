@@ -12,17 +12,18 @@ const GoogleSignIn = ({ loading, setLoading }) => {
 			console.log(user);
 			// save user in DB
 			const userData = {
+				uid: user.uid,
 				name: user.displayName,
 				email: user.email,
 				photoURL: user.photoURL,
-				uid: user.uid,
 			};
 			console.log(userData);
 			// Save User In DB
 			await saveUserInDb(userData);
-			toast(`Welcome ${user.displayName}`)
+			toast(`Welcome ${user.displayName}`);
 		} catch (error) {
-			console.log(error);
+			console.error("Google Sign-in Error:", error);
+			toast.error(error.message || "Google sign-in failed");
 		} finally {
 			setLoading(false);
 		}

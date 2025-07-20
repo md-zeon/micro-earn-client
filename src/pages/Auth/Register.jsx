@@ -3,15 +3,21 @@ import { LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUser, LuUserPlus, LuV
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { imageUpload, saveUserInDb } from "../../api/utils";
 import toast from "react-hot-toast";
 
 const Register = () => {
-	const { createUser, updateUserProfile } = useAuth();
+	const { createUser, updateUserProfile, user } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
+	const location = useLocation();
+	const from = location?.state?.from?.pathname || "/";
+	if (user) {
+		navigate(from, { replace: true });
+	}
 
 	const {
 		register,
@@ -36,7 +42,7 @@ const Register = () => {
 			console.log(result);
 			// save user in DB
 			const newUser = {
-				uid: result?.uid,
+				uid: result?.user?.uid,
 				name: data?.name,
 				email: data?.email,
 				role: data?.role,
@@ -48,11 +54,11 @@ const Register = () => {
 
 			setShowPassword(false);
 			setShowConfirmPassword(false);
-			toast.success("User Created Successfully");
+			toast.success("Account created successfully!");
 			reset();
 		} catch (error) {
-			console.log(error);
-			toast.error(error?.message);
+			console.error("Registration Error:", error);
+			toast.error(error.message || "Something went wrong during registration");
 		} finally {
 			setLoading(false);
 		}
@@ -104,6 +110,7 @@ const Register = () => {
 									},
 								})}
 								placeholder='example@mail.com'
+								autoComplete='email'
 							/>
 						</div>
 						{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
@@ -133,7 +140,6 @@ const Register = () => {
 							<option
 								value=''
 								disabled
-								selected
 							>
 								Select Role
 							</option>

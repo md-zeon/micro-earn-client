@@ -3,12 +3,16 @@ import { LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUser, LuUserPlus, LuV
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
-
+	const { signInUser, user } = useAuth();
+	const navigate = useNavigate();
+	const location = useLocation();
+	const from = location?.state?.from?.pathname || "/";
 
 	const {
 		register,
@@ -17,10 +21,25 @@ const Login = () => {
 		formState: { errors },
 	} = useForm();
 
+	if (user) {
+		navigate(from, { replace: true });
+	}
+
 	const onSubmit = async (data) => {
 		console.log(data);
-		setShowPassword(false);
-		reset();
+		try {
+			setLoading(true);
+			const result = await signInUser(data?.email, data?.password);
+			console.log(result);
+			toast.success(`Welcome ${result?.user?.displayName}`);
+			setShowPassword(false);
+			reset();
+		} catch (error) {
+			console.error("Login Error:", error);
+			toast.error(error.message || "Something went wrong during login");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -51,6 +70,7 @@ const Login = () => {
 									},
 								})}
 								placeholder='example@mail.com'
+								autoComplete='email'
 							/>
 						</div>
 						{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
@@ -108,7 +128,10 @@ const Login = () => {
 						{loading ? "Signing In..." : "Sign In"}
 					</button>
 				</form>
-				<GoogleSignIn loading={loading} setLoading={setLoading} />
+				<GoogleSignIn
+					loading={loading}
+					setLoading={setLoading}
+				/>
 				{/* Login Link */}
 				<div className='mt-6 text-center'>
 					<p className='text-sm text-gray-400'>
