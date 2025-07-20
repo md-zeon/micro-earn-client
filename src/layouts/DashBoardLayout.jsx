@@ -1,12 +1,14 @@
-import { Outlet } from "react-router";
+import { Outlet, useNavigation } from "react-router";
 import useRole from "../hooks/useRole";
 import DashboardSidebar from "../pages/Dashboard/Common/DashboardSidebar";
 import DashboardFooter from "../pages/Dashboard/Common/DashboardFooter";
 import DashboardNavbar from "../pages/Dashboard/Common/DashboardNavbar";
 import { useState } from "react";
 import Container from "../components/Container";
+import Loader from "../components/Loader";
 
 const DashboardLayout = () => {
+	const { state } = useNavigation();
 	const { role, isRoleLoading } = useRole();
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -31,20 +33,26 @@ const DashboardLayout = () => {
 				</header>
 
 				{/* Main content area: Sidebar + Content */}
-				<div className='flex flex-1 overflow-hidden'>
+				<div className='flex flex-1 h-[calc(100vh-72px)]'>
 					<DashboardSidebar
 						role={role}
 						isSidebarOpen={isSidebarOpen}
+						isRoleLoading={isRoleLoading}
 					/>
-
-					<main className='flex-1 overflow-auto p-6 bg-base-100'>
-						<Outlet />
+					<main className='flex-1 overflow-y-auto p-6 bg-base-100'>
+						{state === "loading" ? <Loader /> : <Outlet />}
+						{/* Footer */}
+						<DashboardFooter />
 					</main>
 				</div>
-
-				{/* Footer */}
-				<DashboardFooter />
 			</div>
+			{/* Sidebar Overlay */}
+			{isSidebarOpen && (
+				<div
+					className='fixed inset-0 z-30 bg-base-100/80 backdrop-blur-sm lg:hidden'
+					onClick={() => setIsSidebarOpen(false)}
+				></div>
+			)}
 		</Container>
 	);
 };
