@@ -1,90 +1,16 @@
-import { LuCoins, LuHandCoins, LuLogOut } from "react-icons/lu";
+import { LuLogOut } from "react-icons/lu";
 import { Link, NavLink } from "react-router";
 import Container from "./Container";
 import useAuth from "../hooks/useAuth";
-import { useEffect, useState } from "react";
 import useRole from "../hooks/useRole";
 import { Skeleton } from "@radix-ui/themes/dist/cjs/index.js";
-import useAvailableCoins from "../hooks/useAvailableCoins";
+import Logo from "./Logo";
+import AvailableCoins from "./AvailableCoins";
+import ThemeController from "./ThemeController";
 
 const Navbar = () => {
 	const { user, logOut } = useAuth();
 	const { role, isRoleLoading } = useRole();
-	const { microCoins, isMicroCoinsLoading } = useAvailableCoins();
-
-	// theme state
-	const [theme, setTheme] = useState("light");
-
-	// toggle function
-	const handleThemeToggle = () => {
-		const newTheme = theme === "light" ? "dark" : "light";
-		setTheme(newTheme);
-		document.documentElement.setAttribute("data-theme", newTheme);
-		localStorage.setItem("theme", newTheme);
-	};
-
-	// apply theme on initial load
-	useEffect(() => {
-		const storedTheme = localStorage.getItem("theme") || "light";
-		setTheme(storedTheme);
-		document.documentElement.setAttribute("data-theme", storedTheme);
-	}, []);
-
-	const ThemeController = (
-		<>
-			<label className='toggle text-base-content'>
-				<input
-					type='checkbox'
-					onChange={handleThemeToggle}
-					checked={theme === "dark"}
-				/>
-
-				<svg
-					aria-label='sun'
-					xmlns='http://www.w3.org/2000/svg'
-					viewBox='0 0 24 24'
-				>
-					<g
-						strokeLinejoin='round'
-						strokeLinecap='round'
-						strokeWidth='2'
-						fill='none'
-						stroke='currentColor'
-					>
-						<circle
-							cx='12'
-							cy='12'
-							r='4'
-						></circle>
-						<path d='M12 2v2'></path>
-						<path d='M12 20v2'></path>
-						<path d='m4.93 4.93 1.41 1.41'></path>
-						<path d='m17.66 17.66 1.41 1.41'></path>
-						<path d='M2 12h2'></path>
-						<path d='M20 12h2'></path>
-						<path d='m6.34 17.66-1.41 1.41'></path>
-						<path d='m19.07 4.93-1.41 1.41'></path>
-					</g>
-				</svg>
-
-				<svg
-					aria-label='moon'
-					xmlns='http://www.w3.org/2000/svg'
-					viewBox='0 0 24 24'
-				>
-					<g
-						strokeLinejoin='round'
-						strokeLinecap='round'
-						strokeWidth='2'
-						fill='none'
-						stroke='currentColor'
-					>
-						<path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'></path>
-					</g>
-				</svg>
-			</label>
-		</>
-	);
 
 	const navLinks = (
 		<>
@@ -152,16 +78,7 @@ const Navbar = () => {
 							</li>
 						</ul>
 					</div>
-					<Link
-						to='/'
-						className='text-xl flex items-center gap-2 hover:opacity-80 transition-opacity'
-					>
-						{" "}
-						<span className='bg-gradient w-8 h-8 rounded-lg flex items-center justify-center'>
-							<LuHandCoins />
-						</span>{" "}
-						<span className='text-2xl  font-bold text-gradient'>MicroEarn</span>
-					</Link>
+					<Logo />
 				</div>
 				<div className='navbar-center hidden lg:flex'>
 					<ul className='menu menu-horizontal px-1'>{navLinks}</ul>
@@ -170,15 +87,7 @@ const Navbar = () => {
 					<div className='flex gap-4 items-center'>
 						{user ? (
 							<>
-								{/* Avaiable Coins */}
-								<div className='flex gap-2 items-center'>
-									<LuCoins className='text-blue-400' />
-									<Skeleton loading={isMicroCoinsLoading}>
-										<span className='badge bg-gradient'>
-											{microCoins ?? 0} <span className='hidden sm:inline md:text-xs'>Micro Coins</span>
-										</span>
-									</Skeleton>
-								</div>
+								<AvailableCoins />
 								{/* Profile */}
 								<div className='dropdown dropdown-end'>
 									<div
@@ -208,7 +117,7 @@ const Navbar = () => {
 											<Skeleton loading={isRoleLoading}>
 												<span className='badge bg-gradient'>{role}</span>
 											</Skeleton>
-											{ThemeController}
+											<ThemeController />
 										</div>
 										<div>
 											<button
@@ -224,7 +133,7 @@ const Navbar = () => {
 							</>
 						) : (
 							<>
-								{ThemeController}
+								<ThemeController />
 								<Link
 									to='/login'
 									className='btn btn-ghost'
