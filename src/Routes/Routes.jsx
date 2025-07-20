@@ -4,6 +4,8 @@ import BasicLayout from "../layouts/BasicLayout";
 import DashBoardLayout from "../layouts/DashBoardLayout";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
+import PrivateRoute from "../Routes/PrivateRoute";
+import Dashboard from "../pages/Dashboard/Common/DashBoard";
 
 const router = createBrowserRouter([
 	{
@@ -16,7 +18,17 @@ const router = createBrowserRouter([
 	{
 		path: "/dashboard",
 		Component: DashBoardLayout,
-	}
+		children: [
+			{
+				index: true,
+				element: (
+					<PrivateRoute>
+						<Dashboard />
+					</PrivateRoute>
+				),
+			},
+		],
+	},
 ]);
 
 export default router;
