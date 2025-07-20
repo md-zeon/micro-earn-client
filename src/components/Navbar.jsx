@@ -3,10 +3,12 @@ import { Link, NavLink } from "react-router";
 import Container from "./Container";
 import useAuth from "../hooks/useAuth";
 import { useEffect, useState } from "react";
+import useRole from "../hooks/useRole";
 
 const Navbar = () => {
 	const { user, logOut } = useAuth();
-
+	const { role } = useRole();
+	console.log(role);
 	// theme state
 	const [theme, setTheme] = useState("light");
 
@@ -195,7 +197,7 @@ const Navbar = () => {
 											<p>{user?.email}</p>
 										</div>
 										<div className='flex justify-between items-center'>
-											<span className='badge bg-gradient'>Worker</span>
+											<span className='badge bg-gradient'>{role}</span>
 											{ThemeController}
 										</div>
 										<div>
