@@ -4,9 +4,10 @@ import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
 import { Link } from "react-router";
+import { imageUpload } from "../../api/utils";
 
 const Register = () => {
-	const { loading } = useAuth();
+	const { loading, createUser, updateUserProfile, loginWithGoogle } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -21,10 +22,30 @@ const Register = () => {
 	const password = watch("password");
 
 	const onSubmit = async (data) => {
-		// const formData = new FormData();
-		// formData.append("image", data.photo[0]);
-		// console.log(data, formData);
-		console.log(data);
+		// const imageUrl = await imageUpload(data?.photo[0]);
+		// console.log(data, imageUrl);
+		let imageUrl;
+
+		try {
+			// User Register
+			const result = await createUser(data?.email, data?.password);
+			// Update User Profile
+			await updateUserProfile(data?.name, imageUrl);
+			console.log(result);
+			// save user in DB
+			const newUser = {
+				name: data?.name,
+				email: data?.email,
+				role: data?.role,
+				photoURL: imageUrl,
+				coins: data?.role === "Buyer" ? 50 : 10,
+				createdAt: new Date(),
+			};
+			console.log(newUser);
+		} catch (error) {
+			console.log(error);
+		}
+
 		setShowPassword(false);
 		setShowConfirmPassword(false);
 		reset();
@@ -205,6 +226,7 @@ const Register = () => {
 					<button
 						type='submit'
 						className='btn w-full bg-gradient text-white'
+						disabled={loading}
 					>
 						{loading ? "Registering..." : "Create Account"}
 					</button>
