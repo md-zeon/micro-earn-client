@@ -3,23 +3,34 @@ import useAuth from "../../../hooks/useAuth";
 import Logo from "../../../components/Logo";
 import AvailableCoins from "../../../components/AvailableCoins";
 import ThemeController from "../../../components/ThemeController";
+import { LuMenu, LuX } from "react-icons/lu";
 
-const DashboardNavbar = ({ role }) => {
+const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
 	const { user } = useAuth();
 	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 	return (
 		<>
-			<Logo />
-
+			<div className="flex items-center">
+				<button
+					onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+					className='lg:hidden btn btn-sm btn-ghost hover:bg-transparent border-0 outline-0'
+					aria-label='Toggle Sidebar'
+				>
+					{isSidebarOpen ? <LuX className='w-5 h-5' /> : <LuMenu className='w-5 h-5' />}
+				</button>
+				<Logo />
+			</div>
 			<div className='flex items-center space-x-4'>
-				<AvailableCoins />
-                <ThemeController />
+				<span className='hidden md:block'>
+					<AvailableCoins />
+				</span>
+				<ThemeController />
 
 				{/* User info */}
 				<div className='flex items-center space-x-2'>
 					<img
-						src={user?.photoURL || "/default-avatar.png"}
-						alt={user?.displayName || "User"}
+						src={user?.photoURL}
+						alt={user?.displayName || "User Image"}
 						className='w-10 h-10 rounded-full object-cover'
 					/>
 					<div className='flex flex-col leading-tight'>
