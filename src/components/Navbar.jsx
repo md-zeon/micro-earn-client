@@ -4,11 +4,14 @@ import Container from "./Container";
 import useAuth from "../hooks/useAuth";
 import { useEffect, useState } from "react";
 import useRole from "../hooks/useRole";
+import { Skeleton } from "@radix-ui/themes/dist/cjs/index.js";
+import useAvailableCoins from "../hooks/useAvailableCoins";
 
 const Navbar = () => {
 	const { user, logOut } = useAuth();
-	const { role } = useRole();
-	console.log(role);
+	const { role, isRoleLoading } = useRole();
+	const { microCoins, isMicroCoinsLoading } = useAvailableCoins();
+
 	// theme state
 	const [theme, setTheme] = useState("light");
 
@@ -170,9 +173,11 @@ const Navbar = () => {
 								{/* Avaiable Coins */}
 								<div className='flex gap-2 items-center'>
 									<LuCoins className='text-blue-400' />
-									<span className='badge bg-gradient'>
-										1000 <span className='hidden sm:inline md:text-xs'>Micro Coins</span>
-									</span>
+									<Skeleton loading={isMicroCoinsLoading}>
+										<span className='badge bg-gradient'>
+											{microCoins ?? 0} <span className='hidden sm:inline md:text-xs'>Micro Coins</span>
+										</span>
+									</Skeleton>
 								</div>
 								{/* Profile */}
 								<div className='dropdown dropdown-end'>
@@ -182,10 +187,13 @@ const Navbar = () => {
 										className='btn btn-ghost btn-circle avatar'
 									>
 										<div className='w-10 rounded-full'>
-											<img
-												alt={user?.displayName}
-												src={user?.photoURL}
-											/>
+											<Skeleton loading={!user?.photoURL}>
+												<img
+													alt={user?.displayName}
+													src={user?.photoURL}
+													className='w-10 rounded-full'
+												/>
+											</Skeleton>
 										</div>
 									</div>
 									<div
@@ -197,7 +205,9 @@ const Navbar = () => {
 											<p>{user?.email}</p>
 										</div>
 										<div className='flex justify-between items-center'>
-											<span className='badge bg-gradient'>{role}</span>
+											<Skeleton loading={isRoleLoading}>
+												<span className='badge bg-gradient'>{role}</span>
+											</Skeleton>
 											{ThemeController}
 										</div>
 										<div>
