@@ -24,7 +24,7 @@ const Login = () => {
 
 	return (
 		<div className='bg-gradient py-12 min-h-screen flex justify-center items-center'>
-			<div className='max-w-md mx-auto p-6 border rounded-xl bg-white shadow text-black'>
+			<div className='max-w-md mx-auto p-6 border rounded-xl bg-base-100 shadow text-base-content'>
 				<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
 					<LuUserPlus />
 				</div>
