@@ -9,7 +9,7 @@ import Loader from "../../../components/Loader";
 import { loadStripe } from "@stripe/stripe-js";
 import useAuth from "../../../hooks/useAuth";
 
-// Stripe 
+// Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const PurchaseCoin = () => {
 	const axiosSecure = useAxiosSecure();
@@ -17,6 +17,7 @@ const PurchaseCoin = () => {
 	const [selectedPackage, setSelectedPackage] = useState(null);
 	const [processing, setProcessing] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [transactionId, setTransactionId] = useState("");
 	const { user } = useAuth();
 
 	// Coin packages
@@ -34,12 +35,14 @@ const PurchaseCoin = () => {
 		setProcessing(true);
 		try {
 			const totalCoins = pkg.coins + (pkg.bonus || 0);
+			console.log(transactionId);
 
 			await axiosSecure.post("/payments", {
-				buyer_email: user.email,
-				buyer_name: user.name,
+				transaction_id: transactionId,
+				buyer_email: user?.email,
+				buyer_name: user?.displayName,
 				coins_purchased: totalCoins,
-				amount_paid: pkg.price,
+				amount_paid: pkg?.price,
 				payment_date: new Date().toISOString(),
 				payment_method: "stripe",
 				status: "completed",
@@ -90,8 +93,8 @@ const PurchaseCoin = () => {
 						processing={processing}
 						setSelectedPackage={setSelectedPackage}
 						setIsModalOpen={setIsModalOpen}
-					/>
-				))}
+						/>
+					))}
 			</div>
 			<PaymentInformation />
 			{/* Modal */}
@@ -105,6 +108,7 @@ const PurchaseCoin = () => {
 				onPurchase={handlePurchase}
 				processing={processing}
 				stripePromise={stripePromise}
+				setTransactionId={setTransactionId}
 			/>
 		</div>
 	);

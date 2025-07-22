@@ -3,7 +3,6 @@ import useBuyerTasks from "../../../hooks/useBuyerTask";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
-import { LuCoins, LuPen, LuTrash2, LuUser } from "react-icons/lu";
 import Loader from "../../../components/Loader";
 import toast from "react-hot-toast";
 import MyTaskTable from "../../../components/Table/MyTaskTable";
@@ -87,6 +86,10 @@ const MyTasks = () => {
 
 	return (
 		<div>
+			<div className='flex justify-between items-center mb-6'>
+				<h1 className='text-3xl font-bold'>My Tasks</h1>
+				<button className='btn btn-sm btn-success rounded-full'>{tasks.length}</button>
+			</div>
 			{/* Stats Cards */}
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6'>
 				<StatsCard

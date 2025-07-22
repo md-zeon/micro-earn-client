@@ -3,9 +3,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../Form/CheckoutForm";
 import useAuth from "../../hooks/useAuth";
 
-const PurchaseModal = ({ isOpen, onClose, package: pkg, onPurchase, stripePromise }) => {
-	if (!isOpen || !pkg) return null;
+const PurchaseModal = ({ isOpen, onClose, package: pkg, onPurchase, stripePromise, setTransactionId }) => {
 	const { user } = useAuth();
+	if (!isOpen || !pkg) return null;
 
 	return (
 		<div
@@ -56,6 +56,7 @@ const PurchaseModal = ({ isOpen, onClose, package: pkg, onPurchase, stripePromis
 						<CheckoutForm
 							pkg={pkg}
 							onSuccess={onPurchase}
+							setTransactionId={setTransactionId}
 						/>
 					</Elements>
 				</div>
