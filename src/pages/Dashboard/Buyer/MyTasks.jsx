@@ -20,7 +20,7 @@ const MyTasks = () => {
 	});
 
 	// Handle Delete Task
-	const handleDelete = async (taskId, requiredWorkers, payableAmount) => {
+	const handleDelete = async (taskId, requiredWorkers, payableAmount, status) => {
 		const result = await Swal.fire({
 			title: "Are you sure?",
 			text: "This task will be deleted, and coins will be refunded for uncompleted tasks.",
@@ -34,11 +34,13 @@ const MyTasks = () => {
 		if (result.isConfirmed) {
 			try {
 				await axiosSecure.delete(`/tasks/${taskId}`);
-				const refundAmount = requiredWorkers * payableAmount;
-				await axiosSecure.patch("/update-coins", {
-					coinsToUpdate: refundAmount,
-					status: "increase",
-				});
+				if (status === "active") {
+					const refundAmount = requiredWorkers * payableAmount;
+					await axiosSecure.patch("/update-coins", {
+						coinsToUpdate: refundAmount,
+						status: "increase",
+					});
+				}
 				refetch();
 				refetchCoins();
 				Swal.fire("Deleted!", "Task has been deleted.", "success");
@@ -118,7 +120,7 @@ const MyTasks = () => {
 			<div className='card rounded-xl p-4 border-2 border-base-200'>
 				<h2 className='text-xl font-semibold mb-4'>Task Management</h2>
 				{tasks.length === 0 ? (
-					<div className="p-6">
+					<div className='p-6'>
 						<p className='text-center text-gray-500'>No tasks found. Create a new task!</p>
 					</div>
 				) : (
@@ -163,7 +165,9 @@ const MyTasks = () => {
 													</button>
 													<button
 														className='btn btn-sm btn-circle btn-ghost text-gray-600 hover:text-red-600'
-														onClick={() => handleDelete(task._id, task.required_workers, task.payable_amount)}
+														onClick={() =>
+															handleDelete(task._id, task.required_workers, task.payable_amount, task.status)
+														}
 													>
 														<LuTrash2 />
 													</button>
