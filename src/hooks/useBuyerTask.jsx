@@ -4,9 +4,9 @@ import useAxiosSecure from "./useAxiosSecure";
 
 const useBuyerTasks = () => {
 	const { user, loading } = useAuth();
-	const axiosSecure = useAxiosSecure();
+	const axiosSecure = useAxiosSecure()
 
-	const { data: tasks = [], isTasksLoading } = useQuery({
+	const { data: tasks = [], isTasksLoading, refetch } = useQuery({
 		queryKey: ["buyerTasks", user?.email],
 		enabled: !!user?.email && !loading,
 		queryFn: async () => {
@@ -15,7 +15,7 @@ const useBuyerTasks = () => {
 		},
 	});
 
-	return { tasks, isTasksLoading };
+	return { tasks, isTasksLoading, refetch};
 };
 
 export default useBuyerTasks;
