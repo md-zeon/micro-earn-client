@@ -5,10 +5,12 @@ import { LuUsers, LuDollarSign, LuCalendarDays } from "react-icons/lu";
 import { imageUpload } from "../../../api/utils";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAvailableCoins from "../../../hooks/useAvailableCoins";
 
 const AddTask = () => {
 	const navigate = useNavigate();
 	const { user } = useAuth();
+	const { microCoins } = useAvailableCoins(); // users available coins
 
 	const [requiredWorkers, setRequiredWorkers] = useState("");
 	const [payableAmount, setPayableAmount] = useState("");
@@ -49,6 +51,13 @@ const AddTask = () => {
 			name: user?.displayName,
 		};
 
+		if (totalCost > microCoins) {
+			toast.error("Not enough coins. Please purchase more.");
+			navigate("/dashboard/purchase-coins");
+			setLoading(false);
+			return;
+		}
+		
 		try {
 			const { data } = await axiosSecure.post("/tasks", newTask);
 			console.log(data);
