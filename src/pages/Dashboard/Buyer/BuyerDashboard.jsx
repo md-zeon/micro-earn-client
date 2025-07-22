@@ -1,6 +1,6 @@
 const BuyerDashboard = () => {
     return (
-        <div className="min-h-[calc(100vh-150px))]">
+        <div>
             Buyer DashBoard
         </div>
     );

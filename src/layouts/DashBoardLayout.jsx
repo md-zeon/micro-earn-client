@@ -13,7 +13,7 @@ const DashboardLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 	if (isRoleLoading) {
-		return <Loader />
+		return <Loader />;
 	}
 
 	return (
@@ -36,7 +36,8 @@ const DashboardLayout = () => {
 						isRoleLoading={isRoleLoading}
 					/>
 					<main className='flex-1 overflow-y-auto p-6 bg-base-100'>
-						{state === "loading" ? <Loader /> : <Outlet />}
+						{/* Content */}
+						<div className='min-h-[calc(100vh-150px))]'>{state === "loading" ? <Loader /> : <Outlet />}</div>
 						{/* Footer */}
 						<DashboardFooter />
 					</main>
