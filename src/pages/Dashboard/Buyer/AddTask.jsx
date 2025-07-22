@@ -10,7 +10,7 @@ import useAvailableCoins from "../../../hooks/useAvailableCoins";
 const AddTask = () => {
 	const navigate = useNavigate();
 	const { user } = useAuth();
-	const { microCoins } = useAvailableCoins(); // users available coins
+	const { microCoins, refetch } = useAvailableCoins(); // users available coins
 
 	const [requiredWorkers, setRequiredWorkers] = useState("");
 	const [payableAmount, setPayableAmount] = useState("");
@@ -57,10 +57,16 @@ const AddTask = () => {
 			setLoading(false);
 			return;
 		}
-		
+
 		try {
 			const { data } = await axiosSecure.post("/tasks", newTask);
 			console.log(data);
+			// deduct buyer's coins
+			await axiosSecure.patch("/update-coins", {
+				coinsToUpdate: totalCost,
+				status: "decrease",
+			})
+			refetch();
 			toast.success("Task created");
 			setLoading(false);
 			navigate("/dashboard/my-tasks");
@@ -217,7 +223,7 @@ const AddTask = () => {
 						<button
 							type='submit'
 							className='btn bg-gradient w-full'
-							disabled={loading || imgUploading}
+							disabled={imgUploading}
 						>
 							{loading ? "Creating Task..." : "Create Task"}
 						</button>

@@ -6,7 +6,7 @@ const useAvailableCoins = () => {
 	const axiosSecure = useAxiosSecure();
 	const { user, loading } = useAuth();
 
-	const { data: result, isLoading: isMicroCoinsLoading } = useQuery({
+	const { data: result, isLoading: isMicroCoinsLoading, refetch } = useQuery({
 		queryKey: ["availableCoins", user?.email],
 		enabled: !loading && !!user?.email,
 		queryFn: async () => {
@@ -18,6 +18,7 @@ const useAvailableCoins = () => {
 	return {
 		microCoins: result?.microCoins ?? 0,
 		isMicroCoinsLoading,
+		refetch,
 	};
 };
 
