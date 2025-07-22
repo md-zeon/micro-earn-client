@@ -1,13 +1,5 @@
-import { Skeleton } from "@radix-ui/themes";
-
 const Home = () => {
-	return (
-		<div className='text-center mt-10'>
-			{/* <Skeleton loading={true}> */}
-				<span>Home Page dksjdksjk</span>
-			{/* </Skeleton> */}
-		</div>
-	);
+	return <div className='mt-10'>Home Page</div>;
 };
 
 export default Home;

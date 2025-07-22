@@ -1,5 +1,6 @@
 import {
 	LuChartBar,
+	LuCheckCheck,
 	LuCreditCard,
 	LuDollarSign,
 	LuFileQuestion,
@@ -22,15 +23,15 @@ const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
 			{ path: "/dashboard/tasks", label: "Task List", icon: <LuListTodo /> },
 			{ path: "/dashboard/my-submissions", label: "My Submissions", icon: <LuFileText /> },
-			{ path: "/dashboard/approved-submissions", label: "Approved Submissions", icon: <LuDollarSign /> },
+			{ path: "/dashboard/approved-submissions", label: "Approved Submissions", icon: <LuCheckCheck /> },
 			{ path: "/dashboard/withdrawals", label: "Withdrawals", icon: <LuDollarSign /> },
 		],
 		Buyer: [
 			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
-			{ path: "/dashboard/tasks-to-review", label: "Tasks to Review", icon: <LuFileQuestion /> },
 			{ path: "/dashboard/add-task", label: "Add New Task", icon: <LuPlus /> },
 			{ path: "/dashboard/my-tasks", label: "My Tasks", icon: <LuListTodo /> },
 			{ path: "/dashboard/purchase-coin", label: "Purchase Coin", icon: <LuCreditCard /> },
+			{ path: "/dashboard/tasks-to-review", label: "Tasks to Review", icon: <LuFileQuestion /> },
 			{ path: "/dashboard/payment-history", label: "Payment History", icon: <LuChartBar /> },
 		],
 		Admin: [
@@ -62,6 +63,7 @@ const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 							<NavLink
 								className={({ isActive }) => (isActive ? "bg-gradient" : "hover:text-gradient")}
 								to={item.path}
+								end
 							>
 								{item.icon} {item.label}
 							</NavLink>

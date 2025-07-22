@@ -13,11 +13,7 @@ const DashboardLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 	if (isRoleLoading) {
-		return (
-			<div className='flex justify-center items-center h-screen'>
-				<span className='loading loading-spinner loading-lg'></span>
-			</div>
-		);
+		return <Loader />
 	}
 
 	return (
