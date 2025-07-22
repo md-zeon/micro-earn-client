@@ -7,6 +7,8 @@ import Register from "../pages/Auth/Register";
 import PrivateRoute from "../Routes/PrivateRoute";
 import Dashboard from "../pages/Dashboard/Common/DashBoard";
 import AddTask from "../pages/Dashboard/Buyer/AddTask";
+import BuyerRoute from "./BuyerRoute";
+import MyTasks from "../pages/Dashboard/Buyer/MyTasks";
 
 const router = createBrowserRouter([
 	{
@@ -32,7 +34,9 @@ const router = createBrowserRouter([
 				path: "add-task",
 				element: (
 					<PrivateRoute>
-						<AddTask />
+						<BuyerRoute>
+							<AddTask />
+						</BuyerRoute>
 					</PrivateRoute>
 				),
 			},
@@ -40,11 +44,12 @@ const router = createBrowserRouter([
 				path: "my-tasks",
 				element: (
 					<PrivateRoute>
-						<div>My Tasks</div>
-						{/* <MyTasks /> */}
+						<BuyerRoute>
+							<MyTasks />
+						</BuyerRoute>
 					</PrivateRoute>
 				),
-			}
+			},
 		],
 	},
 ]);
