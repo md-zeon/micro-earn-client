@@ -19,14 +19,14 @@ import Loader from "../../../components/Loader";
 const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 	const { loading, logOut } = useAuth();
 	const navItems = {
-		Worker: [
+		worker: [
 			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
 			{ path: "/dashboard/tasks", label: "Task List", icon: <LuListTodo /> },
 			{ path: "/dashboard/my-submissions", label: "My Submissions", icon: <LuFileText /> },
 			{ path: "/dashboard/approved-submissions", label: "Approved Submissions", icon: <LuCheckCheck /> },
 			{ path: "/dashboard/withdrawals", label: "Withdrawals", icon: <LuDollarSign /> },
 		],
-		Buyer: [
+		buyer: [
 			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
 			{ path: "/dashboard/add-task", label: "Add New Task", icon: <LuPlus /> },
 			{ path: "/dashboard/my-tasks", label: "My Tasks", icon: <LuListTodo /> },
@@ -34,7 +34,7 @@ const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 			{ path: "/dashboard/tasks-to-review", label: "Tasks to Review", icon: <LuFileQuestion /> },
 			{ path: "/dashboard/payment-history", label: "Payment History", icon: <LuChartBar /> },
 		],
-		Admin: [
+		admin: [
 			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
 			{ path: "/dashboard/manage-users", label: "Manage Users", icon: <LuUsers /> },
 			{ path: "/dashboard/manage-tasks", label: "Manage Tasks", icon: <LuSettings /> },

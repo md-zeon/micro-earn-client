@@ -13,9 +13,9 @@ const Dashboard = () => {
 		return <Loader />;
 	}
 
-	if (role === "Admin") return <AdminDashboard />;
-	if (role === "Buyer") return <BuyerDashboard />;
-	if (role === "Worker") return <WorkerDashboard />;
+	if (role === "admin") return <AdminDashboard />;
+	if (role === "buyer") return <BuyerDashboard />;
+	if (role === "worker") return <WorkerDashboard />;
 
 	return <div>You are not authorized to view this page.</div>;
 };
