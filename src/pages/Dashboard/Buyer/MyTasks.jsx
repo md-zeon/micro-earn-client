@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { LuCoins, LuPen, LuTrash2, LuUser } from "react-icons/lu";
 import Loader from "../../../components/Loader";
 import toast from "react-hot-toast";
+import MyTaskTable from "../../../components/Table/MyTaskTable";
 
 const MyTasks = () => {
 	const { tasks, isTasksLoading, refetch } = useBuyerTasks();
@@ -124,61 +125,11 @@ const MyTasks = () => {
 						<p className='text-center text-gray-500'>No tasks found. Create a new task!</p>
 					</div>
 				) : (
-					<div className='overflow-x-auto'>
-						<table className='table w-full'>
-							<thead>
-								<tr className='bg-base-300'>
-									<th>Task Title</th>
-									<th>Workers</th>
-									<th>Payment</th>
-									<th>Deadline</th>
-									<th>Total Cost</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{tasks.map((task) => {
-									const totalCost = task.required_workers * task.payable_amount;
-									return (
-										<tr
-											key={task._id}
-											className='bg-base-100 hover:bg-base-200'
-										>
-											<td className='opacity-80'>{task.task_title}</td>
-											<td className='opacity-80'>
-												<LuUser className='inline' /> {task.required_workers}
-											</td>
-											<td className='opacity-80'>
-												{task.payable_amount} <LuCoins className='inline text-green-400' />
-											</td>
-											<td className='opacity-80'>{new Date(task.completion_deadline).toLocaleDateString()}</td>
-											<td className='opacity-80'>
-												{totalCost} <LuCoins className='inline text-blue-400' />
-											</td>
-											<td>
-												<div className='flex gap-2'>
-													<button
-														className='btn btn-sm btn-circle btn-ghost text-gray-600 hover:text-blue-600'
-														onClick={() => handleUpdateClick(task)}
-													>
-														<LuPen />
-													</button>
-													<button
-														className='btn btn-sm btn-circle btn-ghost text-gray-600 hover:text-red-600'
-														onClick={() =>
-															handleDelete(task._id, task.required_workers, task.payable_amount, task.status)
-														}
-													>
-														<LuTrash2 />
-													</button>
-												</div>
-											</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
-					</div>
+					<MyTaskTable
+						tasks={tasks}
+						onUpdateClick={handleUpdateClick}
+						onDeleteClick={handleDelete}
+					/>
 				)}
 			</div>
 

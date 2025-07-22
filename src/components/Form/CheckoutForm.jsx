@@ -90,7 +90,7 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 				className='btn bg-gradient w-full'
 				disabled={!stripe || !clientSecret || processing}
 			>
-				{processing ? "Processing..." : "Pay Now"}
+				{processing ? "Processing..." : `Confirm Payment ($${totalPrice})`}
 			</button>
 		</form>
 	);
