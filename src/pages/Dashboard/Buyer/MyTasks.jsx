@@ -95,7 +95,7 @@ const MyTasks = () => {
 			</div>
 
 			{/* Stats Cards */}
-			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6'>
+			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6'>
 				<div className='card border-2 border-base-200 hover:bg-base-200 rounded-lg p-6'>
 					<p className='text-gray-400'>Total Tasks</p>
 					<p className='text-2xl font-semibold'>{totalTasks}</p>

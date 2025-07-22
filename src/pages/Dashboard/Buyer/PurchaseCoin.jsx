@@ -1,15 +1,23 @@
 import { useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
-import Loader from "../../../components/Loader";
+import Swal from "sweetalert2";
 import PaymentInformation from "../../../components/Dashboard/PaymentInformation";
 import CoinPackage from "../../../components/Dashboard/CoinPackage";
+import PurchaseModal from "../../../components/Modals/PurchaseModal";
+import Loader from "../../../components/Loader";
+import { loadStripe } from "@stripe/stripe-js";
+import useAuth from "../../../hooks/useAuth";
 
+// Stripe 
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const PurchaseCoin = () => {
 	const axiosSecure = useAxiosSecure();
-	const { microCoins, refetch: refetchCoins, isLoading: coinsLoading } = useAvailableCoins();
+	const { refetch: refetchCoins, isMicroCoinsLoading: coinsLoading } = useAvailableCoins();
 	const [selectedPackage, setSelectedPackage] = useState(null);
 	const [processing, setProcessing] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const { user } = useAuth();
 
 	// Coin packages
 	const coinPackages = [
@@ -23,8 +31,45 @@ const PurchaseCoin = () => {
 
 	// Handle Purchase
 	const handlePurchase = async (pkg) => {
-		setSelectedPackage(pkg);
 		setProcessing(true);
+		try {
+			const totalCoins = pkg.coins + (pkg.bonus || 0);
+
+			await axiosSecure.post("/payments", {
+				buyer_email: user.email,
+				buyer_name: user.name,
+				coins_purchased: totalCoins,
+				amount_paid: pkg.price,
+				payment_date: new Date().toISOString(),
+				payment_method: "stripe",
+				status: "completed",
+			});
+
+			await axiosSecure.patch("/update-coins", {
+				coinsToUpdate: totalCoins,
+				status: "increase",
+			});
+
+			refetchCoins();
+
+			Swal.fire({
+				title: "Payment Successful!",
+				text: `${totalCoins} coins have been added to your account.`,
+				icon: "success",
+				confirmButtonText: "OK",
+				buttonsStyling: false,
+				customClass: {
+					confirmButton: "btn bg-gradient",
+				},
+			});
+		} catch (err) {
+			console.error("Purchase Error:", err);
+			Swal.fire("Error!", "Payment failed. Please try again.", "error");
+		} finally {
+			setProcessing(false);
+			setIsModalOpen(false);
+			setSelectedPackage(null);
+		}
 	};
 
 	if (coinsLoading) return <Loader />;
@@ -38,10 +83,29 @@ const PurchaseCoin = () => {
 
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6'>
 				{coinPackages.map((pkg) => (
-                    <CoinPackage key={pkg.id} pkg={pkg} handlePurchase={handlePurchase} selectedPackage={selectedPackage} processing={processing} />
+					<CoinPackage
+						key={pkg.id}
+						pkg={pkg}
+						selectedPackage={selectedPackage}
+						processing={processing}
+						setSelectedPackage={setSelectedPackage}
+						setIsModalOpen={setIsModalOpen}
+					/>
 				))}
 			</div>
 			<PaymentInformation />
+			{/* Modal */}
+			<PurchaseModal
+				isOpen={isModalOpen}
+				onClose={() => {
+					setIsModalOpen(false);
+					setSelectedPackage(null);
+				}}
+				package={selectedPackage}
+				onPurchase={handlePurchase}
+				processing={processing}
+				stripePromise={stripePromise}
+			/>
 		</div>
 	);
 };
