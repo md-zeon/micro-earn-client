@@ -8,8 +8,10 @@ import toast from "react-hot-toast";
 import MyTaskTable from "../../../components/Table/MyTaskTable";
 import StatsCard from "../../../components/shared/StatsCard";
 import UpdateTaskModal from "../../../components/Modals/UpdateTaskModal";
+import useAuth from "../../../hooks/useAuth";
 
 const MyTasks = () => {
+	const {user} = useAuth();
 	const { tasks, isTasksLoading, refetch } = useBuyerTasks();
 	const { refetch: refetchCoins } = useAvailableCoins();
 	const axiosSecure = useAxiosSecure();
@@ -38,7 +40,7 @@ const MyTasks = () => {
 				await axiosSecure.delete(`/tasks/${taskId}`);
 				if (status === "active") {
 					const refundAmount = requiredWorkers * payableAmount;
-					await axiosSecure.patch("/update-coins", {
+					await axiosSecure.patch(`/update-coins/${user?.email}`, {
 						coinsToUpdate: refundAmount,
 						status: "increase",
 					});

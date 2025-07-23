@@ -62,7 +62,7 @@ const AddTask = () => {
 			const { data } = await axiosSecure.post("/tasks", newTask);
 			console.log(data);
 			// deduct buyer's coins
-			await axiosSecure.patch("/update-coins", {
+			await axiosSecure.patch(`/update-coins/${user?.email}`, {
 				coinsToUpdate: totalCost,
 				status: "decrease",
 			})

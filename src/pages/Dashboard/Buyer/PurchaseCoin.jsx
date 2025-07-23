@@ -47,7 +47,7 @@ const PurchaseCoin = () => {
 				status: "completed",
 			});
 
-			await axiosSecure.patch("/update-coins", {
+			await axiosSecure.patch(`/update-coins/${user?.email}`, {
 				coinsToUpdate: totalCoins,
 				status: "increase",
 			});

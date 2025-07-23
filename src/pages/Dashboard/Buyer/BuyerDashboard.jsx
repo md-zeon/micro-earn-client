@@ -58,7 +58,7 @@ const BuyerDashboard = () => {
 						Icon={LuListTodo}
 						value={totalTasks}
 						subtitle="Tasks you've created"
-						color="text-base-content"
+						color='text-base-content'
 					/>
 
 					{/* Pending Workers Card */}
@@ -67,7 +67,7 @@ const BuyerDashboard = () => {
 						Icon={LuUsers}
 						value={totalPendingWorkers}
 						subtitle='Workers needed for tasks'
-						color="text-base-content"
+						color='text-base-content'
 					/>
 
 					{/* Total Payments Card */}
@@ -77,7 +77,7 @@ const BuyerDashboard = () => {
 						value={totalPaymentsPaid}
 						subtitle='Paid to workers'
 						suffix='coins'
-						color="text-base-content"
+						color='text-base-content'
 					/>
 
 					{/* Available Coins Card */}
@@ -86,7 +86,7 @@ const BuyerDashboard = () => {
 						Icon={LuClock}
 						value={microCoins || 0}
 						subtitle='Ready to use'
-						color="text-base-content"
+						color='text-base-content'
 					/>
 				</div>
 

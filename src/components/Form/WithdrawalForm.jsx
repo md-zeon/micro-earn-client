@@ -47,7 +47,7 @@ const WithdrawalForm = ({ onSuccess }) => {
 
 		try {
 			await axiosSecure.post("/withdrawals", withdrawalData);
-			await axiosSecure.patch("/update-coins", {
+			await axiosSecure.patch(`/update-coins/${user?.email}`, {
 				coinsToUpdate: coinNum,
 				status: "decrease",
 			});

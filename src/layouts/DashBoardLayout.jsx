@@ -20,7 +20,7 @@ const DashboardLayout = () => {
 		<Container>
 			<div className='flex flex-col min-h-screen'>
 				{/* Header */}
-				<header className='flex justify-between items-center p-4 bg-base-200 shadow sticky top-0 z-50'>
+				<header className='flex justify-between items-center p-4 bg-base-200 rounded-xl shadow sticky top-0 z-50'>
 					<DashboardNavbar
 						role={role}
 						isSidebarOpen={isSidebarOpen}
