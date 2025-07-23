@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "./useAuth";
 import useAxiosSecure from "./useAxiosSecure";
 
-const useSubmissions = () => {
+const useWorkerSubmissions = () => {
 	const { user } = useAuth();
 	const axiosSecure = useAxiosSecure();
 
@@ -11,7 +11,7 @@ const useSubmissions = () => {
 		isLoading,
 		refetch,
 	} = useQuery({
-		queryKey: ["submissions", user?.email],
+		queryKey: ["workerSubmissions", user?.email],
 		enabled: !!user?.email,
 		queryFn: async () => {
 			const { data } = await axiosSecure.get("/submissions");
@@ -22,4 +22,4 @@ const useSubmissions = () => {
 	return { submissions, isLoading, refetch };
 };
 
-export default useSubmissions;
+export default useWorkerSubmissions;

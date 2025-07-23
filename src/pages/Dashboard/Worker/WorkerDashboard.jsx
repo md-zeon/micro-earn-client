@@ -1,10 +1,10 @@
 import { LuCoins, LuFileCheck2, LuFileClock, LuListChecks } from "react-icons/lu";
-import useSubmissions from "../../../hooks/useSubmissions";
+import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import Loader from "../../../components/Loader";
 import StatsCard from "../../../components/shared/StatsCard";
 
 const WorkerDashboard = () => {
-	const { submissions, isLoading } = useSubmissions();
+	const { submissions, isLoading } = useWorkerSubmissions();
 
 	if (isLoading) return <Loader />;
 

@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import Loader from "../../../components/Loader";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";

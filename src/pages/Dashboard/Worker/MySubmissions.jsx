@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { LuDollarSign, LuFileText } from "react-icons/lu";
 import Loader from "../../../components/Loader";
-import useSubmissions from "../../../hooks/useSubmissions";
+import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 
 const itemsPerPage = 5;
 
 const MySubmissions = () => {
-	const { submissions, isLoading } = useSubmissions();
+	const { submissions, isLoading } = useWorkerSubmissions();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filteredStatus, setFilteredStatus] = useState("all");
 

@@ -1,9 +1,9 @@
 import { LuDollarSign, LuFileText } from "react-icons/lu";
 import Loader from "../../../components/Loader";
-import useSubmissions from "../../../hooks/useSubmissions";
+import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 
 const ApprovedSubmissions = () => {
-	const { submissions: data, isLoading } = useSubmissions();
+	const { submissions: data, isLoading } = useWorkerSubmissions();
 
 	if (isLoading) return <Loader />;
 
