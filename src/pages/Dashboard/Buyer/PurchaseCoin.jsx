@@ -17,7 +17,6 @@ const PurchaseCoin = () => {
 	const [selectedPackage, setSelectedPackage] = useState(null);
 	const [processing, setProcessing] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [transactionId, setTransactionId] = useState("");
 	const { user } = useAuth();
 
 	// Coin packages
@@ -31,14 +30,14 @@ const PurchaseCoin = () => {
 	];
 
 	// Handle Purchase
-	const handlePurchase = async (pkg) => {
+	const handlePurchase = async (pkg, receivedTransactionId) => {
+		console.log("Transaction ID received in handlePurchase:", receivedTransactionId);
 		setProcessing(true);
 		try {
 			const totalCoins = pkg.coins + (pkg.bonus || 0);
-			console.log(transactionId);
 
 			await axiosSecure.post("/payments", {
-				transaction_id: transactionId,
+				transaction_id: receivedTransactionId,
 				buyer_email: user?.email,
 				buyer_name: user?.displayName,
 				coins_purchased: totalCoins,
@@ -93,8 +92,8 @@ const PurchaseCoin = () => {
 						processing={processing}
 						setSelectedPackage={setSelectedPackage}
 						setIsModalOpen={setIsModalOpen}
-						/>
-					))}
+					/>
+				))}
 			</div>
 			<PaymentInformation />
 			{/* Modal */}
@@ -108,7 +107,6 @@ const PurchaseCoin = () => {
 				onPurchase={handlePurchase}
 				processing={processing}
 				stripePromise={stripePromise}
-				setTransactionId={setTransactionId}
 			/>
 		</div>
 	);

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 
-const CheckoutForm = ({ pkg, onSuccess, setTransactionId }) => {
+const CheckoutForm = ({ pkg, onSuccess }) => {
 	const stripe = useStripe();
 	const elements = useElements();
 	const axiosSecure = useAxiosSecure();
@@ -36,7 +36,7 @@ const CheckoutForm = ({ pkg, onSuccess, setTransactionId }) => {
 			type: "card",
 			card,
 			billing_details: {
-				name: user?.name,
+				name: user?.displayName,
 				email: user?.email,
 			},
 		});
@@ -61,8 +61,7 @@ const CheckoutForm = ({ pkg, onSuccess, setTransactionId }) => {
 
 		if (paymentIntent.status === "succeeded") {
 			// Payment successful!
-			setTransactionId(paymentIntent.id);
-			await onSuccess(pkg); // Call parent function to update DB & coins
+			await onSuccess(pkg, paymentIntent.id); // Call parent function to update DB & coins
 		}
 
 		setProcessing(false);
