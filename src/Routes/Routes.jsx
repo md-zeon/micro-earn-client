@@ -11,6 +11,7 @@ import BuyerRoute from "./BuyerRoute";
 import MyTasks from "../pages/Dashboard/Buyer/MyTasks";
 import PurchaseCoin from "../pages/Dashboard/Buyer/PurchaseCoin";
 import PaymentHistory from "../pages/Dashboard/Buyer/PaymentHistory";
+import TasksToReview from "../pages/Dashboard/Buyer/TasksToReview";
 
 const router = createBrowserRouter([
 	{
@@ -72,6 +73,16 @@ const router = createBrowserRouter([
 					</PrivateRoute>
 				),
 			},
+			{
+				path: "tasks-to-review",
+				element: (
+					<PrivateRoute>
+						<BuyerRoute>
+							<TasksToReview />
+						</BuyerRoute>
+					</PrivateRoute>
+				)
+			}
 		],
 	},
 ]);

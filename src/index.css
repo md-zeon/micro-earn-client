@@ -9,9 +9,13 @@ body {
 }
 
 .bg-gradient {
-	@apply bg-gradient-to-br from-blue-500 to-green-500 text-white backdrop-blur-2xl shadow;
+	@apply bg-gradient-to-br from-blue-500 to-green-500 text-white backdrop-blur-2xl shadow hover:opacity-80;
 }
 
 .text-gradient {
 	@apply bg-linear-to-br from-blue-500 to-green-500 bg-clip-text text-transparent;
+}
+
+.bg-gradient-error {
+	@apply bg-gradient-to-br from-red-400 to-rose-600 text-white backdrop-blur-2xl shadow hover:opacity-80;
 }

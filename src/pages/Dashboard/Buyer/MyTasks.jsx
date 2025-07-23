@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useBuyerTasks from "../../../hooks/useBuyerTask";
+import useBuyerTasks from "../../../hooks/useBuyerTasks";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
@@ -91,7 +91,7 @@ const MyTasks = () => {
 				<button className='btn btn-sm btn-success rounded-full'>{tasks.length}</button>
 			</div>
 			{/* Stats Cards */}
-			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6'>
+			<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6'>
 				<StatsCard
 					label='Total Tasks'
 					value={totalTasks}
@@ -110,7 +110,7 @@ const MyTasks = () => {
 					label='Total Investment'
 					value={totalInvestment}
 					color='text-blue-400'
-					suffix='Micro coins'
+					suffix='coins'
 				/>
 			</div>
 

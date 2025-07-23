@@ -1,13 +1,14 @@
-const StatsCard = ({ label, value, color = "text-gray-400", suffix = "", Icon }) => {
+const StatsCard = ({ label, value, color = "text-gray-400", suffix = "", Icon, subtitle }) => {
 	return (
-		<div className='card border-2 border-base-200 rounded-lg p-6 hover:bg-base-200'>
-			<div className='flex gap-1 items-center mb-3'>
-				{Icon && <Icon className={`text-xl ${color}`} />}
-				<p className='text-gray-400'>{label}</p>
+		<div className='card border border-gray-600 hover:scale-105 shadow-xl p-6 hover:shadow-2xl transition-all duration-300 sm:text-start text-center'>
+			<div className='flex items-center sm:justify-between justify-center mb-2'>
+				{label && <h3 className='text-sm font-medium'>{label}</h3>}
+				{Icon && <Icon className={`text-base ${color ? color : "text-base-content"}`} />}
 			</div>
-			<p className={`text-2xl font-semibold ${color}`}>
-				{value} <span className='text-gradient text-base'>{suffix}</span>
-			</p>
+			<h2 className={`text-2xl font-bold ${color ? color : ""}`}>
+				{value} {suffix && <span className='text-gradient text-base'>{suffix}</span>}
+			</h2>
+			{subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
 		</div>
 	);
 };

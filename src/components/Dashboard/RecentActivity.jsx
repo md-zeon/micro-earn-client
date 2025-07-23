@@ -8,7 +8,7 @@ const RecentActivity = ({ payments }) => {
 				{payments.map((payment) => (
 					<div
 						key={payment._id}
-						className='flex justify-between items-center p-4 rounded-xl hover:bg-base-200 transition'
+						className='flex justify-between items-center p-4 rounded-xl hover:bg-base-200 transition gap-2'
 					>
 						{/* Left section: icon + info */}
 						<div className='flex items-center gap-4'>
