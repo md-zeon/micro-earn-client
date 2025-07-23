@@ -1,27 +1,14 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { LuDollarSign, LuFileText } from "react-icons/lu";
-import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/Loader";
+import useSubmissions from "../../../hooks/useSubmissions";
 
 const itemsPerPage = 5;
 
 const MySubmissions = () => {
-	const { user } = useAuth();
-	const axiosSecure = useAxiosSecure();
-
+	const { submissions, isLoading } = useSubmissions();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filteredStatus, setFilteredStatus] = useState("all");
-
-	const { data: submissions = [], isLoading } = useQuery({
-		queryKey: ["my-submissions", user?.email],
-		queryFn: async () => {
-			const { data } = await axiosSecure.get(`/submissions`);
-			return data;
-		},
-		enabled: !!user?.email,
-	});
 
 	if (isLoading) return <Loader />;
 
