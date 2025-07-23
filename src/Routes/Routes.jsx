@@ -12,6 +12,11 @@ import MyTasks from "../pages/Dashboard/Buyer/MyTasks";
 import PurchaseCoin from "../pages/Dashboard/Buyer/PurchaseCoin";
 import PaymentHistory from "../pages/Dashboard/Buyer/PaymentHistory";
 import TasksToReview from "../pages/Dashboard/Buyer/TasksToReview";
+import TasksList from "../pages/Dashboard/Worker/TasksList";
+import WorkerRoute from "./WorkerRoute";
+import MySubmissions from "../pages/Dashboard/Worker/MySubmissions";
+import ApprovedSubmissions from "../pages/Dashboard/Worker/ApprovedSubmissions";
+import Withdrawals from "../pages/Dashboard/Worker/Withdrawals";
 
 const router = createBrowserRouter([
 	{
@@ -80,6 +85,46 @@ const router = createBrowserRouter([
 						<BuyerRoute>
 							<TasksToReview />
 						</BuyerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "tasks-list",
+				element: (
+					<PrivateRoute>
+						<WorkerRoute>
+							<TasksList />
+						</WorkerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "my-submissions",
+				element: (
+					<PrivateRoute>
+						<WorkerRoute>
+							<MySubmissions />
+						</WorkerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "approved-submissions",
+				element: (
+					<PrivateRoute>
+						<WorkerRoute>
+							<ApprovedSubmissions />
+						</WorkerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "withdrawals",
+				element: (
+					<PrivateRoute>
+						<WorkerRoute>
+							<Withdrawals />
+						</WorkerRoute>
 					</PrivateRoute>
 				)
 			}

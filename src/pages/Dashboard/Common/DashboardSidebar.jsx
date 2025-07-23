@@ -21,7 +21,7 @@ const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 	const navItems = {
 		worker: [
 			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
-			{ path: "/dashboard/tasks", label: "Task List", icon: <LuListTodo /> },
+			{ path: "/dashboard/tasks-list", label: "Task List", icon: <LuListTodo /> },
 			{ path: "/dashboard/my-submissions", label: "My Submissions", icon: <LuFileText /> },
 			{ path: "/dashboard/approved-submissions", label: "Approved Submissions", icon: <LuCheckCheck /> },
 			{ path: "/dashboard/withdrawals", label: "Withdrawals", icon: <LuDollarSign /> },
