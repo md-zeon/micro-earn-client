@@ -26,7 +26,7 @@ const WorkerDashboard = () => {
 				<StatsCard
 					label='Total Submissions'
 					value={totalSubmissions}
-					color='text-primary'
+					color='text-gradient'
 					Icon={LuListChecks}
 				/>
 				<StatsCard
@@ -71,7 +71,7 @@ const WorkerDashboard = () => {
 									<td>${submission.payable_amount}</td>
 									<td>{submission.buyer_name}</td>
 									<td>
-										<span className='badge badge-success capitalize'>{submission.status}</span>
+										<span className='badge bg-gradient-success capitalize'>{submission.status}</span>
 									</td>
 								</tr>
 							))}
