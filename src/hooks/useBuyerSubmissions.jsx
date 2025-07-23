@@ -7,7 +7,7 @@ const useBuyerSubmissions = () => {
 	const axiosSecure = useAxiosSecure();
 
 	const {
-		data: buyerSubmissions,
+		data: submissions,
 		isLoading,
 		refetch,
 	} = useQuery({
@@ -19,7 +19,7 @@ const useBuyerSubmissions = () => {
 		},
 	});
 
-	return { buyerSubmissions, isLoading, refetch };
+	return { submissions, isLoading, refetch };
 };
 
 export default useBuyerSubmissions;

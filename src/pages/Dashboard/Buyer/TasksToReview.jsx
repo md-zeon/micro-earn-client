@@ -1,25 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import Loader from "../../../components/Loader";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
+import useBuyerSubmissions from "../../../hooks/useBuyerSubmissions";
 
 const TasksToReview = () => {
-	const [submissions, setSubmissions] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	useEffect(() => {
-		const fetchBuyerSubmissions = async () => {
-			try {
-				const response = await axiosSecure.get("/buyer-submissions");
-				setSubmissions(response.data);
-			} catch (error) {
-				console.error(error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-		fetchBuyerSubmissions();
-	}, []);
+	const { submissions, isLoading, refetch } = useBuyerSubmissions();
 	const { user } = useAuth();
 	const axiosSecure = useAxiosSecure();
 
@@ -40,9 +27,8 @@ const TasksToReview = () => {
 				coinsToUpdate: submission.payable_amount,
 				status: "increase",
 			});
-
-			toast.success("Submission approved and coins rewarded!");
 			refetch();
+			toast.success("Submission approved and coins rewarded!");
 		} catch (error) {
 			console.error(error);
 			toast.error("Failed to approve submission.");
@@ -61,6 +47,8 @@ const TasksToReview = () => {
 			await axiosSecure.patch(`/update-workers/${submission.task_id}`, {
 				status: "increase",
 			});
+			refetch();
+			toast.success("Submission rejected!");
 		} catch (error) {
 			console.error(error);
 			toast.error("Failed to reject submission.");
@@ -87,7 +75,7 @@ const TasksToReview = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{buyerSubmissions.map((s) => (
+							{buyerSubmissions?.map((s) => (
 								<tr key={s._id}>
 									<td>{s.worker_name}</td>
 									<td>{s.task_title}</td>
@@ -102,13 +90,13 @@ const TasksToReview = () => {
 										</button>
 										<button
 											onClick={() => handleApprove(s)}
-											className='btn btn-sm btn-success'
+											className='btn btn-sm bg-gradient-success'
 										>
 											Approve
 										</button>
 										<button
 											onClick={() => handleReject(s)}
-											className='btn btn-sm btn-error'
+											className='btn btn-sm bg-gradient-error'
 										>
 											Reject
 										</button>
