@@ -41,7 +41,7 @@ const ReviewSubmissionModal = ({ submission }) => {
 										rel='noopener noreferrer'
 										className='text-blue-600 hover:underline text-sm block'
 									>
-										📎 File {index + 1}
+										File {index + 1}
 									</a>
 								))}
 							</div>

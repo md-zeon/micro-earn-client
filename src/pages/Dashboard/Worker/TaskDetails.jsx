@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loader from "../../../components/Loader";
+import { imageUpload } from "../../../api/utils";
 
 const TaskDetails = () => {
 	const { id } = useParams();
@@ -22,6 +23,8 @@ const TaskDetails = () => {
 	const axiosSecure = useAxiosSecure();
 	const [submissionDetails, setSubmissionDetails] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [proofImage, setProofImage] = useState(null);
+	const [previewUrl, setPreviewUrl] = useState(null);
 
 	const { data: task, isLoading } = useQuery({
 		queryKey: ["task", id],
@@ -31,11 +34,23 @@ const TaskDetails = () => {
 		},
 	});
 
+	const deadlinePassed = new Date(task?.completion_deadline) < new Date();
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!submissionDetails.trim()) {
 			toast.error("Submission details cannot be empty");
 			return;
+		}
+		let proof_img_url = "";
+		if (proofImage) {
+			try {
+				proof_img_url = await imageUpload(proofImage);
+			} catch (err) {
+				console.error("Image upload error:", err);
+				toast.error("Failed to upload proof image! Please try again.");
+				return;
+			}
 		}
 
 		setLoading(true);
@@ -49,6 +64,7 @@ const TaskDetails = () => {
 			buyer_name: task.buyer_name,
 			buyer_email: task.posted_by,
 			submission_date: new Date().toISOString(),
+			proof_img: proof_img_url,
 		};
 
 		try {
@@ -170,21 +186,57 @@ const TaskDetails = () => {
 				<h2 className='text-2xl font-semibold mb-4'>
 					<LuUpload className='inline' /> Submit Your Work
 				</h2>
+				{/* Deadline Message */}
+				{deadlinePassed && (
+					<p className='text-red-600 font-medium mb-4'>
+						This task is no longer accepting submissions (Deadline passed).
+					</p>
+				)}
+				
 				<form
 					onSubmit={handleSubmit}
 					className='space-y-4'
 				>
-					<textarea
-						name='submission_details'
-						value={submissionDetails}
-						onChange={(e) => setSubmissionDetails(e.target.value)}
-						placeholder='Describe your completed task, include necessary links or proof...'
-						className='textarea textarea-bordered w-full h-32'
-					/>
+					{/* File Upload */}
+					<div>
+						<label className='block font-medium mb-1'>Upload Screenshot (optional):</label>
+						<input
+							type='file'
+							accept='image/*'
+							onChange={(e) => {
+								const file = e.target.files[0];
+								setProofImage(file);
+								setPreviewUrl(URL.createObjectURL(file));
+							}}
+							className='file-input w-full'
+						/>
+						{previewUrl && (
+							<div className='mt-3'>
+								<p className='text-sm font-medium text-gray-600 mb-1'>Image Preview:</p>
+								<img
+									src={previewUrl}
+									alt='Preview'
+									className='rounded-lg border border-gray-300 max-h-64'
+								/>
+							</div>
+						)}
+					</div>
+
+					{/* Textarea */}
+					<div>
+						<label className='block font-medium mb-1'>Submission Details:</label>
+						<textarea
+							name='submission_details'
+							value={submissionDetails}
+							onChange={(e) => setSubmissionDetails(e.target.value)}
+							placeholder='Describe your completed task, include necessary links or proof...'
+							className='textarea textarea-bordered w-full h-32'
+						/>
+					</div>
 					<button
 						type='submit'
 						className='btn bg-gradient w-full'
-						disabled={loading || task.required_workers <= 0}
+						disabled={loading || deadlinePassed || task.required_workers <= 0}
 					>
 						{loading ? "Submitting..." : "Submit Work"}
 					</button>

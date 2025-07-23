@@ -2,8 +2,8 @@ import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import Loader from "../../../components/Loader";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import toast from "react-hot-toast";
 import useBuyerSubmissions from "../../../hooks/useBuyerSubmissions";
+import Swal from "sweetalert2";
 
 const TasksToReview = () => {
 	const { submissions, isLoading, refetch } = useBuyerSubmissions();
@@ -17,7 +17,7 @@ const TasksToReview = () => {
 	const handleApprove = async (submission) => {
 		try {
 			// Update Submission status
-			await axiosSecure.patch("/submission/status-update", {
+			await axiosSecure.patch("/submissions/status-update", {
 				submissionId: submission._id,
 				status: "approved",
 			});
@@ -28,30 +28,41 @@ const TasksToReview = () => {
 				status: "increase",
 			});
 			refetch();
-			toast.success("Submission approved and coins rewarded!");
+			Swal.fire("Success", "Submission approved and coins rewarded!", "success");
 		} catch (error) {
 			console.error(error);
-			toast.error("Failed to approve submission.");
+			Swal.fire("Error", "Failed to approve submission.", "error");
 		}
 	};
 
 	const handleReject = async (submission) => {
 		try {
-			// Update Submission status
-			await axiosSecure.patch("/submission/status-update", {
-				submissionId: submission._id,
-				status: "rejected",
+			const result = await Swal.fire({
+				title: "Are you sure?",
+				text: "You won't be able to revert this!",
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "Yes, reject it!",
 			});
+			if (result.isConfirmed) {
+				// Update Submission status
+				await axiosSecure.patch("/submissions/status-update", {
+					submissionId: submission._id,
+					status: "rejected",
+				});
 
-			// update required workers by 1
-			await axiosSecure.patch(`/update-workers/${submission.task_id}`, {
-				status: "increase",
-			});
-			refetch();
-			toast.success("Submission rejected!");
+				// update required workers by 1
+				await axiosSecure.patch(`/update-workers/${submission.task_id}`, {
+					status: "increase",
+				});
+				refetch();
+				Swal.fire("Success", "Submission rejected!", "success");
+			}
 		} catch (error) {
 			console.error(error);
-			toast.error("Failed to reject submission.");
+			Swal.fire("Error", "Failed to reject submission.", "error");
 		}
 	};
 
@@ -110,24 +121,59 @@ const TasksToReview = () => {
 
 			{/* Modal */}
 			{selectedSubmission && (
-				<div className='modal modal-open'>
-					<div className='modal-box'>
-						<h3 className='font-bold text-lg mb-4'>Submission Detail</h3>
-						<p>
-							<strong>Worker:</strong> {selectedSubmission.worker_name}
-						</p>
-						<p>
-							<strong>Task:</strong> {selectedSubmission.task_title}
-						</p>
-						<p>
-							<strong>Proof:</strong>
-						</p>
-						<img
-							src={selectedSubmission.proof_img}
-							alt='Proof'
-							className='mt-2 rounded'
-						/>
-						<div className='modal-action'>
+				<div className='modal modal-open z-50'>
+					<div className='modal-box w-11/12 max-w-2xl border border-gray-500 rounded-xl shadow-xl'>
+						<h3 className='text-2xl font-bold mb-4 text-center'>Submission Details</h3>
+
+						<div className='space-y-2 text-sm'>
+							<p>
+								<strong>Worker:</strong> {selectedSubmission.worker_name}
+							</p>
+							<p>
+								<strong>Email:</strong> {selectedSubmission.worker_email}
+							</p>
+							<p>
+								<strong>Task:</strong> {selectedSubmission.task_title}
+							</p>
+							<p>
+								<strong>Submission Text:</strong>
+							</p>
+							<p className='p-3 rounded bg-base-300'>
+								{selectedSubmission.submission_details || "No text submission provided."}
+							</p>
+							{selectedSubmission.proof_img && (
+								<div>
+									<p className='mt-4 mb-1'>
+										<strong>Proof Image:</strong>
+									</p>
+									<img
+										src={selectedSubmission.proof_img}
+										alt='Proof'
+										className='rounded-lg border border-gray-300 shadow-md max-h-[400px] mx-auto'
+									/>
+								</div>
+							)}
+						</div>
+
+						<div className='modal-action flex gap-4 items-center mt-6'>
+							<button
+								onClick={() => {
+									handleReject(selectedSubmission);
+									setSelectedSubmission(null);
+								}}
+								className='btn btn-outline bg-gradient-error'
+							>
+								Reject
+							</button>
+							<button
+								onClick={() => {
+									handleApprove(selectedSubmission);
+									setSelectedSubmission(null);
+								}}
+								className='btn bg-gradient-success'
+							>
+								Approve
+							</button>
 							<button
 								onClick={() => setSelectedSubmission(null)}
 								className='btn'
