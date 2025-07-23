@@ -13,7 +13,7 @@ const TasksList = () => {
 
 	return (
 		<div className='max-w-7xl mx-auto px-4 py-6'>
-			<h1 className='text-3xl font-bold mb-6 text-center'>Available Tasks</h1>
+			<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>Available Tasks</h1>
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 				{tasks.length === 0 ? (
 					<p className='text-center text-gray-500 col-span-full'>No tasks available at the moment.</p>
@@ -24,7 +24,7 @@ const TasksList = () => {
 							className='card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-500'
 						>
 							<div className='card-body'>
-								<h2 className='card-title text-xl font-semibold text-gradient truncate line-clamp-1'>{task.task_title}</h2>
+								<h2 className='card-title text-xl font-semibold truncate line-clamp-1'>{task.task_title}</h2>
 								<p className='text-sm text-gray-600'>Posted by: {task.buyer_name}</p>
 								<div className='mt-4 space-y-2'>
 									<div className='flex items-center gap-2'>
