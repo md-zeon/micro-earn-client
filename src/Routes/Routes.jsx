@@ -17,6 +17,7 @@ import WorkerRoute from "./WorkerRoute";
 import MySubmissions from "../pages/Dashboard/Worker/MySubmissions";
 import ApprovedSubmissions from "../pages/Dashboard/Worker/ApprovedSubmissions";
 import Withdrawals from "../pages/Dashboard/Worker/Withdrawals";
+import TaskDetails from "../pages/Dashboard/Worker/TaskDetails";
 
 const router = createBrowserRouter([
 	{
@@ -99,6 +100,16 @@ const router = createBrowserRouter([
 				),
 			},
 			{
+				path: "task-details/:id",
+				element: (
+					<PrivateRoute>
+						<WorkerRoute>
+							<TaskDetails />
+						</WorkerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
 				path: "my-submissions",
 				element: (
 					<PrivateRoute>
@@ -126,8 +137,8 @@ const router = createBrowserRouter([
 							<Withdrawals />
 						</WorkerRoute>
 					</PrivateRoute>
-				)
-			}
+				),
+			},
 		],
 	},
 ]);

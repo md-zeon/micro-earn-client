@@ -48,7 +48,7 @@ const AddTask = () => {
 			submission_info: form.submission_info.value,
 			task_image_url: taskImageUrl,
 			posted_by: user?.email,
-			name: user?.displayName,
+			buyer_name: user?.displayName,
 		};
 
 		if (totalCost > microCoins) {
