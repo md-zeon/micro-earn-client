@@ -1,5 +1,6 @@
 // import useRole from "../../../hooks/useRole";
 
+import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
 import useRole from "../../../hooks/useRole";
 import AdminDashboard from "../Admin/AdminDashboard";
@@ -8,14 +9,22 @@ import WorkerDashboard from "../Worker/WorkerDashboard";
 
 const Dashboard = () => {
 	const { role, isRoleLoading } = useRole();
+	const [greeting, setGreeting] = useState("");
+
+	useEffect(() => {
+		const hour = new Date().getHours();
+		if (hour < 12) setGreeting("Good Morning");
+		else if (hour < 17) setGreeting("Good Afternoon");
+		else setGreeting("Good Evening");
+	}, []);
 
 	if (isRoleLoading) {
 		return <Loader />;
 	}
 
-	if (role === "admin") return <AdminDashboard />;
-	if (role === "buyer") return <BuyerDashboard />;
-	if (role === "worker") return <WorkerDashboard />;
+	if (role === "admin") return <AdminDashboard greeting={greeting} />;
+	if (role === "buyer") return <BuyerDashboard greeting={greeting} />;
+	if (role === "worker") return <WorkerDashboard greeting={greeting} />;
 
 	return <div>You are not authorized to view this page.</div>;
 };

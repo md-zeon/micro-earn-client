@@ -8,19 +8,10 @@ import useBuyerTasks from "../../../hooks/useBuyerTasks";
 import StatsCard from "../../../components/shared/StatsCard";
 import TasksToReview from "./TasksToReview";
 
-const BuyerDashboard = () => {
+const BuyerDashboard = ({ greeting }) => {
 	const { user, loading: authLoading } = useAuth();
 	const { microCoins, isMicroCoinsLoading: coinsLoading } = useAvailableCoins();
 	const { tasks, isTasksLoading } = useBuyerTasks();
-	const [greeting, setGreeting] = useState("");
-
-	useEffect(() => {
-		const hour = new Date().getHours();
-		if (hour < 12) setGreeting("Good Morning");
-		else if (hour < 17) setGreeting("Good Afternoon");
-		else setGreeting("Good Evening");
-	}, []);
-
 	const totalTasks = tasks.length;
 	const totalPendingWorkers = tasks.reduce((sum, task) => sum + task.required_workers, 0);
 	const totalPaymentsPaid = tasks.reduce(
@@ -33,8 +24,8 @@ const BuyerDashboard = () => {
 	return (
 		<div>
 			{/* Header */}
-			<header className='p-4'>
-				<div className='max-w-6xl mx-auto flex items-center justify-between flex-wrap'>
+			<div className='px-4'>
+				<div className='flex items-center justify-between flex-wrap'>
 					<div>
 						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting},</h1>
 						<p>{user?.displayName || "Buyer"}! Manage your tasks and workers.</p>
@@ -47,10 +38,10 @@ const BuyerDashboard = () => {
 						Add New Task
 					</Link>
 				</div>
-			</header>
+			</div>
 
 			{/* Main Content */}
-			<main className='max-w-6xl mx-auto py-8 px-4'>
+			<main className='py-8 px-4'>
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
 					{/* Total Tasks Card */}
 					<StatsCard

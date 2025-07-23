@@ -1,10 +1,13 @@
-import { LuCoins, LuFileCheck2, LuFileClock, LuListChecks } from "react-icons/lu";
+import { LuCoins, LuCreditCard, LuFileCheck2, LuFileClock, LuListChecks } from "react-icons/lu";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import Loader from "../../../components/Loader";
 import StatsCard from "../../../components/shared/StatsCard";
+import useAuth from "../../../hooks/useAuth";
+import { Link } from "react-router";
 
-const WorkerDashboard = () => {
+const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
+	const {user} = useAuth();
 
 	if (isLoading) return <Loader />;
 
@@ -19,7 +22,21 @@ const WorkerDashboard = () => {
 
 	return (
 		<div className='space-y-8'>
-			<h1 className='text-2xl font-semibold mb-4'>Worker Dashboard</h1>
+			<div className='px-4'>
+				<div className='flex items-center justify-between flex-wrap'>
+					<div>
+						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting},</h1>
+						<p>{user?.displayName || "Worker"}! Here's your task overview.</p>
+					</div>
+					<Link
+						to='/dashboard/withdrawals'
+						className='btn bg-gradient'
+					>
+						<LuCreditCard className='w-4 h-4 mr-2' />
+						Withdraw Money
+					</Link>
+				</div>
+			</div>
 
 			{/* Stats */}
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
