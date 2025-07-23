@@ -19,3 +19,11 @@ body {
 .bg-gradient-error {
 	@apply bg-gradient-to-br from-red-400 to-rose-600 text-white backdrop-blur-2xl shadow hover:opacity-80;
 }
+
+.bg-gradient-warning {
+	@apply bg-gradient-to-br from-amber-600 to-amber-400 text-gray-100 backdrop-blur-2xl shadow hover:opacity-80;
+}
+
+.bg-gradient-success {
+	@apply bg-gradient-to-br from-green-600 to-teal-400 text-white backdrop-blur-2xl shadow hover:opacity-80;
+}

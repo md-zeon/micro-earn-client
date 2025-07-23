@@ -29,7 +29,7 @@ const PaymentTable = ({ payments }) => {
 								<LuCreditCard className='inline' /> {payment.method || "Stripe"}
 							</td>
 							<td>
-								<span className='badge badge-success badge-outline lowercase'>{payment.status || "completed"}</span>
+								<span className='badge bg-gradient-success badge-outline lowercase'>{payment.status || "completed"}</span>
 							</td>
 							<td>
 								<span className=''>{payment.transaction_id || "N/A"}</span>

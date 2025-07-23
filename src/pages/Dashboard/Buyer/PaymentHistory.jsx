@@ -14,7 +14,7 @@ const PaymentHistory = () => {
 		<div>
 			<div className='flex justify-between items-center mb-6'>
 				<h1 className='text-3xl font-bold'>Payment History</h1>
-				<button className='btn btn-sm btn-success rounded-full cursor-pointer'>{payments.length}</button>
+				<button className='btn btn-sm bg-gradient-success rounded-full cursor-pointer'>{payments.length}</button>
 			</div>
 			{isPaymentsLoading && <Loader />}
 			{/* Stats Cards */}

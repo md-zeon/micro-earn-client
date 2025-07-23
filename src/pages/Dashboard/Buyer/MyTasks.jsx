@@ -88,7 +88,7 @@ const MyTasks = () => {
 		<div>
 			<div className='flex justify-between items-center mb-6'>
 				<h1 className='text-3xl font-bold'>My Tasks</h1>
-				<button className='btn btn-sm btn-success rounded-full'>{tasks.length}</button>
+				<button className='btn btn-sm bg-gradient-success rounded-full'>{tasks.length}</button>
 			</div>
 			{/* Stats Cards */}
 			<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6'>
