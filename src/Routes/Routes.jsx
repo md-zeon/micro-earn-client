@@ -133,9 +133,9 @@ const router = createBrowserRouter([
 				path: "withdrawals",
 				element: (
 					<PrivateRoute>
-						<WorkerRoute>
+						{/* <WorkerRoute> */}
 							<Withdrawals />
-						</WorkerRoute>
+						{/* </WorkerRoute> */}
 					</PrivateRoute>
 				),
 			},
