@@ -21,29 +21,29 @@ const TasksList = () => {
 					tasks.map((task) => (
 						<div
 							key={task._id}
-							className='card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-200'
+							className='card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-500'
 						>
 							<div className='card-body'>
-								<h2 className='card-title text-xl font-semibold text-gradient truncate'>{task.task_title}</h2>
+								<h2 className='card-title text-xl font-semibold text-gradient truncate line-clamp-1'>{task.task_title}</h2>
 								<p className='text-sm text-gray-600'>Posted by: {task.buyer_name}</p>
 								<div className='mt-4 space-y-2'>
 									<div className='flex items-center gap-2'>
-										<LuCalendarDays className='text-primary' />
+										<LuCalendarDays className='text-red-400' />
 										<span className='text-sm'>Deadline: {new Date(task.completion_deadline).toLocaleDateString()}</span>
 									</div>
 									<div className='flex items-center gap-2'>
-										<LuDollarSign className='text-primary' />
+										<LuDollarSign className='text-green-400' />
 										<span className='text-sm'>Payment: {task.payable_amount} Micro Coins</span>
 									</div>
 									<div className='flex items-center gap-2'>
-										<LuUsers className='text-primary' />
+										<LuUsers className='text-blue-400' />
 										<span className='text-sm'>Workers Needed: {task.required_workers}</span>
 									</div>
 								</div>
 								<div className='card-actions mt-4'>
 									<button
 										onClick={() => navigate(`/dashboard/task-details/${task._id}`)}
-										className='btn btn-primary w-full'
+										className='btn bg-gradient w-full'
 									>
 										View Details
 									</button>

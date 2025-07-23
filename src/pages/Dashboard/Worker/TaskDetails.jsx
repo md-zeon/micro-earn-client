@@ -48,6 +48,7 @@ const TaskDetails = () => {
 			worker_name: user?.displayName,
 			buyer_name: task.buyer_name,
 			buyer_email: task.posted_by,
+			submission_date: new Date().toISOString(),
 		};
 
 		try {
@@ -57,7 +58,7 @@ const TaskDetails = () => {
 			navigate("/dashboard/my-submissions");
 		} catch (err) {
 			console.error("Submission error:", err);
-			toast.error("Failed to submit task");
+			toast.error("Failed to submit task! Please try again.");
 		} finally {
 			setLoading(false);
 		}
