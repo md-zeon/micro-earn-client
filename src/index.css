@@ -27,3 +27,7 @@ body {
 .bg-gradient-success {
 	@apply bg-gradient-to-br from-green-600 to-teal-400 text-white backdrop-blur-2xl shadow hover:opacity-80;
 }
+
+.bg-base-gradient {
+	@apply bg-gradient-to-br from-base-300 to-base-100 backdrop-blur-xl;
+}

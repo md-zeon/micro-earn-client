@@ -1,6 +1,6 @@
 const StatsCard = ({ label, value, color = "text-gray-400", suffix = "", Icon, subtitle }) => {
 	return (
-		<div className='card border border-gray-600 hover:scale-105 shadow-inner p-6 hover:shadow-2xl transition-all duration-300 sm:text-start text-center'>
+		<div className='card border border-gray-600 bg-base-gradient  hover:scale-[101%] shadow-inner p-6 hover:shadow-2xl transition-all duration-300 sm:text-start text-center'>
 			<div className='flex items-center sm:justify-between justify-center mb-2'>
 				{label && <h3 className='text-sm font-medium'>{label}</h3>}
 				{Icon && <Icon className={`text-base ${color ? color : "text-base-content"}`} />}
