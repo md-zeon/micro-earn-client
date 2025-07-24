@@ -22,6 +22,7 @@ import AdminRoute from "./AdminRoute";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageTasks from "../pages/Dashboard/Admin/ManageTasks";
 import WithdrawRequests from "../pages/Dashboard/Admin/WithdrawRequests";
+import Profile from "../pages/Dashboard/Common/Profile";
 
 const router = createBrowserRouter([
 	{
@@ -170,6 +171,14 @@ const router = createBrowserRouter([
 						<AdminRoute>
 							<WithdrawRequests />
 						</AdminRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "profile",
+				element: (
+					<PrivateRoute>
+						<Profile />
 					</PrivateRoute>
 				),
 			},
