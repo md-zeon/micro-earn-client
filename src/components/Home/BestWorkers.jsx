@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuCoins } from "react-icons/lu";
 import axios from "axios";
+import GlassCard from "../ui/GlassCard";
 
 const BestWorkers = () => {
 	const [workers, setWorkers] = useState([]);
@@ -55,7 +56,7 @@ const BestWorkers = () => {
 				) : (
 					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
 						{workers.map((worker, i) => (
-							<div
+							<GlassCard
 								key={worker._id}
 								className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'
 								data-aos='fade-up'
@@ -70,10 +71,10 @@ const BestWorkers = () => {
 									<h3 className='text-lg font-semibold'>{worker.name}</h3>
 									<p className='flex items-center gap-1 text-green-600 font-medium'>
 										<LuCoins className='text-xl' />
-										<span className="text-gradient">{worker.microCoins} Coins</span>
+										<span className='text-gradient'>{worker.microCoins} Coins</span>
 									</p>
 								</div>
-							</div>
+							</GlassCard>
 						))}
 					</div>
 				)}
