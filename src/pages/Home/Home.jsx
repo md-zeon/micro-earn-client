@@ -1,10 +1,12 @@
-import { Container } from "@radix-ui/themes/dist/cjs/index.js";
+import Container from "../../components/Container";
 import Hero from "../../components/Home/Hero";
+import HowItWorks from "../../components/Home/HowItWorks";
 
 const Home = () => {
 	return (
 		<Container>
 			<Hero />
+			<HowItWorks />
 		</Container>
 	);
 };
