@@ -1,55 +1,59 @@
+import HowItWorksIllustration from "../../assets/how-it-works.svg";
+
 import { LuClipboardList, LuCoins, LuUsers } from "react-icons/lu";
 
 const steps = [
 	{
-		icon: <LuClipboardList className='text-4xl text-primary' />,
+		icon: <LuClipboardList className='text-3xl text-accent shrink-0' />,
 		title: "Post a Task",
-		description: "Buyers create tasks with clear instructions and coin rewards.",
+		description: "Buyers create task listings with clear instructions and coin rewards.",
 	},
 	{
-		icon: <LuUsers className='text-4xl text-secondary' />,
-		title: "Do the Work",
-		description: "Workers complete tasks based on the requirements and submit proof.",
+		icon: <LuUsers className='text-3xl text-green-500 shrink-0' />,
+		title: "Complete the Work",
+		description: "Workers browse available tasks, do the work, and submit proof as required.",
 	},
 	{
-		icon: <LuCoins className='text-4xl text-accent' />,
+		icon: <LuCoins className='text-3xl text-yellow-500 shrink-0' />,
 		title: "Earn Coins",
-		description: "Get coins for approved tasks — withdraw or reinvest anytime.",
+		description: "Once approved, workers earn coins that can be withdrawn or reinvested.",
 	},
 ];
 
 const HowItWorks = () => {
 	return (
-		<section className='py-16 px-4 md:px-10 bg-base-100'>
-			<div className='max-w-6xl mx-auto text-center'>
-				<h2
-					data-aos='fade-up'
-					className='text-3xl md:text-4xl font-bold mb-6 text-gradient'
-				>
-					How MicroEarn Works
-				</h2>
+		<section className='py-20 px-4 md:px-10 bg-base-100'>
+			<div className='max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center'>
+				{/* Left: Steps */}
+				<div data-aos='fade-right'>
+					<h2 className='text-3xl md:text-4xl font-bold mb-6 text-gradient'>How MicroEarn Works</h2>
+					<p className='text-base-content/70 mb-10'>
+						MicroEarn is simple and flexible. Here's how you can start earning or hiring today:
+					</p>
 
-				<p
-					data-aos='fade-up'
-					data-aos-delay='100'
-					className='mb-12 text-base-content/70 max-w-2xl mx-auto'
-				>
-					Our platform connects task creators with eager micro-workers. It's fast, fair, and flexible.
-				</p>
+					<div className='space-y-8'>
+						{steps.map((step, index) => (
+							<div
+								key={index}
+								className='flex items-start gap-4'
+							>
+								<div className='p-3 bg-base-200 rounded-xl'>{step.icon}</div>
+								<div>
+									<h3 className='text-lg font-semibold mb-1'>{step.title}</h3>
+									<p className='text-sm text-base-content/70'>{step.description}</p>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
 
-				<div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-					{steps.map((step, index) => (
-						<div
-							key={index}
-							data-aos='fade-right'
-							data-aos-delay={150 * index}
-							className='p-6 rounded-2xl shadow bg-base-200 hover:shadow-lg transition'
-						>
-							<div className='mb-4 grid place-items-center'>{step.icon}</div>
-							<h3 className='text-xl font-semibold mb-2'>{step.title}</h3>
-							<p className='text-sm text-base-content/70'>{step.description}</p>
-						</div>
-					))}
+				{/* Right: Illustration */}
+				<div data-aos='fade-left'>
+					<img
+						src={HowItWorksIllustration}
+						alt='How it works illustration'
+						className='w-full max-w-md mx-auto'
+					/>
 				</div>
 			</div>
 		</section>

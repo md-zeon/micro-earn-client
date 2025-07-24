@@ -50,7 +50,6 @@ const BestWorkers = () => {
 					</div>
 				) : workers.length === 0 ? (
 					<div className='text-center'>
-						<Loader />
 						<p className='mt-4 text-sm opacity-60'>No workers found</p>
 					</div>
 				) : (
@@ -66,12 +65,12 @@ const BestWorkers = () => {
 									<img
 										src={worker.photoURL}
 										alt={worker.name}
-										className='w-24 h-24 rounded-full object-cover border-4 border-primary'
+										className='w-24 h-24 rounded-full object-cover border-4 border-accent'
 									/>
 									<h3 className='text-lg font-semibold'>{worker.name}</h3>
-									<p className='flex items-center gap-1 text-primary font-medium'>
+									<p className='flex items-center gap-1 text-green-600 font-medium'>
 										<LuCoins className='text-xl' />
-										{worker.microCoins} Coins
+										<span className="text-gradient">{worker.microCoins} Coins</span>
 									</p>
 								</div>
 							</div>

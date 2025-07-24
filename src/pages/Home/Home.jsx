@@ -1,5 +1,7 @@
 import Container from "../../components/Container";
 import BestWorkers from "../../components/Home/BestWorkers";
+import CallToAction from "../../components/Home/CallToAction";
+import FAQ from "../../components/Home/FAQ";
 import Hero from "../../components/Home/Hero";
 import HowItWorks from "../../components/Home/HowItWorks";
 import TestimonialSlider from "../../components/Home/TestimonialSlider";
@@ -13,6 +15,8 @@ const Home = () => {
 			<BestWorkers />
 			<TestimonialSlider />
 			<WhyChooseUs />
+			<CallToAction />
+			<FAQ />
 		</Container>
 	);
 };
