@@ -7,7 +7,7 @@ import { useEffect } from "react";
 const HomeLayout = () => {
 	const { state } = useNavigation();
 	useEffect(() => {
-		Aos.init({ duration: 800, once: true });
+		Aos.init({ duration: 600, once: true });
 	}, []);
 	return (
 		<>

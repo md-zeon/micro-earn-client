@@ -1,10 +1,9 @@
-import { Container } from "@radix-ui/themes/dist/cjs/index.js";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 
 const Hero = () => {
 	return (
-		<div className='relative h-[500px] w-full overflow-hidden bg-gray-900'>
+		<div className='relative h-[500px] w-full overflow-hidden bg-gray-800'>
 			{/* Background Video */}
 			<video
 				className='absolute inset-0 w-full h-full object-cover pointer-events-none'
@@ -46,7 +45,7 @@ const Hero = () => {
 					transition={{ duration: 0.6, delay: 0.6 }}
 				>
 					<Link to='/register'>
-						<button className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-10 rounded-full text-lg transition-transform duration-300 transform hover:scale-105 shadow-md'>
+						<button className='bg-gradient hover:opacity-100 font-semibold py-3 px-10 rounded-full text-lg transition-transform duration-300 transform hover:scale-105 shadow-md'>
 							Start Earning Now
 						</button>
 					</Link>

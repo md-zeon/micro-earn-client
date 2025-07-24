@@ -14,7 +14,7 @@ const steps = [
 		description: "Workers browse available tasks, do the work, and submit proof as required.",
 	},
 	{
-		icon: <LuCoins className='text-3xl text-yellow-500 shrink-0' />,
+		icon: <LuCoins className='text-3xl text-accent shrink-0' />,
 		title: "Earn Coins",
 		description: "Once approved, workers earn coins that can be withdrawn or reinvested.",
 	},
