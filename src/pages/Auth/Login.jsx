@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUser, LuUserPlus, LuVoicemail } from "react-icons/lu";
+import { LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUserPlus } from "react-icons/lu";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
