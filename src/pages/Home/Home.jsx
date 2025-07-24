@@ -1,17 +1,11 @@
-import { Link } from "react-router";
+import { Container } from "@radix-ui/themes/dist/cjs/index.js";
+import Hero from "../../components/Home/Hero";
 
 const Home = () => {
 	return (
-		<div className='home-container'>
-			<h1>Welcome to Micro-Earn</h1>
-			<p>Start earning money by completing tasks and challenges.</p>
-			<Link
-				to='/tasks'
-				className='btn btn-primary'
-			>
-				Get Started
-			</Link>
-		</div>
+		<Container>
+			<Hero />
+		</Container>
 	);
 };
 
