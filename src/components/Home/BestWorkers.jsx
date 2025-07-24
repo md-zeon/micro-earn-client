@@ -4,15 +4,18 @@ import axios from "axios";
 
 const BestWorkers = () => {
 	const [workers, setWorkers] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const getTopWorkers = async () => {
 			try {
 				const res = await axios.get(`${import.meta.env.VITE_API_URL}/top-workers`);
-                console.log(res.data);
+				console.log(res.data);
 				setWorkers(res.data);
 			} catch (error) {
 				console.error("Failed to fetch top workers:", error);
+			} finally {
+				setLoading(false);
 			}
 		};
 		getTopWorkers();
@@ -28,29 +31,53 @@ const BestWorkers = () => {
 					Top Performing Workers
 				</h2>
 
-				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
-					{workers.map((worker, i) => (
-						<div
-							key={worker._id}
-							className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'
-							data-aos='fade-up'
-							data-aos-delay={i * 100}
-						>
-							<div className='flex flex-col items-center'>
-								<img
-									src={worker.photoURL}
-									alt={worker.name}
-									className='w-24 h-24 rounded-full object-cover mb-4 border-4 border-primary'
-								/>
-								<h3 className='text-lg font-semibold mb-2 text-center'>{worker.name}</h3>
-								<p className='flex items-center gap-1 text-primary font-medium'>
-									<LuCoins className='text-xl' />
-									{worker.microCoins} Coins
-								</p>
+				{loading ? (
+					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+						{[...Array(6)].map((_, i) => (
+							<div
+								key={i}
+								className='bg-base-200 p-6 rounded-2xl shadow'
+								data-aos='fade-up'
+								data-aos-delay={i * 100}
+							>
+								<div className='flex flex-col items-center gap-4'>
+									<div className='w-24 h-24 rounded-full skeleton' />
+									<div className='w-32 h-4 rounded-md skeleton' />
+									<div className='w-24 h-4 rounded-md skeleton' />
+								</div>
 							</div>
-						</div>
-					))}
-				</div>
+						))}
+					</div>
+				) : workers.length === 0 ? (
+					<div className='text-center'>
+						<Loader />
+						<p className='mt-4 text-sm opacity-60'>No workers found</p>
+					</div>
+				) : (
+					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+						{workers.map((worker, i) => (
+							<div
+								key={worker._id}
+								className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'
+								data-aos='fade-up'
+								data-aos-delay={i * 100}
+							>
+								<div className='flex flex-col items-center text-center gap-3'>
+									<img
+										src={worker.photoURL}
+										alt={worker.name}
+										className='w-24 h-24 rounded-full object-cover border-4 border-primary'
+									/>
+									<h3 className='text-lg font-semibold'>{worker.name}</h3>
+									<p className='flex items-center gap-1 text-primary font-medium'>
+										<LuCoins className='text-xl' />
+										{worker.microCoins} Coins
+									</p>
+								</div>
+							</div>
+						))}
+					</div>
+				)}
 			</div>
 		</section>
 	);

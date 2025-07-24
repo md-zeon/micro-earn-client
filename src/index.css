@@ -31,3 +31,11 @@ body {
 .bg-base-gradient {
 	@apply bg-gradient-to-br from-base-300 to-base-100 backdrop-blur-xl;
 }
+
+.swiper-pagination-bullet-active {
+	@apply !bg-gradient-to-br from-blue-500 to-green-500 text-white backdrop-blur-2xl shadow hover:opacity-80;
+}
+
+.my-swiper .swiper-pagination-bullet {
+	@apply !hidden md:!inline-block;
+}
