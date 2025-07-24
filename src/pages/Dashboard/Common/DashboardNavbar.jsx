@@ -35,7 +35,9 @@ const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
 					/>
 					<div className='flex flex-col leading-tight'>
 						<span className='font-semibold'>{user?.displayName || "User Name"}</span>
-						<span className='text-xs text-muted'>{role || "No Role"}</span>
+						<span className='text-xs text-muted'>
+							{role?.charAt(0).toUpperCase() + role?.slice(1) || "No Role"}
+						</span>
 					</div>
 				</div>
 

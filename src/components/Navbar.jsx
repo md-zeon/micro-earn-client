@@ -115,7 +115,7 @@ const Navbar = () => {
 										</div>
 										<div className='flex justify-between items-center'>
 											<Skeleton loading={isRoleLoading}>
-												<span className='badge bg-gradient'>{role}</span>
+												<span className='badge bg-gradient capitalize'>{role}</span>
 											</Skeleton>
 											<ThemeController />
 										</div>
