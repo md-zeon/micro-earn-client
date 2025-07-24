@@ -2,7 +2,7 @@ import { Outlet, useNavigation } from "react-router";
 import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 
-const BasicLayout = () => {
+const HomeLayout = () => {
 	const { state } = useNavigation();
 	return (
 		<>
@@ -14,4 +14,4 @@ const BasicLayout = () => {
 	);
 };
 
-export default BasicLayout;
+export default HomeLayout;
