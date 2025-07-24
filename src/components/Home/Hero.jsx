@@ -1,89 +1,58 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, EffectFade } from "swiper/modules";
+import { Container } from "@radix-ui/themes/dist/cjs/index.js";
 import { motion } from "motion/react";
 import { Link } from "react-router";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/effect-fade";
-
-const slides = [
-	{
-		title: "Turn Time into Income",
-		description:
-			"MicroEarn connects workers and buyers for simple, paid micro tasks. Freedom to earn, flexibility to choose.",
-		image: "https://i.ibb.co/F4ZZyyJp/slide2.png",
-	},
-	{
-		title: "Empower Your Earning",
-		description:
-			"Complete micro-tasks on your schedule. No commitments, just real earnings every day.",
-		image: "https://i.ibb.co/CKJZxzR4/slide4.png",
-	},
-	{
-		title: "Find Talent, Get Work Done",
-		description:
-			"As a buyer, post tasks, track progress, and get results fast with verified workers.",
-		image: "https://i.ibb.co/fdNKBGps/slide1.png",
-	},
-];
 
 const Hero = () => {
 	return (
-		<section className="relative h-[80vh]">
-			<Swiper
-				modules={[Autoplay, Pagination, EffectFade]}
-				effect="fade"
+		<div className='relative h-[85vh] w-full overflow-hidden bg-gray-900'>
+			{/* Background Video */}
+			<video
+				className='absolute inset-0 w-full h-full object-cover pointer-events-none'
+				src='https://www.shutterstock.com/shutterstock/videos/1060923829/preview/stock-footage-alternative-macro-close-up-of-an-young-businessman-hands-busy-working-on-laptop-or-computer.mp4'
+				autoPlay
 				loop
-				autoplay={{ delay: 5000 }}
-				pagination={{ clickable: true }}
-				className="h-full"
-			>
-				{slides.map((slide, index) => (
-					<SwiperSlide key={index}>
-						<div
-							className="h-full bg-cover bg-center relative"
-							style={{ backgroundImage: `url(${slide.image})` }}
-						>
-							<div className="absolute inset-0 bg-black/50" />
+				muted
+				playsInline
+				aria-hidden='true'
+			/>
 
-							<div className="relative z-10 flex flex-col items-center justify-center h-full text-white text-center px-4">
-								<motion.h1
-									initial={{ opacity: 0, y: 40 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.8 }}
-									className="text-4xl md:text-6xl font-bold leading-tight"
-								>
-									{slide.title}
-								</motion.h1>
+			{/* Dark Overlay */}
+			<div className='absolute inset-0 bg-black/50 z-10 backdrop-blur-sm'></div>
 
-								<motion.p
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ delay: 0.3, duration: 0.7 }}
-									className="mt-4 text-lg md:text-xl max-w-2xl"
-								>
-									{slide.description}
-								</motion.p>
+			{/* Content */}
+			<div className='relative z-20 flex flex-col items-center justify-center h-full text-center text-white px-4'>
+				<motion.h1
+					initial={{ opacity: 0, y: -40 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.9, ease: "easeOut" }}
+					className='text-4xl md:text-6xl font-extrabold tracking-tight mb-5 drop-shadow-lg'
+				>
+					Empower Your Efforts, Earn Your Rewards
+				</motion.h1>
 
-								<motion.div
-									initial={{ opacity: 0, scale: 0.9 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ delay: 0.6, duration: 0.5 }}
-									className="mt-6"
-								>
-									<Link
-										to="/register"
-										className="bg-gradient font-semibold py-3 px-6 rounded-xl transition-all duration-300"
-									>
-										Get Started
-									</Link>
-								</motion.div>
-							</div>
-						</div>
-					</SwiperSlide>
-				))}
-			</Swiper>
-		</section>
+				<motion.p
+					initial={{ opacity: 0, y: 40 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.9, delay: 0.3, ease: "easeOut" }}
+					className='text-lg md:text-xl max-w-3xl mb-10 leading-relaxed text-gray-200'
+				>
+					Join a community of doers. Complete micro-tasks from trusted buyers and watch your earnings grow. Simple,
+					fast, and reliable.
+				</motion.p>
+
+				<motion.div
+					initial={{ opacity: 0, scale: 0.8 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ duration: 0.6, delay: 0.6 }}
+				>
+					<Link to='/register'>
+						<button className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-10 rounded-full text-lg transition-transform duration-300 transform hover:scale-105 shadow-md'>
+							Start Earning Now
+						</button>
+					</Link>
+				</motion.div>
+			</div>
+		</div>
 	);
 };
 
