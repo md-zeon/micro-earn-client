@@ -8,6 +8,7 @@ import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable";
 
 const AdminDashboard = ({ greeting }) => {
 	const { user } = useAuth();
@@ -94,52 +95,14 @@ const AdminDashboard = ({ greeting }) => {
 				/>
 			</div>
 
+			{/* Withdrawal Requests */}
 			<div className='mt-10'>
 				<h2 className='text-2xl font-semibold mb-2'>Withdrawal Requests</h2>
-				<p className="text-gray-400 text-xs mb-4">Pending withdrawal requests from workers</p>
-			{
-				withdrawRequests.length > 0 ? (
-				<div className='overflow-x-auto'>
-					<table className='table w-full'>
-						<thead>
-							<tr>
-								<th>User</th>
-								<th>Email</th>
-								<th>Withdrawal Amount</th>
-								<th>Withdraw Date</th>
-								<th>Status</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							{withdrawRequests.map((withdraw) => (
-								<tr key={withdraw._id}>
-									<td>{withdraw.worker_name}</td>
-									<td>{withdraw.worker_email}</td>
-									<td className="text-green-500">{withdraw.withdrawal_amount} $</td>
-									<td>{new Date(withdraw.withdraw_date).toLocaleDateString()}</td>
-									<td>
-										<span className={`badge ${withdraw.status === "pending" ? "bg-gradient-warning" : "bg-gradient-success"}`}>{withdraw.status}</span>
-									</td>
-									<td>
-										<button
-											onClick={() => handleApprove(withdraw)}
-											className='btn bg-gradient-success btn-sm'
-										>
-											Approve
-										</button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-				) : (
-					<div className='mt-10'>
-						<p className='text-gradient text-center font-semibold mb-4'>No pending withdraw requests</p>
-					</div>
-				)
-			}
+				<p className='text-gray-400 text-xs mb-4'>Pending withdrawal requests from workers</p>
+				<WithdrawRequestTable
+					withdrawRequests={withdrawRequests}
+					handleApprove={handleApprove}
+				/>
 			</div>
 		</div>
 	);
