@@ -16,7 +16,7 @@ const useWithdrawRequests = () => {
 		},
 	});
 
-	return { withdrawRequests, isWithdrawLoading, refetch };
+	return { pendingRequests: withdrawRequests.pendingRequests, approvedRequests: withdrawRequests.approvedRequests, isWithdrawLoading, refetch };
 };
 
 export default useWithdrawRequests;

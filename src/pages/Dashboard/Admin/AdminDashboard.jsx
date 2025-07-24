@@ -13,7 +13,7 @@ import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable
 const AdminDashboard = ({ greeting }) => {
 	const { user } = useAuth();
 	const { adminStats: stats, isLoading: isStatsLoading } = useAdminStats();
-	const { withdrawRequests, isWithdrawLoading, refetch } = useWithdrawRequests();
+	const { pendingRequests: withdrawRequests, isWithdrawLoading, refetch } = useWithdrawRequests();
 	const axiosSecure = useAxiosSecure();
 
 	if (isStatsLoading || isWithdrawLoading) return <Loader />;

@@ -7,6 +7,8 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 		);
 	}
 
+	const hasPending = withdrawRequests.some((w) => w.status === "pending");
+
 	return (
 		<div className='overflow-x-auto'>
 			<table className='table w-full'>
@@ -17,7 +19,7 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 						<th>Withdrawal Amount</th>
 						<th>Withdraw Date</th>
 						<th>Status</th>
-						<th>Action</th>
+						<th>{hasPending ? "Action" : "Approval Date"}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -25,7 +27,7 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 						<tr key={withdraw._id}>
 							<td>{withdraw.worker_name}</td>
 							<td>{withdraw.worker_email}</td>
-							<td className='text-green-500'>{withdraw.withdrawal_amount} $</td>
+							<td className='text-green-500'>${withdraw.withdrawal_amount}</td>
 							<td>{new Date(withdraw.withdraw_date).toLocaleDateString()}</td>
 							<td>
 								<span
@@ -35,13 +37,17 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 								</span>
 							</td>
 							<td>
-								<button
-									onClick={() => handleApprove(withdraw)}
-									className='btn bg-gradient-success btn-sm'
-									disabled={withdraw.status === "approved"}
-								>
-									Approve
-								</button>
+								{withdraw.status === "pending" ? (
+									<button
+										onClick={() => handleApprove(withdraw)}
+										className='btn bg-gradient-success btn-sm'
+										disabled={withdraw.status === "approved"}
+									>
+										Approve
+									</button>
+								) : (
+									<span>{new Date(withdraw.updatedAt).toLocaleDateString()}</span>
+								)}
 							</td>
 						</tr>
 					))}
@@ -50,5 +56,6 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 		</div>
 	);
 };
+
 
 export default WithdrawRequestTable;
