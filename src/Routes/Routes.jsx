@@ -18,6 +18,10 @@ import MySubmissions from "../pages/Dashboard/Worker/MySubmissions";
 import ApprovedSubmissions from "../pages/Dashboard/Worker/ApprovedSubmissions";
 import Withdrawals from "../pages/Dashboard/Worker/Withdrawals";
 import TaskDetails from "../pages/Dashboard/Worker/TaskDetails";
+import AdminRoute from "./AdminRoute";
+import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
+import ManageTasks from "../pages/Dashboard/Admin/ManageTasks";
+import WithdrawRequests from "../pages/Dashboard/Admin/WithdrawRequests";
 
 const router = createBrowserRouter([
 	{
@@ -133,9 +137,39 @@ const router = createBrowserRouter([
 				path: "withdrawals",
 				element: (
 					<PrivateRoute>
-						{/* <WorkerRoute> */}
+						<WorkerRoute>
 							<Withdrawals />
-						{/* </WorkerRoute> */}
+						</WorkerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "manage-users",
+				element: (
+					<PrivateRoute>
+						<AdminRoute>
+							<ManageUsers />
+						</AdminRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "manage-tasks",
+				element: (
+					<PrivateRoute>
+						<AdminRoute>
+							<ManageTasks />
+						</AdminRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "withdraw-requests",
+				element: (
+					<PrivateRoute>
+						<AdminRoute>
+							<WithdrawRequests />
+						</AdminRoute>
 					</PrivateRoute>
 				),
 			},

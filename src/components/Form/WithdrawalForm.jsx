@@ -8,7 +8,6 @@ import useAvailableCoins from "../../hooks/useAvailableCoins";
 
 const WithdrawalForm = ({ onSuccess }) => {
 	const { user } = useAuth();
-	const navigate = useNavigate();
 	const axiosSecure = useAxiosSecure();
 	const { microCoins: coins, isLoading } = useAvailableCoins();
 
@@ -53,7 +52,6 @@ const WithdrawalForm = ({ onSuccess }) => {
 			});
 			toast.success(`Withdrawal request for $${withdrawalAmount} submitted successfully!`);
 			onSuccess(); // Refresh history
-			navigate("/dashboard");
 		} catch (err) {
 			console.error(err);
 			toast.error("Failed to submit withdrawal request");

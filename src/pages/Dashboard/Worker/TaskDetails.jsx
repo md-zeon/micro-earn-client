@@ -34,7 +34,7 @@ const TaskDetails = () => {
 		},
 	});
 
-	const deadlinePassed = new Date(task?.completion_deadline) < new Date();
+	const deadlinePassed = new Date(task?.completion_deadline) < new Date() + 1;
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
