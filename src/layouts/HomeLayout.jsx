@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import Aos from "aos";
 import { useEffect } from "react";
+import Footer from "../components/Footer";
 
 const HomeLayout = () => {
 	const { state } = useNavigation();
@@ -15,6 +16,9 @@ const HomeLayout = () => {
 				<Navbar />
 			</header>
 			<main>{state === "loading" ? <Loader /> : <Outlet />}</main>
+			<footer>
+				<Footer />
+			</footer>
 		</>
 	);
 };

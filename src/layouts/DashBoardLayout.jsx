@@ -18,7 +18,7 @@ const DashboardLayout = () => {
 
 	return (
 		<Container>
-			<div className='flex flex-col min-h-screen'>
+			<div className='flex flex-col'>
 				{/* Header */}
 				<header className='flex justify-between items-center p-4 bg-base-200 rounded-xl shadow sticky top-0 z-50'>
 					<DashboardNavbar
@@ -35,9 +35,9 @@ const DashboardLayout = () => {
 						isSidebarOpen={isSidebarOpen}
 						isRoleLoading={isRoleLoading}
 					/>
-					<main className='flex-1 overflow-y-auto p-6 bg-base-100'>
+					<main className='flex-1 overflow-y-auto bg-base-100 flex flex-col'>
 						{/* Content */}
-						<div className='min-h-[calc(100vh-150px))]'>{state === "loading" ? <Loader /> : <Outlet />}</div>
+						<div className='flex-1 p-6'>{state === "loading" ? <Loader /> : <Outlet />}</div>
 						{/* Footer */}
 						<DashboardFooter />
 					</main>
