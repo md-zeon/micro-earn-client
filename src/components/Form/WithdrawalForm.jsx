@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router";
-import { LuCoins, LuDollarSign } from "react-icons/lu";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import useAvailableCoins from "../../hooks/useAvailableCoins";
@@ -9,7 +7,7 @@ import useAvailableCoins from "../../hooks/useAvailableCoins";
 const WithdrawalForm = ({ onSuccess }) => {
 	const { user } = useAuth();
 	const axiosSecure = useAxiosSecure();
-	const { microCoins: coins, isLoading } = useAvailableCoins();
+	const { microCoins: coins } = useAvailableCoins();
 
 	const [coinToWithdraw, setCoinToWithdraw] = useState("");
 	const [withdrawalAmount, setWithdrawalAmount] = useState(0);
@@ -46,10 +44,6 @@ const WithdrawalForm = ({ onSuccess }) => {
 
 		try {
 			await axiosSecure.post("/withdrawals", withdrawalData);
-			await axiosSecure.patch(`/update-coins/${user?.email}`, {
-				coinsToUpdate: coinNum,
-				status: "decrease",
-			});
 			toast.success(`Withdrawal request for $${withdrawalAmount} submitted successfully!`);
 			onSuccess(); // Refresh history
 		} catch (err) {
