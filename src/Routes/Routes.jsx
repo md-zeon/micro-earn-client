@@ -25,12 +25,19 @@ import WithdrawRequests from "../pages/Dashboard/Admin/WithdrawRequests";
 import Profile from "../pages/Dashboard/Common/Profile";
 import Forbidden from "../pages/Forbidden/Forbidden";
 import NotFound from "../pages/NotFound/NotFound";
+import About from "../pages/About/About";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		Component: HomeLayout,
-		children: [{ path: "/", element: <Home /> }],
+		children: [
+			{ path: "/", element: <Home /> },
+			{
+				path: "/about",
+				Component: About,
+			},
+		],
 	},
 	{ path: "/login", element: <Login /> },
 	{ path: "/register", element: <Register /> },

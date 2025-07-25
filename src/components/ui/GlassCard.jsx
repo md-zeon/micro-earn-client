@@ -1,4 +1,3 @@
-// components/ui/GlassCard.jsx
 const GlassCard = ({ children, className = "" }) => {
 	return (
 		<div
