@@ -23,6 +23,8 @@ import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageTasks from "../pages/Dashboard/Admin/ManageTasks";
 import WithdrawRequests from "../pages/Dashboard/Admin/WithdrawRequests";
 import Profile from "../pages/Dashboard/Common/Profile";
+import Forbidden from "../pages/Forbidden/Forbidden";
+import NotFound from "../pages/NotFound/NotFound";
 
 const router = createBrowserRouter([
 	{
@@ -183,6 +185,14 @@ const router = createBrowserRouter([
 				),
 			},
 		],
+	},
+	{
+		path: "/forbidden",
+		Component: Forbidden,
+	},
+	{
+		path: "*",
+		Component: NotFound,
 	},
 ]);
 

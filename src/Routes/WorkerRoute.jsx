@@ -3,12 +3,17 @@ import Loader from "../components/Loader";
 import useRole from "../hooks/useRole";
 
 const WorkerRoute = ({ children }) => {
-    const {role, isRoleLoading} = useRole();
-    if (isRoleLoading) return <Loader />;
+	const { role, isRoleLoading } = useRole();
+	if (isRoleLoading) return <Loader />;
 
-    if (role === "worker") return children;
+	if (role === "worker") return children;
 
-    return <Navigate to='/dashboard' />;
+	return (
+		<Navigate
+			to='/forbidden'
+			replace
+		/>
+	);
 };
 
 export default WorkerRoute;

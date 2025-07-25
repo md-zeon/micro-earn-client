@@ -1,3 +1,5 @@
+import faqIllustration from "../../assets/faq.svg"; // ✅ update the path if needed
+
 const faqs = [
 	{
 		id: 1,
@@ -40,26 +42,43 @@ const faqs = [
 const FAQ = () => {
 	return (
 		<section className='bg-base-200 py-16'>
-			<div className='max-w-4xl mx-auto px-4'>
+			<div className='max-w-6xl mx-auto px-4'>
 				<h2 className='text-3xl md:text-4xl font-bold text-center text-gradient mb-3'>Frequently Asked Questions</h2>
 				<p className='text-center text-gray-500 mb-10'>Answers to common questions about MicroEarn.</p>
-				<div className='space-y-4'>
-					{faqs.map(({ id, question, answer }, index) => (
-						<div
-							className='collapse collapse-plus bg-base-100 border border-base-300'
-							key={id}
-                            data-aos="fade-right"
-                            data-aos-delay={index * 100}
-						>
-							<input
-								type='radio'
-								name='faq-accordion'
-								defaultChecked={index === 0}
-							/>
-							<div className='collapse-title font-semibold text-base'>{question}</div>
-							<div className='collapse-content text-sm text-gray-500'>{answer}</div>
-						</div>
-					))}
+
+				<div className='flex flex-col md:flex-row items-center gap-10'>
+					{/* Left: Illustration */}
+					<div
+						className='w-full md:w-1/2'
+						data-aos='fade-up'
+						data-aos-delay='100'
+					>
+						<img
+							src={faqIllustration}
+							alt='FAQ Illustration'
+							className='w-full h-auto mx-auto'
+						/>
+					</div>
+
+					{/* Right: FAQ Accordion */}
+					<div className='w-full md:w-1/2 space-y-4'>
+						{faqs.map(({ id, question, answer }, index) => (
+							<div
+								className='collapse collapse-plus bg-base-100 border border-base-300'
+								key={id}
+								data-aos='fade-left'
+								data-aos-delay={index * 100}
+							>
+								<input
+									type='radio'
+									name='faq-accordion'
+									defaultChecked={index === 0}
+								/>
+								<div className='collapse-title font-semibold text-base'>{question}</div>
+								<div className='collapse-content text-sm text-gray-500'>{answer}</div>
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
 		</section>
