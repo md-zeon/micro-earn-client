@@ -8,7 +8,7 @@ const WorkerRoute = ({ children }) => {
 
     if (role === "worker") return children;
 
-    return <Navigate to='/' />;
+    return <Navigate to='/dashboard' />;
 };
 
 export default WorkerRoute;

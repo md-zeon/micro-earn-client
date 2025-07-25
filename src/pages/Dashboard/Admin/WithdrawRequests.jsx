@@ -42,7 +42,7 @@ const WithdrawRequests = () => {
 		}
 	};
 	return (
-		<div>
+		<div className="space-y-8">
 			<div>
 				<div>
 					<h2 className='text-2xl font-semibold mb-2'>Pending Requests</h2>

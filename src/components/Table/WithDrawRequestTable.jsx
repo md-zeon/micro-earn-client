@@ -11,7 +11,7 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 
 	return (
 		<div className='overflow-x-auto'>
-			<table className='table w-full'>
+			<table className='table table-zebra w-full'>
 				<thead>
 					<tr>
 						<th>User</th>

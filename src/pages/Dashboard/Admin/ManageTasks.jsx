@@ -47,7 +47,7 @@ const ManageTasks = () => {
 				<table className='table w-full'>
 					<thead>
 						<tr>
-							<th>Title</th>
+							<th>Task Title</th>
 							<th>Buyer</th>
 							<th>Coins</th>
 							<th>Required</th>

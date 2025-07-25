@@ -84,9 +84,9 @@ const WithdrawalForm = ({ onSuccess }) => {
 							required
 						/>
 						{coinToWithdraw && parseInt(coinToWithdraw) < 200 ? (
-							<p className='text-sm text-red-600'>Minimum 200 coins required</p>
+							<p className='text-xs sm:text-sm text-red-600'>Minimum 200 coins required</p>
 						) : coinToWithdraw && parseInt(coinToWithdraw) > coins ? (
-							<p className='text-sm text-red-600'>Insufficient coins</p>
+							<p className='text-xs sm:text-sm text-red-600'>Insufficient coins</p>
 						) : null}
 					</div>
 
@@ -137,14 +137,14 @@ const WithdrawalForm = ({ onSuccess }) => {
 
 				{/* Button */}
 				{!canWithdraw ? (
-					<div className='text-center py-4'>
+					<div className='text-center text-sm sm:text-base py-4'>
 						<p className='mb-2'>Insufficient coins</p>
 						<div className='badge bg-gradient-error'>Minimum 200 coins required</div>
 					</div>
 				) : (
 					<button
 						type='submit'
-						className='btn w-full bg-gradient'
+						className={`btn w-full ${!coinToWithdraw || !paymentSystem || !accountNumber ? "cursor-not-allowed" : "cursor-pointer bg-gradient"}`}
 						disabled={loading || !coinToWithdraw || !paymentSystem || !accountNumber}
 					>
 						{loading ? "Processing..." : "Submit Withdrawal Request"}

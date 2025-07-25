@@ -42,8 +42,10 @@ const TasksToReview = () => {
 				text: "You won't be able to revert this!",
 				icon: "warning",
 				showCancelButton: true,
-				confirmButtonColor: "#3085d6",
-				cancelButtonColor: "#d33",
+				customClass: {
+					confirmButton: "btn btn-sm bg-gradient-success",
+					cancelButton: "btn btn-sm btn-gradient-error",
+				},
 				confirmButtonText: "Yes, reject it!",
 			});
 			if (result.isConfirmed) {
@@ -161,7 +163,7 @@ const TasksToReview = () => {
 									handleReject(selectedSubmission);
 									setSelectedSubmission(null);
 								}}
-								className='btn btn-outline bg-gradient-error'
+								className='btn-sm text-sm btn sm:btn-md bg-gradient-error'
 							>
 								Reject
 							</button>
@@ -170,13 +172,13 @@ const TasksToReview = () => {
 									handleApprove(selectedSubmission);
 									setSelectedSubmission(null);
 								}}
-								className='btn bg-gradient-success'
+								className='btn-sm text-sm btn sm:btn-md bg-gradient-success'
 							>
 								Approve
 							</button>
 							<button
 								onClick={() => setSelectedSubmission(null)}
-								className='btn'
+								className='btn-sm text-sm btn sm:btn-md'
 							>
 								Close
 							</button>

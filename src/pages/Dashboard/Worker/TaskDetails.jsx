@@ -9,6 +9,7 @@ import {
 	LuMessageSquareWarning,
 	LuUpload,
 	LuCoins,
+	LuChevronLeft,
 } from "react-icons/lu";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
@@ -84,26 +85,13 @@ const TaskDetails = () => {
 	if (!task) return <div className='text-center text-gray-500'>Task not found</div>;
 
 	return (
-		<div className='px-4 py-8 space-y-8'>
+		<div className='sm:px-4 py-8 space-y-8'>
 			{/* Back Button */}
 			<button
 				onClick={() => navigate("/dashboard/tasks-list")}
 				className='btn btn-sm bg-gradient flex items-center gap-2'
 			>
-				<svg
-					xmlns='http://www.w3.org/2000/svg'
-					className='h-4 w-4'
-					fill='none'
-					viewBox='0 0 24 24'
-					stroke='currentColor'
-				>
-					<path
-						strokeLinecap='round'
-						strokeLinejoin='round'
-						strokeWidth='2'
-						d='M15 19l-7-7 7-7'
-					/>
-				</svg>
+				<LuChevronLeft />
 				Back to Tasks
 			</button>
 
@@ -112,9 +100,9 @@ const TaskDetails = () => {
 				{/* Left: Task Content */}
 				<div className='flex-1 bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500 space-y-6'>
 					{/* Title */}
-					<h1 className='text-2xl lg:text-3xl font-bold mb-2'>{task.task_title}</h1>
+					<h1 className='text-xl sm:text-2xl lg:text-3xl font-bold mb-2'>{task.task_title}</h1>
 					{/* Task Image */}
-					<div className='border border-gray-500 rounded-lg p-3 my-6 overflow-hidden'>
+					<div className='border border-gray-500 rounded-lg sm:p-3 my-6 overflow-hidden'>
 						{task.task_image_url && (
 							<img
 								src={task.task_image_url}
@@ -125,11 +113,11 @@ const TaskDetails = () => {
 					</div>
 					<div>
 						<h2 className='text-xl font-semibold mb-2'>Description</h2>
-						<p className='text-gray-700'>{task.task_detail}</p>
+						<p className='text-gray-500'>{task.task_detail}</p>
 					</div>
 					<div>
 						<h2 className='text-xl font-semibold mb-2'>Submission Requirements</h2>
-						<p className='text-gray-700'>{task.submission_info}</p>
+						<p className='text-gray-500'>{task.submission_info}</p>
 					</div>
 				</div>
 
@@ -139,7 +127,7 @@ const TaskDetails = () => {
 						<h2 className='text-xl font-semibold mb-4'>Task Information</h2>
 						<div className='space-y-4 text-sm'>
 							<div className='flex items-center justify-between'>
-								<span className='flex items-center gap-2 text-gray-600'>
+								<span className='flex items-center gap-2 text-gray-500'>
 									<LuDollarSign /> Payment
 								</span>
 								<span className='badge badge-outline border-blue-500 text-blue-500'>
@@ -147,19 +135,19 @@ const TaskDetails = () => {
 								</span>
 							</div>
 							<div className='flex items-center justify-between'>
-								<span className='flex items-center gap-2 text-gray-600'>
+								<span className='flex items-center gap-2 text-gray-500'>
 									<LuCalendarDays /> Deadline
 								</span>
 								<span>{new Date(task.completion_deadline).toLocaleDateString()}</span>
 							</div>
 							<div className='flex items-center justify-between'>
-								<span className='flex items-center gap-2 text-gray-600'>
+								<span className='flex items-center gap-2 text-gray-500'>
 									<LuUsers /> Workers Needed
 								</span>
 								<span>{task.required_workers}</span>
 							</div>
 							<div className='flex items-center justify-between'>
-								<span className='flex items-center gap-2 text-gray-600'>
+								<span className='flex items-center gap-2 text-gray-500'>
 									<LuUser /> Posted By
 								</span>
 								<span>{task.buyer_name}</span>
@@ -171,7 +159,7 @@ const TaskDetails = () => {
 						<h2 className='text-xl font-semibold mb-2'>
 							<LuMessageSquareWarning className='inline' /> Notes
 						</h2>
-						<ul className='list-disc list-inside text-gray-600 text-sm space-y-1'>
+						<ul className='list-disc list-inside text-gray-500 text-sm space-y-1'>
 							<li>Complete all requirements before submitting</li>
 							<li>Submissions are reviewed within 24-48 hours</li>
 							<li>Payment is released upon approval</li>

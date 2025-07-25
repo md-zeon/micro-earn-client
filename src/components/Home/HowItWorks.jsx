@@ -9,7 +9,7 @@ const steps = [
 		description: "Buyers create task listings with clear instructions and coin rewards.",
 	},
 	{
-		icon: <LuUsers className='text-3xl text-green-500 shrink-0' />,
+		icon: <LuUsers className='text-3xl text-accent shrink-0' />,
 		title: "Complete the Work",
 		description: "Workers browse available tasks, do the work, and submit proof as required.",
 	},

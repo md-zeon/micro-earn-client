@@ -28,7 +28,7 @@ const WithdrawalHistory = ({ history = [] }) => {
 		<div className='overflow-x-auto'>
 			<table className='table w-full'>
 				<thead>
-					<tr className='text-gray-700'>
+					<tr className='text-gray-500'>
 						<th className='px-4 py-3 text-left'>Amount ($)</th>
 						<th className='px-4 py-3 text-left'>Coins</th>
 						<th className='px-4 py-3 text-left'>Payment Method</th>

@@ -8,7 +8,7 @@ const BuyerRoute = ({ children }) => {
 
 	if (role === "buyer") return children;
 
-	return <Navigate to='/' />;
+	return <Navigate to='/dashboard' />;
 };
 
 export default BuyerRoute;

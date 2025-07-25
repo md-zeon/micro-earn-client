@@ -85,7 +85,7 @@ const AddTask = () => {
 	const totalCost = requiredWorkers * payableAmount;
 
 	return (
-		<div className='max-w-3xl mx-auto px-4 py-6'>
+		<div className='max-w-3xl mx-auto sm:px-4 py-6'>
 			<div className='text-center mb-2'>
 				<h1 className='text-3xl font-bold mb-2'> Add New Task</h1>
 				<p className='text-gray-400'>Create a new task for workers to complete</p>

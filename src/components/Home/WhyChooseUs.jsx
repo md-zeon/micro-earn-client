@@ -3,17 +3,17 @@ import illustration from "../../assets/why-choose.svg";
 
 const reasons = [
 	{
-		icon: <LuClock className='text-4xl text-green-600' />,
+		icon: <LuClock className='text-4xl text-accent' />,
 		title: "Freedom to Earn Anytime",
 		description: "MicroEarn empowers you to work whenever you want. No pressure — just tasks that pay.",
 	},
 	{
-		icon: <LuListTodo className='text-4xl text-green-600' />,
+		icon: <LuListTodo className='text-4xl text-accent' />,
 		title: "Hire Instantly, Without Hassle",
 		description: "Buyers post simple tasks and connect with thousands of ready-to-work users instantly.",
 	},
 	{
-		icon: <LuCoins className='text-4xl text-green-600' />,
+		icon: <LuCoins className='text-4xl text-accent' />,
 		title: "Fair & Transparent Earnings",
 		description: "Earn coins for every approved task. Withdraw real cash — no hidden cuts or delays.",
 	},

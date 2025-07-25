@@ -2,7 +2,7 @@ import { LuCreditCard } from "react-icons/lu";
 
 const RecentActivity = ({ payments }) => {
 	return (
-		<div className='p-6 rounded-2xl shadow-sm mt-10'>
+		<div className='sm:p-6 rounded-2xl shadow-sm mt-10'>
 			<h2 className='text-xl font-semibold mb-4'>Recent Activity</h2>
 			<div className='space-y-3'>
 				{payments.map((payment) => (

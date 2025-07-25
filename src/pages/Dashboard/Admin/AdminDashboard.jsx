@@ -52,15 +52,15 @@ const AdminDashboard = ({ greeting }) => {
 
 	return (
 		<div className='space-y-8'>
-			<div className='px-4'>
+			<div className='sm:px-4'>
 				<div className='flex items-center justify-between flex-wrap'>
 					<div>
-						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting},</h1>
-						<p>{user?.displayName || "Admin"}! Monitor platform activity and manage users.</p>
+						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting}, {user?.displayName || "Admin"}!</h1>
+						<p>Monitor platform activity and manage users.</p>
 					</div>
 					<Link
 						to='/dashboard/profile'
-						className='btn bg-gradient'
+						className='btn bg-gradient hidden sm:inline-flex'
 					>
 						<LuUserRound className='w-4 h-4 mr-2' />
 						Profile

@@ -7,7 +7,7 @@ import { Link } from "react-router";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
-	const {user} = useAuth();
+	const { user } = useAuth();
 
 	if (isLoading) return <Loader />;
 
@@ -25,12 +25,14 @@ const WorkerDashboard = ({ greeting }) => {
 			<div className='px-4'>
 				<div className='flex items-center justify-between flex-wrap'>
 					<div>
-						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting},</h1>
-						<p>{user?.displayName || "Worker"}! Here's your task overview.</p>
+						<h1 className='text-3xl font-bold tracking-tight mb-2'>
+							{greeting}, {user?.displayName || "Worker"}!
+						</h1>
+						<p>Here's your task overview.</p>
 					</div>
 					<Link
 						to='/dashboard/withdrawals'
-						className='btn bg-gradient'
+						className='btn bg-gradient hidden sm:inline-flex'
 					>
 						<LuCreditCard className='w-4 h-4 mr-2' />
 						Withdraw Money

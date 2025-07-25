@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
@@ -24,15 +23,15 @@ const BuyerDashboard = ({ greeting }) => {
 	return (
 		<div>
 			{/* Header */}
-			<div className='px-4'>
+			<div className='sm:px-4'>
 				<div className='flex items-center justify-between flex-wrap'>
 					<div>
-						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting},</h1>
-						<p>{user?.displayName || "Buyer"}! Manage your tasks and workers.</p>
+						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting}, {user?.displayName || "Buyer"}!</h1>
+						<p>Manage your tasks and workers.</p>
 					</div>
 					<Link
 						to='/dashboard/add-task'
-						className='btn bg-gradient'
+						className='btn bg-gradient hidden sm:inline-flex'
 					>
 						<LuPlus className='w-4 h-4 mr-2' />
 						Add New Task
@@ -41,7 +40,7 @@ const BuyerDashboard = ({ greeting }) => {
 			</div>
 
 			{/* Main Content */}
-			<main className='py-8 px-4'>
+			<main className='py-8 sm:px-4'>
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
 					{/* Total Tasks Card */}
 					<StatsCard
