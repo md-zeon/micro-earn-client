@@ -28,7 +28,13 @@ const TasksToReview = () => {
 				status: "increase",
 			});
 			refetch();
-			Swal.fire("Success", "Submission approved and coins rewarded!", "success");
+			Swal.fire({
+				icon: "success",
+				title: "Submission approved and coins rewarded!",
+				customClass: {
+					confirmButton: "btn bg-gradient"
+				}
+			});
 		} catch (error) {
 			console.error(error);
 			Swal.fire("Error", "Failed to approve submission.", "error");

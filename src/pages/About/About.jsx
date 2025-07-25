@@ -43,7 +43,7 @@ const About = () => {
 				data-aos='fade-up'
 				data-aos-delay='200'
 			>
-				<GlassCard>
+				<GlassCard className="p-6">
 					<div className='flex items-start gap-3'>
 						<LuBadgeDollarSign className='text-3xl text-green-500 mt-1' />
 						<div>
@@ -55,7 +55,7 @@ const About = () => {
 					</div>
 				</GlassCard>
 
-				<GlassCard>
+				<GlassCard className="p-6">
 					<div className='flex items-start gap-3'>
 						<LuUserCheck className='text-3xl text-blue-500 mt-1' />
 						<div>
@@ -67,7 +67,7 @@ const About = () => {
 					</div>
 				</GlassCard>
 
-				<GlassCard>
+				<GlassCard className="p-6">
 					<div className='flex items-start gap-3'>
 						<LuShieldCheck className='text-3xl text-purple-500 mt-1' />
 						<div>
@@ -80,7 +80,7 @@ const About = () => {
 					</div>
 				</GlassCard>
 
-				<GlassCard>
+				<GlassCard className="p-6">
 					<div className='flex items-start gap-3'>
 						<LuGlobe className='text-3xl text-yellow-500 mt-1' />
 						<div>

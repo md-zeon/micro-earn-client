@@ -43,7 +43,7 @@ const Login = () => {
 	};
 
 	return (
-		<div className='bg-gradient-to-br from-blue-500 to-green-500 py-12 min-h-screen flex justify-center items-center'>
+		<div className='py-12 min-h-screen flex justify-center items-center'>
 			<div className='max-w-md mx-auto p-6 border rounded-xl bg-base-100 shadow text-base-content'>
 				<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
 					<LuUserPlus />
@@ -56,7 +56,7 @@ const Login = () => {
 				>
 					{/* Email */}
 					<div>
-						<label className='text-sm'>Email Address</label>
+						<label className='text-sm'>Email Address *</label>
 						<div className='input input-bordered w-full'>
 							<LuMail className='text-gray-500' />
 							<input

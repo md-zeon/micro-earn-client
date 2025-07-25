@@ -1,14 +1,13 @@
-import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import Logo from "../../../components/Logo";
 import AvailableCoins from "../../../components/AvailableCoins";
 import ThemeController from "../../../components/ThemeController";
 import { LuBell, LuMenu, LuX } from "react-icons/lu";
 import { Link } from "react-router";
+import NotificationPopup from "./NotificationPopup";
 
 const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
-	const { user } = useAuth();
-	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+	const { user, loading } = useAuth();
 	return (
 		<>
 			<div className='flex items-center'>
@@ -46,23 +45,7 @@ const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
 				</div>
 
 				{/* Notification Icon */}
-				<button
-					onClick={() => setIsNotificationOpen((prev) => !prev)}
-					className='relative p-2 rounded hover:bg-base-300'
-					aria-label='Notifications'
-				>
-					<LuBell />
-
-					{/* Notification dropdown */}
-					{isNotificationOpen && (
-						<div className='absolute right-0 mt-2 w-64 bg-white border rounded shadow-lg p-4 z-50'>
-							<p className='text-sm font-semibold mb-2'>Notifications</p>
-							<ul className='max-h-48 overflow-auto'>
-								<li className='text-xs text-gray-600'>No new notifications.</li>
-							</ul>
-						</div>
-					)}
-				</button>
+				<NotificationPopup />
 			</div>
 		</>
 	);

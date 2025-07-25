@@ -1,11 +1,10 @@
-// import useRole from "../../../hooks/useRole";
-
 import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
 import useRole from "../../../hooks/useRole";
 import AdminDashboard from "../Admin/AdminDashboard";
 import BuyerDashboard from "../Buyer/BuyerDashboard";
 import WorkerDashboard from "../Worker/WorkerDashboard";
+import { Navigate } from "react-router";
 
 const Dashboard = () => {
 	const { role, isRoleLoading } = useRole();
@@ -26,7 +25,7 @@ const Dashboard = () => {
 	if (role === "buyer") return <BuyerDashboard greeting={greeting} />;
 	if (role === "worker") return <WorkerDashboard greeting={greeting} />;
 
-	return <div>You are not authorized to view this page.</div>;
+	return <Navigate to='/forbidden' />;
 };
 
 export default Dashboard;

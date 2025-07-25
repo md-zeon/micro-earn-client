@@ -6,6 +6,7 @@ import DashboardNavbar from "../pages/Dashboard/Common/DashboardNavbar";
 import { useState } from "react";
 import Container from "../components/Container";
 import Loader from "../components/Loader";
+import DashboardSkeleton from "../components/ui/DashBoardSkeleton";
 
 const DashboardLayout = () => {
 	const { state } = useNavigation();
@@ -13,7 +14,7 @@ const DashboardLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 	if (isRoleLoading) {
-		return <Loader />;
+		return <DashboardSkeleton />;
 	}
 
 	return (
