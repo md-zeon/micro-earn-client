@@ -3,12 +3,12 @@ import useBuyerTasks from "../../../hooks/useBuyerTasks";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
-import Loader from "../../../components/Loader";
 import toast from "react-hot-toast";
 import MyTaskTable from "../../../components/Table/MyTaskTable";
 import StatsCard from "../../../components/shared/StatsCard";
 import UpdateTaskModal from "../../../components/Modals/UpdateTaskModal";
 import useAuth from "../../../hooks/useAuth";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const MyTasks = () => {
 	const {user} = useAuth();
@@ -79,7 +79,7 @@ const MyTasks = () => {
 		}
 	};
 
-	if (isTasksLoading) return <Loader />;
+	if (isTasksLoading) return <DashboardSkeleton statsCount={4} showTable={true}/>;
 
 	const totalTasks = tasks.length;
 	const activeTasks = tasks.filter((task) => task.status === "active").length;

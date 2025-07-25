@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { LuDollarSign, LuFileText } from "react-icons/lu";
-import Loader from "../../../components/Loader";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import Container from "../../../components/Container";
+import MySubmissionsSkeleton from "../../../components/ui/MySubmissionsSkeleton";
 
 const itemsPerPage = 5;
 
@@ -11,7 +11,7 @@ const MySubmissions = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filteredStatus, setFilteredStatus] = useState("all");
 
-	if (isLoading) return <Loader />;
+	if (isLoading) return <MySubmissionsSkeleton />;
 
 	// Filter logic
 	const filteredSubmissions =

@@ -1,4 +1,3 @@
-import Loader from "../../../components/Loader";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import { LuCoins, LuDollarSign } from "react-icons/lu";
 import WithdrawalForm from "../../../components/Form/WithdrawalForm";
@@ -6,6 +5,7 @@ import WithdrawalHistory from "../../../components/Dashboard/WithDrawalHistory";
 import StatsCard from "../../../components/shared/StatsCard";
 import useWithDrawals from "../../../hooks/useWithDrawals";
 import Container from "../../../components/Container";
+import WithdrawalsSkeleton from "../../../components/ui/WithdrawalsSkeleton";
 
 const Withdrawals = () => {
 	const { microCoins: coins, isLoading: isCoinsLoading } = useAvailableCoins();
@@ -15,7 +15,7 @@ const Withdrawals = () => {
 		refetch: refetchWithdrawals,
 	} = useWithDrawals();
 
-	if (isCoinsLoading || isWithdrawalLoading) return <Loader />;
+	if (isCoinsLoading || isWithdrawalLoading) return <WithdrawalsSkeleton />;
 
 	return (
 		<Container>

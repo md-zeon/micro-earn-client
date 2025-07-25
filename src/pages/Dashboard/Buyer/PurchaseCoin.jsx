@@ -5,9 +5,9 @@ import Swal from "sweetalert2";
 import PaymentInformation from "../../../components/Dashboard/PaymentInformation";
 import CoinPackage from "../../../components/Dashboard/CoinPackage";
 import PurchaseModal from "../../../components/Modals/PurchaseModal";
-import Loader from "../../../components/Loader";
 import { loadStripe } from "@stripe/stripe-js";
 import useAuth from "../../../hooks/useAuth";
+import PurchaseCoinSkeleton from "../../../components/ui/PurchaseCoinSkeleton";
 
 // Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -74,7 +74,7 @@ const PurchaseCoin = () => {
 		}
 	};
 
-	if (coinsLoading) return <Loader />;
+	if (coinsLoading) return <PurchaseCoinSkeleton />;
 
 	return (
 		<div className='max-w-6xl mx-auto px-4 py-6 space-y-6'>

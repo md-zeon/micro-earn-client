@@ -24,7 +24,7 @@ const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
 			<div className='flex items-center space-x-2 sm:space-x-4'>
 				{/* Available Coins */}
 				<span className='hidden md:block'>
-					{loading ? <div className='skeleton h-6 w-24'></div> : <AvailableCoins />}
+					{loading ? <div className='skeleton h-6 w-24 rounded'></div> : <AvailableCoins />}
 				</span>
 
 				<ThemeController />
@@ -34,8 +34,8 @@ const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
 					<div className='flex items-center gap-2'>
 						<div className='skeleton w-10 h-10 rounded-full'></div>
 						<div className='hidden sm:flex flex-col gap-1'>
-							<div className='skeleton h-4 w-24'></div>
-							<div className='skeleton h-3 w-16'></div>
+							<div className='skeleton h-4 w-24 rounded'></div>
+							<div className='skeleton h-3 w-16 rounded'></div>
 						</div>
 					</div>
 				) : (

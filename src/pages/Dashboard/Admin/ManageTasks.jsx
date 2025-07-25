@@ -3,7 +3,8 @@ import useAdminTasks from "../../../hooks/useAdminTasks";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { LuCoins, LuTrash2 } from "react-icons/lu";
-import Loader from "../../../components/Loader";
+import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
+import ManageTasksSkeleton from "../../../components/ui/ManageTasksSkeleton";
 
 const ManageTasks = () => {
 	const { tasks, isLoading, refetch } = useAdminTasks();
@@ -38,7 +39,7 @@ const ManageTasks = () => {
 		}
 	};
 
-	if (isLoading) return <Loader />;
+	if (isLoading) return <ManageTasksSkeleton />;
 
 	return (
 		<div className='mt-10'>
@@ -67,9 +68,7 @@ const ManageTasks = () => {
 								<td>{task.required_workers}</td>
 								<td>{task.total_workers - task.required_workers}</td>
 								<td className='capitalize'>
-									<span
-										className={`badge ${task?.status === "active" ? "bg-gradient" : "bg-gradient-success"}`}
-									>
+									<span className={`badge ${task?.status === "active" ? "bg-gradient" : "bg-gradient-success"}`}>
 										{task?.status}
 									</span>
 								</td>

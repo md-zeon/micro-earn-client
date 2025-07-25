@@ -1,15 +1,15 @@
 import { LuCoins, LuCreditCard, LuFileCheck2, LuFileClock, LuListChecks } from "react-icons/lu";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
-import Loader from "../../../components/Loader";
 import StatsCard from "../../../components/shared/StatsCard";
 import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
+import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
 	const { user } = useAuth();
 
-	if (isLoading) return <Loader />;
+	if (isLoading) return <DashboardSkeleton statsCount={3} showTable={true} />;
 
 	// Calculate Stats
 	const totalSubmissions = submissions.length;

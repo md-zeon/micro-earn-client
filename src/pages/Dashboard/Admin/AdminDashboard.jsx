@@ -1,4 +1,3 @@
-import Loader from "../../../components/Loader";
 import StatsCard from "../../../components/shared/StatsCard";
 import useAdminStats from "../../../hooks/useAdminStats";
 import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
@@ -9,6 +8,7 @@ import { Link } from "react-router";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable";
+import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 
 const AdminDashboard = ({ greeting }) => {
 	const { user } = useAuth();
@@ -16,7 +16,7 @@ const AdminDashboard = ({ greeting }) => {
 	const { pendingRequests: withdrawRequests, isWithdrawLoading, refetch } = useWithdrawRequests();
 	const axiosSecure = useAxiosSecure();
 
-	if (isStatsLoading || isWithdrawLoading) return <Loader />;
+	if (isStatsLoading || isWithdrawLoading ) return <DashboardSkeleton statsCount={4} showTable={true} />;
 
 	const handleApprove = async (withdraw) => {
 		try {

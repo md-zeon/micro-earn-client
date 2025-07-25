@@ -1,9 +1,9 @@
 import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
-import Loader from "../../../components/Loader";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useBuyerSubmissions from "../../../hooks/useBuyerSubmissions";
 import Swal from "sweetalert2";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const TasksToReview = () => {
 	const { submissions, isLoading, refetch } = useBuyerSubmissions();
@@ -74,7 +74,7 @@ const TasksToReview = () => {
 		}
 	};
 
-	if (isLoading) return <Loader />;
+	if (isLoading) return <DashboardSkeleton statsCount={0} showTable={true} />;
 
 	return (
 		<div className='mt-12'>

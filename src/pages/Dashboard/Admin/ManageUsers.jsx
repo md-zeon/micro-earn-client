@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { LuCoins } from "react-icons/lu";
 import Swal from "sweetalert2";
+import ManageUsersSkeleton from "../../../components/ui/ManageUsersSkeleton";
 
 const ManageUsers = () => {
 	const { users, isLoading, refetch } = useAdminUsers();
@@ -55,7 +56,7 @@ const ManageUsers = () => {
 		}
 	};
 
-	if (isLoading) return <p className='text-center'>Loading users...</p>;
+	if (isLoading) return <ManageUsersSkeleton />;
 
 	return (
 		<div className='mt-10'>

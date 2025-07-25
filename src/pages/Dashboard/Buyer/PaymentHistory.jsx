@@ -1,12 +1,12 @@
 import { LuCoins, LuCreditCard, LuDollarSign } from "react-icons/lu";
-import Loader from "../../../components/Loader";
 import StatsCard from "../../../components/shared/StatsCard";
 import PaymentTable from "../../../components/Table/PaymentTable";
 import useBuyerPayments from "../../../hooks/useBuyerPayments";
 import RecentActivity from "../../../components/Dashboard/RecentActivity";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const PaymentHistory = () => {
-	const { payments, isPaymentsLoading, refetch } = useBuyerPayments();
+	const { payments, isPaymentsLoading } = useBuyerPayments();
 	const totalSpent = payments.reduce((sum, payment) => sum + payment.amount_paid, 0);
 	const totalCoinsPurchased = payments.reduce((sum, payment) => sum + payment.coins_purchased, 0);
 
@@ -16,7 +16,7 @@ const PaymentHistory = () => {
 				<h1 className='text-3xl font-bold'>Payment History</h1>
 				<button className='btn btn-sm bg-gradient-success rounded-full cursor-pointer'>{payments.length}</button>
 			</div>
-			{isPaymentsLoading && <Loader />}
+			{isPaymentsLoading && <DashboardSkeleton statsCount={3} showTable={true} />}
 			{/* Stats Cards */}
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6'>
 				<StatsCard

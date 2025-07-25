@@ -14,8 +14,8 @@ import {
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import Loader from "../../../components/Loader";
 import { imageUpload } from "../../../api/utils";
+import TaskDetailsSkeleton from "../../../components/ui/TaskDetailsSkeleton";
 
 const TaskDetails = () => {
 	const { id } = useParams();
@@ -81,7 +81,7 @@ const TaskDetails = () => {
 		}
 	};
 
-	if (isLoading) return <Loader />;
+	if (isLoading) return <TaskDetailsSkeleton />;
 	if (!task) return <div className='text-center text-gray-500'>Task not found</div>;
 
 	return (

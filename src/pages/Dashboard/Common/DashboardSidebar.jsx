@@ -14,7 +14,7 @@ import {
 } from "react-icons/lu";
 import { NavLink } from "react-router";
 import useAuth from "../../../hooks/useAuth";
-import Loader from "../../../components/Loader";
+import SidebarSkeleton from "../../../components/ui/SidebarSkeleton";
 
 const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 	const { loading, logOut } = useAuth();
@@ -42,48 +42,42 @@ const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 		],
 	};
 	if (loading || isRoleLoading) {
-		return (
-			<div className='w-64 bg-base-200'>
-				<Loader />
-			</div>
-		);
+		return <SidebarSkeleton isSidebarOpen={isSidebarOpen} />;
 	}
 
 	return (
-		<>
-			<aside
-				className={`w-64 bg-base-200 z-40 p-2 ${
-					isSidebarOpen ? "block" : "hidden"
-				} lg:block sticky top-[72px] self-start h-[calc(100vh-72px)] overflow-y-auto flex flex-col justify-between`}
-			>
-				{/* Top Section (Navigation) */}
-				<ul className='menu space-y-2'>
-					{navItems[role]?.map((item) => (
-						<li key={item.path}>
-							<NavLink
-								className={({ isActive }) => (isActive ? "bg-gradient" : "hover:text-gradient")}
-								to={item.path}
-								end
-							>
-								{item.icon} {item.label}
-							</NavLink>
-						</li>
-					))}
-				</ul>
+		<aside
+			className={`w-64 bg-base-200 z-40 p-2 ${
+				isSidebarOpen ? "block" : "hidden"
+			} lg:block sticky top-[72px] self-start h-[calc(100vh-72px)] overflow-y-auto flex flex-col justify-between`}
+		>
+			{/* Top Section (Navigation) */}
+			<ul className='menu space-y-2'>
+				{navItems[role]?.map((item) => (
+					<li key={item.path}>
+						<NavLink
+							className={({ isActive }) => (isActive ? "bg-gradient" : "hover:text-gradient")}
+							to={item.path}
+							end
+						>
+							{item.icon} {item.label}
+						</NavLink>
+					</li>
+				))}
+			</ul>
 
-				{/* Bottom Section*/}
-				<div className='fixed bottom-2 w-60'>
-					<hr className='border-accent' />
-					<button
-						onClick={logOut}
-						className='btn btn-ghost w-full justify-start hover:text-red-500'
-					>
-						<LuLogOut />
-						<span className='ml-2'>Logout</span>
-					</button>
-				</div>
-			</aside>
-		</>
+			{/* Bottom Section*/}
+			<div className='fixed bottom-2 w-60'>
+				<hr className='border-accent' />
+				<button
+					onClick={logOut}
+					className='btn btn-ghost w-full justify-start hover:text-red-500'
+				>
+					<LuLogOut />
+					<span className='ml-2'>Logout</span>
+				</button>
+			</div>
+		</aside>
 	);
 };
 

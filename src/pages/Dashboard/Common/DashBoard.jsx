@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import Loader from "../../../components/Loader";
 import useRole from "../../../hooks/useRole";
 import AdminDashboard from "../Admin/AdminDashboard";
 import BuyerDashboard from "../Buyer/BuyerDashboard";
 import WorkerDashboard from "../Worker/WorkerDashboard";
 import { Navigate } from "react-router";
+import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 
 const Dashboard = () => {
 	const { role, isRoleLoading } = useRole();
@@ -18,7 +18,12 @@ const Dashboard = () => {
 	}, []);
 
 	if (isRoleLoading) {
-		return <Loader />;
+		return (
+			<DashboardSkeleton
+				statsCount={3}
+				showTable={true}
+			/>
+		);
 	}
 
 	if (role === "admin") return <AdminDashboard greeting={greeting} />;

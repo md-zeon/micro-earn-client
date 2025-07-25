@@ -1,12 +1,12 @@
 import useAuth from "../hooks/useAuth";
 import { Navigate, useLocation } from "react-router";
-import Loader from "../components/Loader";
+import DashboardLayoutSkeleton from "../components/ui/DashboardLayoutSkeleton";
 
 const PrivateRoute = ({ children }) => {
 	const { user, loading } = useAuth();
 	const location = useLocation();
 	if (loading) {
-		return <Loader />;
+		return <DashboardLayoutSkeleton />;
 	}
 	if (user) return children;
 	return (

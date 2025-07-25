@@ -5,7 +5,7 @@ import DashboardFooter from "../pages/Dashboard/Common/DashboardFooter";
 import DashboardNavbar from "../pages/Dashboard/Common/DashboardNavbar";
 import { useState } from "react";
 import Container from "../components/Container";
-import Loader from "../components/Loader";
+import DashboardLayoutSkeleton from "../components/ui/DashboardLayoutSkeleton";
 import DashboardSkeleton from "../components/ui/DashBoardSkeleton";
 
 const DashboardLayout = () => {
@@ -14,7 +14,7 @@ const DashboardLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 	if (isRoleLoading) {
-		return <DashboardSkeleton />;
+		return <DashboardLayoutSkeleton />;
 	}
 
 	return (
@@ -38,7 +38,7 @@ const DashboardLayout = () => {
 					/>
 					<main className='flex-1 overflow-y-auto bg-base-100 flex flex-col'>
 						{/* Content */}
-						<div className='flex-1 p-6'>{state === "loading" ? <Loader /> : <Outlet />}</div>
+						<div className='flex-1 p-6'>{state === "loading" ? <DashboardSkeleton statsCount={3} showTable={true} /> : <Outlet />}</div>
 						{/* Footer */}
 						<DashboardFooter />
 					</main>

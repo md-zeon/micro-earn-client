@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
-import Loader from "../../../components/Loader";
 import { LuPlus, LuListTodo, LuClock, LuDollarSign, LuUsers } from "react-icons/lu";
 import useBuyerTasks from "../../../hooks/useBuyerTasks";
 import StatsCard from "../../../components/shared/StatsCard";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 import TasksToReview from "./TasksToReview";
 
 const BuyerDashboard = ({ greeting }) => {
@@ -18,7 +18,7 @@ const BuyerDashboard = ({ greeting }) => {
 		0,
 	);
 
-	if (authLoading || coinsLoading || isTasksLoading) return <Loader />;
+	if (authLoading || coinsLoading || isTasksLoading) return <DashboardSkeleton statsCount={4} showTable={true} />;
 
 	return (
 		<div>

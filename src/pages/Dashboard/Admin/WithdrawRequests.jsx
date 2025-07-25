@@ -2,13 +2,13 @@ import Swal from "sweetalert2";
 import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
-import Loader from "../../../components/Loader";
 import toast from "react-hot-toast";
+import WithdrawRequestsSkeleton from "../../../components/ui/WithdrawRequestsSkeleton";
 
 const WithdrawRequests = () => {
 	const axiosSecure = useAxiosSecure();
 	const { pendingRequests, approvedRequests, isWithdrawLoading, refetch } = useWithdrawRequests();
-	if (isWithdrawLoading) return <Loader />;
+	if (isWithdrawLoading) return <WithdrawRequestsSkeleton />;
 
 	const handleApprove = async (withdraw) => {
 		try {

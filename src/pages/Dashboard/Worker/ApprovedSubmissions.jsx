@@ -1,12 +1,12 @@
 import { LuDollarSign, LuFileText } from "react-icons/lu";
-import Loader from "../../../components/Loader";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import Container from "../../../components/Container";
+import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 
 const ApprovedSubmissions = () => {
 	const { submissions: data, isLoading } = useWorkerSubmissions();
 
-	if (isLoading) return <Loader />;
+	if (isLoading) return <DashboardSkeleton statsCount={0} showTable={true} />;
 
 	const submissions = data.filter((submission) => submission.status === "approved");
 
