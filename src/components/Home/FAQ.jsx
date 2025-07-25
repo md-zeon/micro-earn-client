@@ -66,7 +66,7 @@ const FAQ = () => {
 							<div
 								className='collapse collapse-plus bg-base-100 border border-base-300'
 								key={id}
-								data-aos='fade-left'
+								data-aos='fade-up'
 								data-aos-delay={index * 100}
 							>
 								<input

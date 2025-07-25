@@ -15,7 +15,7 @@ const Home = () => {
 			{isLoading ? (
 				<Preloader onComplete={() => setIsLoading(false)} />
 			) : (
-				<div className='overflow-x-hidden'>
+				<div className='overflow-hidden'>
 					<Hero />
 					<HowItWorks />
 					<BestWorkers />
