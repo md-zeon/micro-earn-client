@@ -31,7 +31,7 @@ const Register = () => {
 
 	const onSubmit = async (data) => {
 		const imageUrl = await imageUpload(data?.photo[0]);
-		console.log(data, imageUrl);
+		// console.log(data, imageUrl);
 
 		try {
 			setLoading(true);
@@ -39,7 +39,7 @@ const Register = () => {
 			const result = await createUser(data?.email, data?.password);
 			// Update User Profile
 			await updateUserProfile(data?.name, imageUrl);
-			console.log(result);
+			// console.log(result);
 			// save user in DB
 			const newUser = {
 				uid: result?.user?.uid,
@@ -48,7 +48,7 @@ const Register = () => {
 				role: data?.role,
 				photoURL: imageUrl,
 			};
-			console.log(newUser);
+			// console.log(newUser);
 			// Save User In DB
 			await saveUserInDb(newUser);
 

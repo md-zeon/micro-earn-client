@@ -45,7 +45,7 @@ const AdminDashboard = ({ greeting }) => {
 				refetch();
 			}
 		} catch (err) {
-			console.log("Error approving withdrawal:", err);
+			console.error("Error approving withdrawal:", err);
 			toast.error("Failed to approve withdrawal");
 		}
 	};

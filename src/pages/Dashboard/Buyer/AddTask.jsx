@@ -28,7 +28,7 @@ const AddTask = () => {
 			setTaskImageUrl(url);
 			toast.success("Image uploaded successfully");
 		} catch (err) {
-			console.log(err);
+			console.error("Image upload failed",err);
 			toast.error("Image upload failed");
 		} finally {
 			setImgUploading(false);
@@ -59,8 +59,7 @@ const AddTask = () => {
 		}
 
 		try {
-			const { data } = await axiosSecure.post("/tasks", newTask);
-			console.log(data);
+			await axiosSecure.post("/tasks", newTask);
 			// deduct buyer's coins
 			await axiosSecure.patch(`/update-coins/${user?.email}`, {
 				coinsToUpdate: totalCost,
@@ -75,7 +74,7 @@ const AddTask = () => {
 			setPayableAmount("");
 			setTaskImageUrl("");
 		} catch (err) {
-			console.log(err);
+			console.error("Task Creation Failed", err);
 			toast.error("Task creation failed");
 		} finally {
 			setLoading(false);

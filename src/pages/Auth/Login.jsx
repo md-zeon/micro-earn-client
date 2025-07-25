@@ -26,11 +26,11 @@ const Login = () => {
 	}
 
 	const onSubmit = async (data) => {
-		console.log(data);
+		// console.log(data);
 		try {
 			setLoading(true);
 			const result = await signInUser(data?.email, data?.password);
-			console.log(result);
+			// console.log(result);
 			toast.success(`Welcome ${result?.user?.displayName}`);
 			setShowPassword(false);
 			reset();

@@ -31,7 +31,7 @@ const PurchaseCoin = () => {
 
 	// Handle Purchase
 	const handlePurchase = async (pkg, receivedTransactionId) => {
-		console.log("Transaction ID received in handlePurchase:", receivedTransactionId);
+		// console.log("Transaction ID received in handlePurchase:", receivedTransactionId);
 		setProcessing(true);
 		try {
 			const totalCoins = pkg.coins + (pkg.bonus || 0);

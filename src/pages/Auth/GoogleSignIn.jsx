@@ -9,7 +9,7 @@ const GoogleSignIn = ({ loading, setLoading }) => {
 			setLoading(true);
 			const result = await signInWithGoogle();
 			const user = result.user;
-			console.log(user);
+			// console.log(user);
 			// save user in DB
 			const userData = {
 				uid: user.uid,
@@ -17,7 +17,7 @@ const GoogleSignIn = ({ loading, setLoading }) => {
 				email: user.email,
 				photoURL: user.photoURL,
 			};
-			console.log(userData);
+			// console.log(userData);
 			// Save User In DB
 			await saveUserInDb(userData);
 			toast(`Welcome ${user.displayName}`);

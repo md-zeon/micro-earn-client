@@ -11,7 +11,7 @@ const BestWorkers = () => {
 		const getTopWorkers = async () => {
 			try {
 				const res = await axios.get(`${import.meta.env.VITE_API_URL}/top-workers`);
-				console.log(res.data);
+				// console.log(res.data);
 				setWorkers(res.data);
 			} catch (error) {
 				console.error("Failed to fetch top workers:", error);

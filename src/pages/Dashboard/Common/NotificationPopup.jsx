@@ -16,7 +16,7 @@ const NotificationPopup = () => {
 			if (!user?.email) return;
 			try {
 				const { data } = await axiosSecure.get("/notifications");
-				console.log(data);
+				// console.log(data);
 				setNotifications(data);
 			} catch (err) {
 				console.error("Failed to load notifications:", err);
