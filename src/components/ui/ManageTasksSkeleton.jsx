@@ -2,19 +2,19 @@ const ManageTasksSkeleton = () => {
 	return (
 		<div className='mt-10 space-y-4'>
 			{/* Title Skeleton */}
-			<div className='h-8 w-48 bg-gray-400 rounded animate-pulse'></div>
+			<div className='h-8 w-48 bg-base-300 rounded animate-pulse'></div>
 
 			{/* Table Skeleton */}
 			<div className='overflow-x-auto'>
-				<div className='w-full border border-gray-400 rounded-lg'>
+				<div className='w-full border border-base-300 rounded-lg'>
 					{/* Table header skeleton */}
-					<div className='flex border-b border-gray-400 p-3 space-x-4'>
+					<div className='flex border-b border-base-300 p-3 space-x-4'>
 						{Array(7)
 							.fill(0)
 							.map((_, i) => (
 								<div
 									key={i}
-									className='h-6 flex-1 bg-gray-400 rounded animate-pulse'
+									className='h-6 flex-1 bg-base-300 rounded animate-pulse'
 								></div>
 							))}
 					</div>
@@ -33,7 +33,7 @@ const ManageTasksSkeleton = () => {
 										.map((__, idx) => (
 											<div
 												key={idx}
-												className='h-6 flex-1 bg-gray-300 rounded animate-pulse'
+												className='h-6 flex-1 bg-base-200 rounded animate-pulse'
 											></div>
 										))}
 								</div>
