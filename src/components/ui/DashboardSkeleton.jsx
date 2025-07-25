@@ -8,8 +8,25 @@ const DashboardSkeleton = () => {
 				{/* Navbar Skeleton */}
 				<header className='px-2 py-4 sm:p-4 bg-base-200 rounded-xl shadow sticky top-0 z-50'>
 					<div className='flex items-center justify-between'>
-						<div className='skeleton h-8 w-32'></div>
-						<div className='skeleton h-10 w-10 rounded-full'></div>
+						{/* Left side: Menu + Logo */}
+						<div className='flex items-center gap-2'>
+							<div className='skeleton h-8 w-8 rounded-md'></div> {/* Menu icon */}
+							<div className='skeleton h-8 w-28 rounded'></div> {/* Logo */}
+						</div>
+
+						{/* Right side: Coins + Theme + User + Notification */}
+						<div className='flex items-center gap-2 sm:gap-4'>
+							<div className='hidden md:block skeleton h-6 w-24 rounded'></div> {/* AvailableCoins */}
+							<div className='skeleton h-8 w-8 rounded-md'></div> {/* Theme Controller */}
+							<div className='flex items-center gap-2'>
+								<div className='skeleton w-10 h-10 rounded-full'></div> {/* Avatar */}
+								<div className='hidden sm:flex flex-col gap-1'>
+									<div className='skeleton h-4 w-24'></div> {/* Name */}
+									<div className='skeleton h-3 w-16'></div> {/* Role */}
+								</div>
+							</div>
+							<div className='skeleton w-8 h-8 rounded-full'></div> {/* Notification bell */}
+						</div>
 					</div>
 				</header>
 
