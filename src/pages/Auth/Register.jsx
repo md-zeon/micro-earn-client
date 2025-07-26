@@ -27,7 +27,8 @@ const Register = () => {
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
-	const from = location?.state?.from?.pathname || "/";
+	const from = ["/login", "/register", "/"].includes(location?.state?.from?.pathname) ? "/dashboard" : location?.state?.from?.pathname || "/dashboard";
+
 
 	const {
 		register,
@@ -313,6 +314,7 @@ const Register = () => {
 					<GoogleSignIn
 						loading={loading}
 						setLoading={setLoading}
+						from={from}
 					/>
 					{/* Login Link */}
 					<div className='mt-6 text-center'>

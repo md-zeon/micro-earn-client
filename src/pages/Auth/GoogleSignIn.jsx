@@ -1,8 +1,10 @@
 import toast from "react-hot-toast";
 import { saveUserInDb } from "../../api/utils";
 import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
-const GoogleSignIn = ({ loading, setLoading }) => {
+const GoogleSignIn = ({ loading, setLoading, from = '/dashboard' }) => {
+	const navigate = useNavigate();
 	const { signInWithGoogle, user: authUser } = useAuth();
 	const handleGoogleSignIn = async () => {
 		if (authUser) {
@@ -25,6 +27,7 @@ const GoogleSignIn = ({ loading, setLoading }) => {
 			// console.log(userData);
 			// Save User In DB
 			await saveUserInDb(userData);
+			navigate(from, { replace: true });
 			toast(`Welcome ${user.displayName}`);
 		} catch (error) {
 			console.error("Google Sign-in Error:", error);
