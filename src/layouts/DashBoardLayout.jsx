@@ -12,7 +12,7 @@ import PageTitle from "../components/PageTitle";
 const DashboardLayout = () => {
 	const { state } = useNavigation();
 	const { role, isRoleLoading } = useRole();
-	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 	if (isRoleLoading) {
 		return <DashboardLayoutSkeleton />;
