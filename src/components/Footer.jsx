@@ -1,25 +1,17 @@
 import { Link } from "react-router";
-import {
-	LuGithub,
-	LuMail,
-	LuPhone,
-	LuMapPin,
-	LuX,
-	LuLinkedin,
-	LuGlobe,
-} from "react-icons/lu";
+import { LuGithub, LuMail, LuPhone, LuMapPin, LuX, LuLinkedin, LuGlobe } from "react-icons/lu";
 import Logo from "./Logo";
 import Container from "./Container";
 
 const Footer = () => {
 	return (
-		<footer className='bg-gradient-to-b from-bg-base-200 bg-base-300 text-base-content pt-12 pb-6 px-4 md:px-16'>
+		<footer className='bg-gradient-to-b from-base-200 to-base-300 text-base-content pt-12 pb-6 px-4 sm:px-6 md:px-8'>
 			<Container>
-				<div className='grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-base-300 pb-10'>
+				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 border-b border-base-300 pb-10'>
 					{/* Brand */}
 					<div>
 						<Logo />
-						<p className='text-sm text-gray-400 mt-2'>
+						<p className='text-sm text-gray-400 mt-3 leading-relaxed max-w-xs'>
 							Empowering people to earn through micro-tasks. Secure, flexible, and easy-to-use platform.
 						</p>
 					</div>
@@ -67,15 +59,15 @@ const Footer = () => {
 					<div>
 						<h3 className='text-lg font-semibold mb-3'>Contact</h3>
 						<ul className='space-y-2 text-sm text-gray-400'>
-							<li className='flex items-center gap-2 hover:text-base-content'>
+							<li className='flex items-center gap-2 hover:text-base-content transition'>
 								<LuMail />
 								<a href='mailto:support@microearn.com'>support@microearn.com</a>
 							</li>
-							<li className='flex items-center gap-2 hover:text-base-content'>
+							<li className='flex items-center gap-2 hover:text-base-content transition'>
 								<LuPhone />
 								<span>+880 1234 567890</span>
 							</li>
-							<li className='flex items-center gap-2 hover:text-base-content'>
+							<li className='flex items-center gap-2 hover:text-base-content transition'>
 								<LuMapPin />
 								<span>Dhaka, Bangladesh</span>
 							</li>
@@ -85,7 +77,7 @@ const Footer = () => {
 					{/* Social */}
 					<div>
 						<h3 className='text-lg font-semibold mb-3'>Follow Us</h3>
-						<div className='flex gap-4 text-2xl text-gray-400'>
+						<div className='flex flex-wrap gap-4 text-2xl text-gray-400'>
 							<a
 								href='https://linkedin.com/in/zeanur-rahaman-zeon'
 								target='_blank'
