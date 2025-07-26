@@ -1,5 +1,15 @@
 import { useForm } from "react-hook-form";
-import { LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUser, LuUserPlus, LuVoicemail } from "react-icons/lu";
+import {
+	LuArrowLeft,
+	LuEye,
+	LuEyeClosed,
+	LuLock,
+	LuLockOpen,
+	LuMail,
+	LuUser,
+	LuUserPlus,
+	LuVoicemail,
+} from "react-icons/lu";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
@@ -8,6 +18,7 @@ import { imageUpload, saveUserInDb } from "../../api/utils";
 import toast from "react-hot-toast";
 import registerImg from "../../assets/signUp.svg";
 import Container from "../../components/Container";
+import StepIndicator from "../../components/Form/StepIndicator";
 
 const Register = () => {
 	const { createUser, updateUserProfile, user: authUser } = useAuth();
@@ -24,7 +35,12 @@ const Register = () => {
 		reset,
 		watch,
 		formState: { errors },
+		trigger,
 	} = useForm();
+
+	const [step, setStep] = useState(1);
+	const nextStep = () => setStep((prev) => prev + 1);
+	const prevStep = () => setStep((prev) => prev - 1);
 
 	const password = watch("password");
 
@@ -89,175 +105,210 @@ const Register = () => {
 					<p className='text-center text-xs text-gray-400 mb-5'>Join MicroEarn and start your earning journey today</p>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
-						className='space-y-4'
+						className='space-y-4 w-full max-w-sm'
 					>
-						{/* Full Name */}
-						<div>
-							<label className='text-sm'>
-								Full Name <span className='text-red-500'>*</span>
-							</label>
-							<div className='input input-bordered w-full'>
-								<LuUser className='text-gray-500' />
-								<input
-									type='text'
-									className='grow'
-									placeholder='Enter your name'
-									{...register("name", { required: "Name is required" })}
-								/>
-							</div>
-							{errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
-						</div>
-						{/* Email */}
-						<div>
-							<label className='text-sm'>
-								Email Address <span className='text-red-500 text-sm'>*</span>
-							</label>
-							<div className='input input-bordered w-full'>
-								<LuMail className='text-gray-500' />
-								<input
-									type='email'
-									className='grow'
-									{...register("email", {
-										required: "Email is required",
-										pattern: {
-											value: /^\S+@\S+$/i,
-											message: "Invalid email address",
-										},
-									})}
-									placeholder='example@mail.com'
-									autoComplete='email'
-								/>
-							</div>
-							{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
-						</div>
-						{/* Profile Picture Upload */}
-						<div>
-							<label className='text-sm'>
-								Profile Picture <span className='text-red-500 text-sm'>*</span>
-							</label>
-							<input
-								type='file'
-								accept='image/*'
-								className='file-input file-input-accent file-input-bordered w-full'
-								{...register("photo", { required: "Photo is required" })}
-							/>
-							{errors.photo && <p className='text-red-500 text-sm'>{errors.photo.message}</p>}
-						</div>
-						{/* Role */}
-						<div>
-							<label className='text-sm'>
-								Select Role <span className='text-red-500 text-sm'>*</span>
-							</label>
-							<select
-								className='select select-bordered w-full'
-								{...register("role", { required: "Select a role" })}
-							>
-								<option
-									value=''
-									disabled
+						{step === 1 && (
+							<div className='space-y-4'>
+								{/* Full Name */}
+								<div>
+									<label className='text-sm'>
+										Full Name <span className='text-red-500'>*</span>
+									</label>
+									<div className='input input-bordered w-full'>
+										<LuUser className='text-gray-500' />
+										<input
+											type='text'
+											className='grow'
+											placeholder='Enter your name'
+											{...register("name", { required: "Name is required" })}
+										/>
+									</div>
+									{errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
+								</div>
+								{/* Email */}
+								<div>
+									<label className='text-sm'>
+										Email Address <span className='text-red-500 text-sm'>*</span>
+									</label>
+									<div className='input input-bordered w-full'>
+										<LuMail className='text-gray-500' />
+										<input
+											type='email'
+											className='grow'
+											{...register("email", {
+												required: "Email is required",
+												pattern: {
+													value: /^\S+@\S+$/i,
+													message: "Invalid email address",
+												},
+											})}
+											placeholder='example@mail.com'
+											autoComplete='email'
+										/>
+									</div>
+									{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
+								</div>
+								{/* Role */}
+								<div>
+									<label className='text-sm'>
+										Select Role <span className='text-red-500 text-sm'>*</span>
+									</label>
+									<select
+										className='select select-bordered w-full'
+										{...register("role", { required: "Select a role" })}
+									>
+										<option
+											value=''
+											disabled
+										>
+											Select Role
+										</option>
+										<option value='worker'>Worker</option>
+										<option value='buyer'>Buyer</option>
+									</select>
+									{errors.role && <p className='text-red-500 text-sm'>{errors.role.message}</p>}
+								</div>
+								{/* Next */}
+								<button
+									type='button'
+									onClick={async () => {
+										const valid = await trigger(["name", "email", "role"]);
+										if (valid) nextStep();
+									}}
+									className='btn w-full bg-gradient text-white'
 								>
-									Select Role
-								</option>
-								<option value='worker'>Worker</option>
-								<option value='buyer'>Buyer</option>
-							</select>
-							{errors.role && <p className='text-red-500 text-sm'>{errors.role.message}</p>}
-						</div>
-						{/* Password */}
-						<div>
-							<label className='text-sm'>
-								Password <span className='text-red-500 text-sm'>*</span>
-							</label>
-							<div className='input input-bordered w-full'>
-								{showPassword ? (
-									<LuLockOpen
-										className='text-gray-700 cursor-pointer'
-										onClick={() => setShowPassword(!showPassword)}
-									/>
-								) : (
-									<LuLock
-										className='text-gray-500 cursor-pointer'
-										onClick={() => setShowPassword(!showPassword)}
-									/>
-								)}
-								<input
-									type={showPassword ? "text" : "password"}
-									className='grow'
-									{...register("password", {
-										required: "Password is required",
-										minLength: { value: 6, message: "Min 6 characters" },
-										pattern: {
-											value: /^(?=.*[A-Z])(?=.*[!@#$&*])/,
-											message: "At least one uppercase and one special character",
-										},
-									})}
-									placeholder='Enter your password'
-									autoComplete='new-password'
-								/>
-								{!showPassword ? (
-									<LuEye
-										className='text-lg cursor-pointer'
-										onClick={() => setShowPassword(!showPassword)}
-									/>
-								) : (
-									<LuEyeClosed
-										className='text-lg cursor-pointer'
-										onClick={() => setShowPassword(!showPassword)}
-									/>
-								)}
+									Next
+								</button>
 							</div>
-							{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
-						</div>
-						{/* Confirm Password */}
-						<div>
-							<label className='text-sm'>
-								Confirm Password <span className='text-red-500 text-sm'>*</span>
-							</label>
-							<div className='input input-bordered w-full'>
-								{showConfirmPassword ? (
-									<LuLockOpen
-										className='text-gray-700 cursor-pointer'
-										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+						)}
+						{/* Step 2 */}
+						{step === 2 && (
+							<div className='space-y-4'>
+								{/* Prev */}
+								<div>
+									<button
+										type='button'
+										onClick={prevStep}
+										className='btn btn-xs btn-circle bg-gradient'
+									>
+										<LuArrowLeft />
+									</button>
+								</div>
+								{/* Profile Picture Upload */}
+								<div>
+									<label className='text-sm'>
+										Profile Picture <span className='text-red-500 text-sm'>*</span>
+									</label>
+									<input
+										type='file'
+										accept='image/*'
+										className='file-input file-input-accent file-input-bordered w-full'
+										{...register("photo", { required: "Photo is required" })}
 									/>
-								) : (
-									<LuLock
-										className='text-gray-500 cursor-pointer'
-										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-									/>
-								)}
-								<input
-									type={showConfirmPassword ? "text" : "password"}
-									className='grow'
-									{...register("confirmPassword", {
-										required: "Please confirm your password",
-										minLength: { value: 6, message: "Min 6 characters" },
-										validate: (value) => value === password || "Password did not match",
-									})}
-									placeholder='Confirm your password'
-									autoComplete='new-password'
-								/>
-								{!showConfirmPassword ? (
-									<LuEye
-										className='text-lg cursor-pointer'
-										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-									/>
-								) : (
-									<LuEyeClosed
-										className='text-lg cursor-pointer'
-										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-									/>
-								)}
-							</div>
-							{errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
-						</div>
+									{errors.photo && <p className='text-red-500 text-sm'>{errors.photo.message}</p>}
+								</div>
+								{/* Password */}
+								<div>
+									<label className='text-sm'>
+										Password <span className='text-red-500 text-sm'>*</span>
+									</label>
+									<div className='input input-bordered w-full'>
+										{showPassword ? (
+											<LuLockOpen
+												className='text-gray-700 cursor-pointer'
+												onClick={() => setShowPassword(!showPassword)}
+											/>
+										) : (
+											<LuLock
+												className='text-gray-500 cursor-pointer'
+												onClick={() => setShowPassword(!showPassword)}
+											/>
+										)}
+										<input
+											type={showPassword ? "text" : "password"}
+											className='grow'
+											{...register("password", {
+												required: "Password is required",
+												minLength: { value: 6, message: "Min 6 characters" },
+												pattern: {
+													value: /^(?=.*[A-Z])(?=.*[!@#$&*])/,
+													message: "At least one uppercase and one special character",
+												},
+											})}
+											placeholder='Enter your password'
+											autoComplete='new-password'
+										/>
+										{!showPassword ? (
+											<LuEye
+												className='text-lg cursor-pointer'
+												onClick={() => setShowPassword(!showPassword)}
+											/>
+										) : (
+											<LuEyeClosed
+												className='text-lg cursor-pointer'
+												onClick={() => setShowPassword(!showPassword)}
+											/>
+										)}
+									</div>
+									{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
+								</div>
+								{/* Confirm Password */}
+								<div>
+									<label className='text-sm'>
+										Confirm Password <span className='text-red-500 text-sm'>*</span>
+									</label>
+									<div className='input input-bordered w-full'>
+										{showConfirmPassword ? (
+											<LuLockOpen
+												className='text-gray-700 cursor-pointer'
+												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+											/>
+										) : (
+											<LuLock
+												className='text-gray-500 cursor-pointer'
+												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+											/>
+										)}
+										<input
+											type={showConfirmPassword ? "text" : "password"}
+											className='grow'
+											{...register("confirmPassword", {
+												required: "Please confirm your password",
+												minLength: { value: 6, message: "Min 6 characters" },
+												validate: (value) => value === password || "Password did not match",
+											})}
+											placeholder='Confirm your password'
+											autoComplete='new-password'
+										/>
+										{!showConfirmPassword ? (
+											<LuEye
+												className='text-lg cursor-pointer'
+												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+											/>
+										) : (
+											<LuEyeClosed
+												className='text-lg cursor-pointer'
+												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+											/>
+										)}
+									</div>
+									{errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
+								</div>
 
-						<button
-							type='submit'
-							className='btn w-full bg-gradient text-white'
-							disabled={loading}
-						>
-							{loading ? "Registering..." : "Create Account"}
-						</button>
+								<button
+									type='submit'
+									className='btn w-full bg-gradient text-white'
+									disabled={loading}
+								>
+									{loading ? "Registering..." : "Create Account"}
+								</button>
+							</div>
+						)}
+						{/* Step Indicator */}
+						<StepIndicator
+							step={step}
+							totalSteps={2}
+						/>
 					</form>
 					<GoogleSignIn
 						loading={loading}
