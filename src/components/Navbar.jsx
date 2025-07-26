@@ -48,7 +48,7 @@ const Navbar = () => {
 						<div
 							tabIndex={0}
 							role='button'
-							className='btn btn-ghost px-1 sm:px-3 lg:hidden'
+							className='btn btn-ghost px-1 mr-1 sm:px-3 lg:hidden'
 						>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
@@ -146,18 +146,20 @@ const Navbar = () => {
 								<div className='hidden sm:block'>
 									<ThemeController />
 								</div>
-								<Link
-									to='/login'
-									className='btn btn-sm sm:btn-md btn-ghost'
-								>
-									Login
-								</Link>
-								<Link
-									to='/register'
-									className='btn btn-sm sm:btn-md btn-ghost bg-gradient'
-								>
-									Register
-								</Link>
+								<div className="space-x-1">
+									<Link
+										to='/login'
+										className='btn btn-sm sm:btn-md btn-ghost'
+									>
+										Login
+									</Link>
+									<Link
+										to='/register'
+										className='btn btn-sm sm:btn-md btn-ghost bg-gradient'
+									>
+										Register
+									</Link>
+								</div>
 							</>
 						)}
 						<a
