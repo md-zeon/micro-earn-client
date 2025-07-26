@@ -24,7 +24,7 @@ const Hero = () => {
 					initial={{ opacity: 0, y: -40 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.9, ease: "easeOut" }}
-					className='text-4xl md:text-6xl font-extrabold tracking-tight mb-5 drop-shadow-lg'
+					className='text-4xl md:text-6xl font-extrabold tracking-tight mb-5 drop-shadow-lg max-w-4xl'
 				>
 					Empower Your Efforts, Earn Your Rewards
 				</motion.h1>

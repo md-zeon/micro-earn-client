@@ -43,7 +43,7 @@ const Navbar = () => {
 	return (
 		<Container>
 			<nav className='navbar'>
-				<div className='navbar-start'>
+				<div className='navbar-start flex-1'>
 					<div className='dropdown'>
 						<div
 							tabIndex={0}
@@ -85,10 +85,10 @@ const Navbar = () => {
 					</div>
 					<Logo />
 				</div>
-				<div className='navbar-center hidden lg:flex'>
+				<div className='navbar-center hidden lg:flex justify-end'>
 					<ul className='menu menu-horizontal px-1'>{navLinks}</ul>
 				</div>
-				<div className='navbar-end'>
+				<div className='navbar-end w-max'>
 					<div className='flex gap-4 items-center'>
 						{user ? (
 							<>
