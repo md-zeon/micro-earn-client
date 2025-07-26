@@ -31,7 +31,10 @@ const MySubmissions = () => {
 	return (
 		<Container>
 			<div className='px-4 py-3'>
-				<PageTitle title="My Submissions" description="Track your task submissions and their approval status." />
+				<PageTitle
+					title='My Submissions'
+					description='Track your task submissions and their approval status.'
+				/>
 				<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>My Submissions</h1>
 
 				{/* Filter Controls */}
@@ -123,18 +126,52 @@ const MySubmissions = () => {
 				)}
 
 				{/* Pagination Controls */}
-				{totalPages > 1 && (
-					<div className='flex justify-center mt-6'>
+				{totalPages > 0 && (
+					<div className='flex justify-center mt-6 items-end h-'>
 						<div className='join'>
-							{Array.from({ length: totalPages }, (_, i) => (
-								<button
-									key={i}
-									className={`join-item btn ${currentPage === i + 1 ? "btn-active bg-gradient" : "bg-base-gradient"}`}
-									onClick={() => setCurrentPage(i + 1)}
-								>
-									{i + 1}
-								</button>
-							))}
+							{/* Previous Button */}
+							<button
+								className='join-item btn btn-sm'
+								disabled={currentPage === 1}
+								onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+							>
+								Prev
+							</button>
+
+							{/* Page Buttons with Ellipsis */}
+							{Array.from({ length: totalPages }, (_, i) => i + 1)
+								.filter((page) => {
+									if (totalPages <= 5) return true;
+									if (page === 1 || page === totalPages) return true;
+									if (Math.abs(currentPage - page) <= 1) return true;
+									return false;
+								})
+								.map((page, i, arr) => {
+									const prevPage = arr[i - 1];
+									const showEllipsis = prevPage && page - prevPage > 1;
+									return (
+										<div key={page}>
+											{showEllipsis && <button className='join-item btn btn-sm btn-disabled'>...</button>}
+											<button
+												className={`join-item btn btn-sm ${
+													currentPage === page ? "btn-active bg-gradient text-white" : "bg-base-200"
+												}`}
+												onClick={() => setCurrentPage(page)}
+											>
+												{page}
+											</button>
+										</div>
+									);
+								})}
+
+							{/* Next Button */}
+							<button
+								className='join-item btn btn-sm'
+								disabled={currentPage === totalPages}
+								onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+							>
+								Next
+							</button>
 						</div>
 					</div>
 				)}

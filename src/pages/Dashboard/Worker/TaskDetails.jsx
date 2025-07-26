@@ -132,7 +132,7 @@ const TaskDetails = () => {
 								<span className='flex items-center gap-2 text-gray-500'>
 									<LuDollarSign /> Payment
 								</span>
-								<span className='badge badge-outline border-blue-500 text-blue-500'>
+								<span className='badge badge-outline border-green-500 text-green-500'>
 									{task.payable_amount} <LuCoins className='inline' />
 								</span>
 							</div>
