@@ -39,6 +39,7 @@ const WhyChooseUs = () => {
 					<div className='space-y-6'>
 						{reasons.map((item, index) => (
 							<div
+								key={index}
 								data-aos='fade-down'
 								data-aos-delay={index * 100}
 								className='flex items-start gap-4'

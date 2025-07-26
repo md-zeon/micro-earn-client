@@ -47,6 +47,7 @@ const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
 									"https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
 								}
 								alt={user?.displayName}
+								referrerPolicy='no-referrer'
 								className='sm:w-10 sm:h-10 w-8 h-8 rounded-full object-cover'
 							/>
 						</Link>

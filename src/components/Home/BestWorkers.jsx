@@ -26,11 +26,19 @@ const BestWorkers = () => {
 		<section className='py-16 bg-base-100'>
 			<div className='container mx-auto px-4'>
 				<h2
-					className='text-3xl md:text-4xl font-bold text-center mb-12 text-gradient'
+					className='text-3xl md:text-4xl font-bold text-center mb-3 text-gradient'
 					data-aos='fade-up'
 				>
 					Top Performing Workers
 				</h2>
+				<p
+					className='text-center text-base text-gray-500 mb-12 max-w-2xl mx-auto'
+					data-aos='fade-up'
+					data-aos-delay='100'
+				>
+					Meet our highest-rated workers who consistently deliver top-quality results and earn the most coins on the
+					platform.
+				</p>
 
 				{loading ? (
 					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
@@ -67,6 +75,7 @@ const BestWorkers = () => {
 										src={worker.photoURL}
 										alt={worker.name}
 										className='w-24 h-24 rounded-full object-cover border-4 border-accent'
+										referrerPolicy="no-referrer"
 									/>
 									<h3 className='text-lg font-semibold'>{worker.name}</h3>
 									<p className='flex items-center gap-1 text-green-600 font-medium'>

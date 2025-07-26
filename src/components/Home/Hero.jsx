@@ -7,13 +7,21 @@ const Hero = () => {
 			{/* Background Video */}
 			<video
 				className='absolute inset-0 w-full h-full object-cover pointer-events-none'
-				src='https://www.shutterstock.com/shutterstock/videos/1060923829/preview/stock-footage-alternative-macro-close-up-of-an-young-businessman-hands-busy-working-on-laptop-or-computer.mp4'
 				autoPlay
 				loop
 				muted
 				playsInline
 				aria-hidden='true'
-			/>
+			>
+				<source
+					src='/background.mp4'
+					type='video/mp4'
+				/>
+				<source
+					src='https://www.shutterstock.com/shutterstock/videos/1060923829/preview/stock-footage-alternative-macro-close-up-of-an-young-businessman-hands-busy-working-on-laptop-or-computer.mp4'
+					type='video/mp4'
+				/>
+			</video>
 
 			{/* Dark Overlay */}
 			<div className='absolute inset-0 bg-black/50 z-10 backdrop-blur-sm'></div>

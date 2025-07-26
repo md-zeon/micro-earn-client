@@ -1,6 +1,6 @@
 import aboutImg from "../../assets/about.svg";
 import GlassCard from "../../components/ui/GlassCard";
-import { LuBadgeDollarSign, LuUserCheck, LuShieldCheck, LuGlobe, LuHandCoins } from "react-icons/lu";
+import { LuBadgeDollarSign, LuUserCheck, LuShieldCheck, LuGlobe } from "react-icons/lu";
 
 const About = () => {
 	return (
@@ -13,7 +13,6 @@ const About = () => {
 					data-aos='fade-right'
 					data-aos-duration='1000'
 				>
-					<LuHandCoins className='bg-gradient p-4 text-6xl rounded-xl mx-auto sm:mx-0' />
 					<h2 className='text-3xl md:text-4xl text-center sm:text-start font-bold text-gradient'>About MicroEarn</h2>
 					<p className='text-gray-600 leading-relaxed text-justify md:text-left'>
 						MicroEarn is a dynamic micro-task and earning platform that connects Buyers (task providers) with global

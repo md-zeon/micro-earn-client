@@ -1,9 +1,6 @@
 import { Link } from "react-router";
 import {
-	LuFacebook,
 	LuGithub,
-	LuTwitter,
-	LuInstagram,
 	LuMail,
 	LuPhone,
 	LuMapPin,
@@ -41,10 +38,10 @@ const Footer = () => {
 							</li>
 							<li>
 								<Link
-									to='/tasks'
+									to='/about'
 									className='hover:text-base-content transition'
 								>
-									Tasks
+									About Us
 								</Link>
 							</li>
 							<li>

@@ -107,6 +107,7 @@ const Navbar = () => {
 												<img
 													alt={user?.displayName || "User Avatar"}
 													src={user?.photoURL}
+													referrerPolicy='no-referrer'
 													className='w-full h-full object-cover'
 												/>
 											)}
@@ -142,7 +143,7 @@ const Navbar = () => {
 							</>
 						) : (
 							<>
-								<div className="hidden sm:block">
+								<div className='hidden sm:block'>
 									<ThemeController />
 								</div>
 								<Link

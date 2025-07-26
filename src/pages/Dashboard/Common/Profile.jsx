@@ -17,7 +17,9 @@ const Profile = () => {
 		<div className='max-w-3xl mx-auto sm:p-4 md:p-6'>
 			<div className='flex items-center justify-between mb-4'>
 				<h2 className='text-2xl font-bold'>My Profile</h2>
-				<button className='btn btn-sm btn-outline bg-base-300 text-base-content'><LuPen /> Edit Profile</button>
+				<button className='btn btn-sm btn-outline bg-base-300 text-base-content'>
+					<LuPen /> Edit Profile
+				</button>
 			</div>
 
 			<div className='card bg-base-100 border shadow-sm'>
@@ -26,17 +28,23 @@ const Profile = () => {
 
 					<div className='flex flex-col md:flex-row gap-6 md:items-center'>
 						<img
-							src={user?.photoURL || "https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"}
+							src={
+								user?.photoURL ||
+								"https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
+							}
 							alt='User Avatar'
+							referrerPolicy='no-referrer'
 							className='w-24 h-24 rounded-full mx-auto sm:mx-0 border'
 						/>
 						<div>
-							<h2 className='text-2xl font-bold flex items-center justify-center sm:justify-start gap-2'>{user?.displayName || "Unnamed User"}</h2>
+							<h2 className='text-2xl font-bold flex items-center justify-center sm:justify-start gap-2'>
+								{user?.displayName || "Unnamed User"}
+							</h2>
 
 							<div className='flex items-center justify-center sm:justify-start gap-2 mt-2'>
 								<span className='badge badge-soft capitalize'>{role}</span>
 								<span className='flex items-center gap-1 text-sm text-gradient'>
-									<LuCoins className="text-blue-500" /> {coins} coins
+									<LuCoins className='text-blue-500' /> {coins} coins
 								</span>
 							</div>
 						</div>
