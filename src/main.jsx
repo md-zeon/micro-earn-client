@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import "aos/dist/aos.css";
-import "@radix-ui/themes/styles.css";
 import { RouterProvider } from "react-router";
 import router from "./Routes/Routes.jsx";
 import AuthProvider from "./providers/AuthProvider.jsx";

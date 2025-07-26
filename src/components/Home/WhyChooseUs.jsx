@@ -28,10 +28,10 @@ const WhyChooseUs = () => {
 					className='w-full lg:w-1/2'
 					data-aos='fade-right'
 				>
-					<h2 className='text-3xl md:text-4xl font-bold mb-6'>
+					<h2 className='text-4xl md:text-5xl font-bold mb-6 text-center sm:text-start'>
 						Why Choose <span className='text-gradient'>MicroEarn?</span>
 					</h2>
-					<p className='text-gray-600 mb-8 max-w-lg'>
+					<p className='text-gray-600 mb-8 max-w-lg text-center sm:start'>
 						Whether you're here to earn or get things done — MicroEarn gives you full control, real value, and instant
 						results.
 					</p>

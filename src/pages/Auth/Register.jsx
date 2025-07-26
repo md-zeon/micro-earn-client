@@ -8,16 +8,13 @@ import { imageUpload, saveUserInDb } from "../../api/utils";
 import toast from "react-hot-toast";
 
 const Register = () => {
-	const { createUser, updateUserProfile, user } = useAuth();
+	const { createUser, updateUserProfile, user: authUser } = useAuth();
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = location?.state?.from?.pathname || "/";
-	if (user) {
-		navigate(from, { replace: true });
-	}
 
 	const {
 		register,
@@ -30,9 +27,13 @@ const Register = () => {
 	const password = watch("password");
 
 	const onSubmit = async (data) => {
+		if (authUser) {
+			toast.error("You are already logged in");
+			toast("Please log out first!");
+			return;
+		}
 		const imageUrl = await imageUpload(data?.photo[0]);
 		// console.log(data, imageUrl);
-
 		try {
 			setLoading(true);
 			// User Register
@@ -55,6 +56,7 @@ const Register = () => {
 			setShowPassword(false);
 			setShowConfirmPassword(false);
 			toast.success("Account created successfully!");
+			navigate(from, { replace: true });
 			reset();
 		} catch (error) {
 			console.error("Registration Error:", error);
@@ -65,7 +67,7 @@ const Register = () => {
 	};
 
 	return (
-		<div className='bg-gradient-to-br from-blue-500 to-green-500 py-12 min-h-screen flex justify-center items-center'>
+		<div className='py-12 px-4 min-h-screen flex justify-center items-center'>
 			<div className='max-w-md mx-auto p-6 border rounded-xl bg-base-100 shadow text-base-content'>
 				<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
 					<LuUserPlus />

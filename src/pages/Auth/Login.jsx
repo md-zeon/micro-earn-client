@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const { signInUser, user } = useAuth();
+	const { signInUser, user: authUser } = useAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = location?.state?.from?.pathname || "/dashboard";
@@ -21,18 +21,20 @@ const Login = () => {
 		formState: { errors },
 	} = useForm();
 
-	if (user) {
-		navigate(from, { replace: true });
-	}
-
 	const onSubmit = async (data) => {
 		// console.log(data);
+		if (authUser) {
+			toast.error("You are already logged in");
+			toast("Please log out first!");
+			return;
+		}
 		try {
 			setLoading(true);
 			const result = await signInUser(data?.email, data?.password);
 			// console.log(result);
 			toast.success(`Welcome ${result?.user?.displayName}`);
 			setShowPassword(false);
+			navigate(from, { replace: true });
 			reset();
 		} catch (error) {
 			console.error("Login Error:", error);
@@ -43,7 +45,7 @@ const Login = () => {
 	};
 
 	return (
-		<div className='py-12 min-h-screen flex justify-center items-center'>
+		<div className='py-12 px-4 min-h-screen flex justify-center items-center'>
 			<div className='max-w-md mx-auto p-6 border rounded-xl bg-base-100 shadow text-base-content'>
 				<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
 					<LuUserPlus />

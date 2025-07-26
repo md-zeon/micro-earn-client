@@ -3,8 +3,13 @@ import { saveUserInDb } from "../../api/utils";
 import useAuth from "../../hooks/useAuth";
 
 const GoogleSignIn = ({ loading, setLoading }) => {
-	const { signInWithGoogle } = useAuth();
+	const { signInWithGoogle, user: authUser } = useAuth();
 	const handleGoogleSignIn = async () => {
+		if (authUser) {
+			toast.error("You are already logged in");
+			toast("Please log out first!");
+			return;
+		}
 		try {
 			setLoading(true);
 			const result = await signInWithGoogle();

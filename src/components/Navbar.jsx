@@ -3,7 +3,6 @@ import { Link, NavLink } from "react-router";
 import Container from "./Container";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
-import { Skeleton } from "@radix-ui/themes/dist/cjs/index.js";
 import Logo from "./Logo";
 import AvailableCoins from "./AvailableCoins";
 import ThemeController from "./ThemeController";
@@ -74,7 +73,7 @@ const Navbar = () => {
 							{navLinks}
 							<li>
 								<a
-									href='https://github.com/md-zeon'
+									href='https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-md-zeon'
 									target='_blank'
 									rel='noreferrer'
 									className='btn btn-sm bg-gradient'
@@ -101,14 +100,16 @@ const Navbar = () => {
 										role='button'
 										className='btn btn-ghost btn-circle avatar'
 									>
-										<div className='w-10 rounded-full'>
-											<Skeleton loading={!user?.photoURL}>
+										<div className='w-10 h-10 rounded-full overflow-hidden'>
+											{!user?.photoURL ? (
+												<div className='w-full h-full bg-base-300 animate-pulse rounded-full'></div>
+											) : (
 												<img
-													alt={user?.displayName}
+													alt={user?.displayName || "User Avatar"}
 													src={user?.photoURL}
-													className='w-10 rounded-full'
+													className='w-full h-full object-cover'
 												/>
-											</Skeleton>
+											)}
 										</div>
 									</div>
 									<div
@@ -120,9 +121,11 @@ const Navbar = () => {
 											<p>{user?.email}</p>
 										</div>
 										<div className='flex justify-between items-center'>
-											<Skeleton loading={isRoleLoading}>
+											{isRoleLoading ? (
+												<div className='skeleton badge'></div>
+											) : (
 												<span className='badge bg-gradient capitalize'>{role}</span>
-											</Skeleton>
+											)}
 											<ThemeController />
 										</div>
 										<div>
@@ -139,16 +142,18 @@ const Navbar = () => {
 							</>
 						) : (
 							<>
-								<ThemeController />
+								<div className="hidden sm:block">
+									<ThemeController />
+								</div>
 								<Link
 									to='/login'
-									className='btn btn-ghost'
+									className='btn btn-sm sm:btn-md btn-ghost'
 								>
 									Login
 								</Link>
 								<Link
 									to='/register'
-									className='btn btn-ghost bg-gradient'
+									className='btn btn-sm sm:btn-md btn-ghost bg-gradient'
 								>
 									Register
 								</Link>

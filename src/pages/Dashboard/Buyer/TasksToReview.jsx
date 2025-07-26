@@ -32,8 +32,8 @@ const TasksToReview = () => {
 				icon: "success",
 				title: "Submission approved and coins rewarded!",
 				customClass: {
-					confirmButton: "btn bg-gradient"
-				}
+					confirmButton: "btn bg-gradient",
+				},
 			});
 		} catch (error) {
 			console.error(error);
@@ -74,7 +74,13 @@ const TasksToReview = () => {
 		}
 	};
 
-	if (isLoading) return <DashboardSkeleton statsCount={0} showTable={true} />;
+	if (isLoading)
+		return (
+			<DashboardSkeleton
+				statsCount={0}
+				showTable={true}
+			/>
+		);
 
 	return (
 		<div className='mt-12'>
@@ -96,29 +102,35 @@ const TasksToReview = () => {
 						<tbody>
 							{buyerSubmissions?.map((s) => (
 								<tr key={s._id}>
-									<td>{s.worker_name}</td>
-									<td>{s.task_title}</td>
+									<td>
+										<p className="w-max">{s.worker_name}</p>
+									</td>
+									<td>
+										<p className="w-max">{s.task_title}</p>
+									</td>
 									<td>{s.payable_amount}</td>
 									<td className='capitalize'>{s.status}</td>
-									<td className='flex gap-2'>
-										<button
-											onClick={() => setSelectedSubmission(s)}
-											className='btn btn-sm btn-outline'
-										>
-											View
-										</button>
-										<button
-											onClick={() => handleApprove(s)}
-											className='btn btn-sm bg-gradient-success'
-										>
-											Approve
-										</button>
-										<button
-											onClick={() => handleReject(s)}
-											className='btn btn-sm bg-gradient-error'
-										>
-											Reject
-										</button>
+									<td>
+										<div className='flex gap-2 items-center'>
+											<button
+												onClick={() => setSelectedSubmission(s)}
+												className='btn btn-sm btn-outline'
+											>
+												View
+											</button>
+											<button
+												onClick={() => handleApprove(s)}
+												className='btn btn-sm bg-gradient-success'
+											>
+												Approve
+											</button>
+											<button
+												onClick={() => handleReject(s)}
+												className='btn btn-sm bg-gradient-error'
+											>
+												Reject
+											</button>
+										</div>
 									</td>
 								</tr>
 							))}

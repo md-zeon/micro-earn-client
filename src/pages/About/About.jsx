@@ -13,7 +13,7 @@ const About = () => {
 					data-aos='fade-right'
 					data-aos-duration='1000'
 				>
-                    <LuHandCoins className="bg-gradient p-4 text-6xl rounded-xl mx-auto sm:mx-0" />
+					<LuHandCoins className='bg-gradient p-4 text-6xl rounded-xl mx-auto sm:mx-0' />
 					<h2 className='text-3xl md:text-4xl text-center sm:text-start font-bold text-gradient'>About MicroEarn</h2>
 					<p className='text-gray-600 leading-relaxed text-justify md:text-left'>
 						MicroEarn is a dynamic micro-task and earning platform that connects Buyers (task providers) with global
@@ -43,7 +43,7 @@ const About = () => {
 				data-aos='fade-up'
 				data-aos-delay='200'
 			>
-				<GlassCard className="p-6">
+				<GlassCard className='p-6'>
 					<div className='flex items-start gap-3'>
 						<LuBadgeDollarSign className='text-3xl text-green-500 mt-1' />
 						<div>
@@ -55,7 +55,7 @@ const About = () => {
 					</div>
 				</GlassCard>
 
-				<GlassCard className="p-6">
+				<GlassCard className='p-6'>
 					<div className='flex items-start gap-3'>
 						<LuUserCheck className='text-3xl text-blue-500 mt-1' />
 						<div>
@@ -67,7 +67,7 @@ const About = () => {
 					</div>
 				</GlassCard>
 
-				<GlassCard className="p-6">
+				<GlassCard className='p-6'>
 					<div className='flex items-start gap-3'>
 						<LuShieldCheck className='text-3xl text-purple-500 mt-1' />
 						<div>
@@ -80,7 +80,7 @@ const About = () => {
 					</div>
 				</GlassCard>
 
-				<GlassCard className="p-6">
+				<GlassCard className='p-6'>
 					<div className='flex items-start gap-3'>
 						<LuGlobe className='text-3xl text-yellow-500 mt-1' />
 						<div>
