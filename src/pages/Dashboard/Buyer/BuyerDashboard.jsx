@@ -6,6 +6,7 @@ import useBuyerTasks from "../../../hooks/useBuyerTasks";
 import StatsCard from "../../../components/shared/StatsCard";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 import TasksToReview from "./TasksToReview";
+import PageTitle from "../../../components/PageTitle";
 
 const BuyerDashboard = ({ greeting }) => {
 	const { user, loading: authLoading } = useAuth();
@@ -18,15 +19,27 @@ const BuyerDashboard = ({ greeting }) => {
 		0,
 	);
 
-	if (authLoading || coinsLoading || isTasksLoading) return <DashboardSkeleton statsCount={4} showTable={true} />;
+	if (authLoading || coinsLoading || isTasksLoading)
+		return (
+			<DashboardSkeleton
+				statsCount={4}
+				showTable={true}
+			/>
+		);
 
 	return (
 		<div>
+			<PageTitle
+				title='Buyer Dashboard'
+				description='Manage your tasks, track worker submissions, and handle payments on MicroEarn.'
+			/>
 			{/* Header */}
 			<div className='sm:px-4'>
 				<div className='flex items-center justify-between flex-wrap'>
 					<div>
-						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting}, {user?.displayName || "Buyer"}!</h1>
+						<h1 className='text-3xl font-bold tracking-tight mb-2'>
+							{greeting}, {user?.displayName || "Buyer"}!
+						</h1>
 						<p>Manage your tasks and workers.</p>
 					</div>
 					<Link

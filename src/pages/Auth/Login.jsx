@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import loginImage from "../../assets/login.svg";
 import Container from "../../components/Container";
+import PageTitle from "../../components/PageTitle";
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -14,7 +15,9 @@ const Login = () => {
 	const { signInUser, user: authUser } = useAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const from = ["/login", "/register", "/"].includes(location?.state?.from?.pathname) ? "/dashboard" : location?.state?.from?.pathname || "/dashboard";
+	const from = ["/login", "/register", "/"].includes(location?.state?.from?.pathname)
+		? "/dashboard"
+		: location?.state?.from?.pathname || "/dashboard";
 
 	const {
 		register,
@@ -48,6 +51,10 @@ const Login = () => {
 
 	return (
 		<Container>
+			<PageTitle
+				title='Login'
+				description='Sign in to your MicroEarn account to start earning or hiring workers.'
+			/>
 			<div className='py-12 px-4 min-h-screen grid md:grid-cols-2 items-center gap-10'>
 				{/* Illustration */}
 				<div className='hidden md:block'>

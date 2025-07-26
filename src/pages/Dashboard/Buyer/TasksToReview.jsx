@@ -4,6 +4,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useBuyerSubmissions from "../../../hooks/useBuyerSubmissions";
 import Swal from "sweetalert2";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const TasksToReview = () => {
 	const { submissions, isLoading, refetch } = useBuyerSubmissions();
@@ -84,6 +85,7 @@ const TasksToReview = () => {
 
 	return (
 		<div className='mt-12'>
+			<PageTitle title="Tasks to Review" description="Review and approve task submissions from workers." />
 			<h2 className='text-xl font-bold mb-4'>Tasks To Review</h2>
 			{buyerSubmissions?.length === 0 ? (
 				<p>No submissions to review.</p>

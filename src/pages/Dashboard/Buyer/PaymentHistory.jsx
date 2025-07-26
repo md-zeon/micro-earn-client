@@ -4,6 +4,7 @@ import PaymentTable from "../../../components/Table/PaymentTable";
 import useBuyerPayments from "../../../hooks/useBuyerPayments";
 import RecentActivity from "../../../components/Dashboard/RecentActivity";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const PaymentHistory = () => {
 	const { payments, isPaymentsLoading } = useBuyerPayments();
@@ -12,6 +13,7 @@ const PaymentHistory = () => {
 
 	return (
 		<div>
+			<PageTitle title="Payment History" description="View your complete payment and transaction history." />
 			<div className='flex justify-between items-center mb-6'>
 				<h1 className='text-3xl font-bold'>Payment History</h1>
 				<button className='btn btn-sm bg-gradient-success rounded-full cursor-pointer'>{payments.length}</button>

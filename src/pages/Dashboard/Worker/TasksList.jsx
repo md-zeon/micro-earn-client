@@ -3,6 +3,7 @@ import { LuDollarSign, LuUsers, LuCalendarDays } from "react-icons/lu";
 import useWorkerTasks from "../../../hooks/useWorkerTasks";
 import Container from "../../../components/Container";
 import TaskSkeletonCard from "../../../components/ui/TaskSkeletonCard";
+import PageTitle from "../../../components/PageTitle";
 
 const TasksList = () => {
 	const navigate = useNavigate();
@@ -11,6 +12,7 @@ const TasksList = () => {
 	return (
 		<Container>
 			<div className='sm:px-4 py-6'>
+				<PageTitle title="Available Tasks" description="Browse and apply for tasks to start earning money." />
 				<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>Available Tasks</h1>
 
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>

@@ -2,6 +2,7 @@ import { LuDollarSign, LuFileText } from "react-icons/lu";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import Container from "../../../components/Container";
 import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const ApprovedSubmissions = () => {
 	const { submissions: data, isLoading } = useWorkerSubmissions();
@@ -13,6 +14,7 @@ const ApprovedSubmissions = () => {
 	return (
 		<Container>
 			<div className='px-4 py-8'>
+				<PageTitle title="Approved Submissions" description="View your approved task submissions and earnings." />
 				<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>Approved Submissions</h1>
 
 				{submissions.length === 0 ? (
@@ -41,7 +43,7 @@ const ApprovedSubmissions = () => {
 											{submission.payable_amount}
 										</td>
 										<td>
-											<span className='badge badge-success'>Approved</span>
+											<span className='badge badge-success text-white'>Approved</span>
 										</td>
 										<td>
 											<div

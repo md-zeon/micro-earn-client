@@ -9,6 +9,7 @@ import StatsCard from "../../../components/shared/StatsCard";
 import UpdateTaskModal from "../../../components/Modals/UpdateTaskModal";
 import useAuth from "../../../hooks/useAuth";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const MyTasks = () => {
 	const {user} = useAuth();
@@ -88,6 +89,7 @@ const MyTasks = () => {
 
 	return (
 		<div>
+			<PageTitle title="My Tasks" description="Manage your posted tasks and track their progress." />
 			<div className='flex justify-between items-center mb-6'>
 				<h1 className='text-3xl font-bold'>My Tasks</h1>
 				<button className='btn btn-sm bg-gradient-success rounded-full'>{tasks.length}</button>

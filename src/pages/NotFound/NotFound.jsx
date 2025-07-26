@@ -1,9 +1,14 @@
 import { Link } from "react-router";
 import notfoundImg from "../../assets/notfound.svg";
+import PageTitle from "../../components/PageTitle";
 
 const NotFound = () => {
 	return (
 		<div className='flex flex-col items-center justify-center min-h-screen bg-base-content px-4 text-center text-base-100'>
+			<PageTitle 
+				title="Page Not Found" 
+				description="The page you're looking for doesn't exist. Return to MicroEarn homepage." 
+			/>
 			<img
 				src={notfoundImg}
 				alt='Page Not Found Illustration'

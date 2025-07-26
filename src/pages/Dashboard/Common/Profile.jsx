@@ -2,6 +2,7 @@ import { LuMail, LuCalendarDays, LuShield, LuUser, LuCoins, LuPen } from "react-
 import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../hooks/useRole";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
+import PageTitle from "../../../components/PageTitle";
 
 const Profile = () => {
 	const { user } = useAuth();
@@ -15,6 +16,10 @@ const Profile = () => {
 
 	return (
 		<div className='max-w-3xl mx-auto sm:p-4 md:p-6'>
+			<PageTitle 
+				title="My Profile" 
+				description="View and update your account information and preferences." 
+			/>
 			<div className='flex items-center justify-between mb-4'>
 				<h2 className='text-2xl font-bold'>My Profile</h2>
 				<button className='btn btn-sm btn-outline bg-base-300 text-base-content'>

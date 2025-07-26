@@ -6,6 +6,7 @@ import { imageUpload } from "../../../api/utils";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
+import PageTitle from "../../../components/PageTitle";
 
 const AddTask = () => {
 	const navigate = useNavigate();
@@ -85,6 +86,7 @@ const AddTask = () => {
 
 	return (
 		<div className='max-w-3xl mx-auto sm:px-4 py-6'>
+			<PageTitle title="Add New Task" description="Create a new task for workers to complete and earn money." />
 			<div className='text-center mb-2'>
 				<h1 className='text-3xl font-bold mb-2'> Add New Task</h1>
 				<p className='text-gray-400'>Create a new task for workers to complete</p>

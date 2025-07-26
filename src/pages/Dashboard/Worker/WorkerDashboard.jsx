@@ -4,12 +4,19 @@ import StatsCard from "../../../components/shared/StatsCard";
 import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
 import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
 	const { user } = useAuth();
 
-	if (isLoading) return <DashboardSkeleton statsCount={3} showTable={true} />;
+	if (isLoading)
+		return (
+			<DashboardSkeleton
+				statsCount={3}
+				showTable={true}
+			/>
+		);
 
 	// Calculate Stats
 	const totalSubmissions = submissions.length;
@@ -22,6 +29,10 @@ const WorkerDashboard = ({ greeting }) => {
 
 	return (
 		<div className='space-y-8'>
+			<PageTitle
+				title='Worker Dashboard'
+				description='Track your tasks, earnings, and submissions on MicroEarn.'
+			/>
 			<div className='px-4'>
 				<div className='flex items-center justify-between flex-wrap'>
 					<div>

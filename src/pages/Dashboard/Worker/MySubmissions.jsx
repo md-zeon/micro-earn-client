@@ -3,6 +3,7 @@ import { LuDollarSign, LuFileText } from "react-icons/lu";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import Container from "../../../components/Container";
 import MySubmissionsSkeleton from "../../../components/ui/MySubmissionsSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const itemsPerPage = 5;
 
@@ -30,6 +31,7 @@ const MySubmissions = () => {
 	return (
 		<Container>
 			<div className='px-4 py-3'>
+				<PageTitle title="My Submissions" description="Track your task submissions and their approval status." />
 				<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>My Submissions</h1>
 
 				{/* Filter Controls */}

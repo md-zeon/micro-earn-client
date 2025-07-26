@@ -4,6 +4,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { LuCoins } from "react-icons/lu";
 import Swal from "sweetalert2";
 import ManageUsersSkeleton from "../../../components/ui/ManageUsersSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const ManageUsers = () => {
 	const { users, isLoading, refetch } = useAdminUsers();
@@ -60,6 +61,7 @@ const ManageUsers = () => {
 
 	return (
 		<div className='mt-10'>
+			<PageTitle title="Manage Users" description="Manage platform users, roles, and account statuses." />
 			<h2 className='text-xl font-semibold mb-4'>Manage Users</h2>
 			<div className='overflow-x-auto'>
 				<table className='table w-full'>

@@ -16,6 +16,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { imageUpload } from "../../../api/utils";
 import TaskDetailsSkeleton from "../../../components/ui/TaskDetailsSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const TaskDetails = () => {
 	const { id } = useParams();
@@ -86,6 +87,7 @@ const TaskDetails = () => {
 
 	return (
 		<div className='sm:px-4 py-8 space-y-8'>
+			<PageTitle title="Task Details" description="View detailed information about the selected task." />
 			{/* Back Button */}
 			<button
 				onClick={() => navigate("/dashboard/tasks-list")}

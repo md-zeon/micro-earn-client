@@ -1,9 +1,14 @@
 import { toast } from "react-hot-toast";
 import contactImage from "../../assets/contact.svg";
+import PageTitle from "../../components/PageTitle";
 
 const Contact = () => {
 	return (
 		<section className='max-w-7xl mx-auto px-6 py-16'>
+			<PageTitle
+				title='Contact Us'
+				description='Get in touch with the MicroEarn team for support, partnerships, or feedback.'
+			/>
 			<div className='text-center mb-10'>
 				<h2 className='text-4xl font-bold text-gradient mb-3'>Let's Talk</h2>
 				<p className='text-gray-600 max-w-xl mx-auto'>
@@ -28,7 +33,7 @@ const Contact = () => {
 						toast.success("Thanks for reaching out! We'll get back to you soon.");
 					}}
 					className='bg-base-100 p-8 rounded-xl shadow-lg space-y-6'
-                    data-aos="fade-left"
+					data-aos='fade-left'
 				>
 					<div>
 						<label className='block text-sm font-medium mb-1'>Your Name</label>

@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable";
 import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const AdminDashboard = ({ greeting }) => {
 	const { user } = useAuth();
@@ -16,7 +17,13 @@ const AdminDashboard = ({ greeting }) => {
 	const { pendingRequests: withdrawRequests, isWithdrawLoading, refetch } = useWithdrawRequests();
 	const axiosSecure = useAxiosSecure();
 
-	if (isStatsLoading || isWithdrawLoading ) return <DashboardSkeleton statsCount={4} showTable={true} />;
+	if (isStatsLoading || isWithdrawLoading)
+		return (
+			<DashboardSkeleton
+				statsCount={4}
+				showTable={true}
+			/>
+		);
 
 	const handleApprove = async (withdraw) => {
 		try {
@@ -52,10 +59,16 @@ const AdminDashboard = ({ greeting }) => {
 
 	return (
 		<div className='space-y-8'>
+			<PageTitle
+				title='Admin Dashboard'
+				description='Admin panel to manage MicroEarn users, tasks, and withdrawals in real-time.'
+			/>
 			<div className='sm:px-4'>
 				<div className='flex items-center justify-between flex-wrap'>
 					<div>
-						<h1 className='text-3xl font-bold tracking-tight mb-2'>{greeting}, {user?.displayName || "Admin"}!</h1>
+						<h1 className='text-3xl font-bold tracking-tight mb-2'>
+							{greeting}, {user?.displayName || "Admin"}!
+						</h1>
 						<p>Monitor platform activity and manage users.</p>
 					</div>
 					<Link

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { LuCoins, LuTrash2 } from "react-icons/lu";
 import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import ManageTasksSkeleton from "../../../components/ui/ManageTasksSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const ManageTasks = () => {
 	const { tasks, isLoading, refetch } = useAdminTasks();
@@ -43,6 +44,7 @@ const ManageTasks = () => {
 
 	return (
 		<div className='mt-10'>
+			<PageTitle title="Manage Tasks" description="Oversee all platform tasks and moderate content." />
 			<h2 className='text-xl font-semibold mb-4'>Manage Tasks</h2>
 			<div className='overflow-x-auto'>
 				<table className='table w-full'>

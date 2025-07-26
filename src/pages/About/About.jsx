@@ -1,10 +1,16 @@
 import aboutImg from "../../assets/about.svg";
+import PageTitle from "../../components/PageTitle";
 import GlassCard from "../../components/ui/GlassCard";
 import { LuBadgeDollarSign, LuUserCheck, LuShieldCheck, LuGlobe } from "react-icons/lu";
 
 const About = () => {
 	return (
 		<section className='bg-base-200 text-base-content py-12 px-4 sm:px-6 md:px-8'>
+			<PageTitle
+				title='About Us'
+				description="Learn about MicroEarn's mission to connect task creators with skilled workers worldwide."
+			/>
+
 			{/* Top Section */}
 			<div className='max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-8 sm:gap-10'>
 				{/* Text */}

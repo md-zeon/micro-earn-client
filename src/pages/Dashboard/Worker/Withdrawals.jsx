@@ -6,6 +6,7 @@ import StatsCard from "../../../components/shared/StatsCard";
 import useWithDrawals from "../../../hooks/useWithDrawals";
 import Container from "../../../components/Container";
 import WithdrawalsSkeleton from "../../../components/ui/WithdrawalsSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const Withdrawals = () => {
 	const { microCoins: coins, isLoading: isCoinsLoading } = useAvailableCoins();
@@ -20,6 +21,7 @@ const Withdrawals = () => {
 	return (
 		<Container>
 			<div className='sm:px-4 py-8 min-h-screen space-y-6'>
+				<PageTitle title="Withdrawals" description="Request withdrawal of your earned money." />
 				<h1 className='text-3xl font-bold text-center text-gradient'>Withdrawals</h1>
 
 				{/* Coin Stats */}

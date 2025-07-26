@@ -8,6 +8,7 @@ import PurchaseModal from "../../../components/Modals/PurchaseModal";
 import { loadStripe } from "@stripe/stripe-js";
 import useAuth from "../../../hooks/useAuth";
 import PurchaseCoinSkeleton from "../../../components/ui/PurchaseCoinSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 // Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -78,6 +79,7 @@ const PurchaseCoin = () => {
 
 	return (
 		<div className='max-w-6xl mx-auto px-4 py-6 space-y-6'>
+			<PageTitle title="Purchase Coins" description="Buy coins to pay workers for completing your tasks." />
 			<div className='text-center'>
 				<h1 className='text-3xl font-bold mb-2'>Purchase Coins</h1>
 				<p className='text-gray-500'>Choose a package to add coins to your account</p>

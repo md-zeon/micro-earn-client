@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import registerImg from "../../assets/signUp.svg";
 import Container from "../../components/Container";
 import StepIndicator from "../../components/Form/StepIndicator";
+import PageTitle from "../../components/PageTitle";
 
 const Register = () => {
 	const { createUser, updateUserProfile, user: authUser } = useAuth();
@@ -27,8 +28,9 @@ const Register = () => {
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
-	const from = ["/login", "/register", "/"].includes(location?.state?.from?.pathname) ? "/dashboard" : location?.state?.from?.pathname || "/dashboard";
-
+	const from = ["/login", "/register", "/"].includes(location?.state?.from?.pathname)
+		? "/dashboard"
+		: location?.state?.from?.pathname || "/dashboard";
 
 	const {
 		register,
@@ -87,6 +89,10 @@ const Register = () => {
 
 	return (
 		<Container>
+			<PageTitle
+				title='Register'
+				description='Create your MicroEarn account and join thousands earning from micro-tasks.'
+			/>
 			<div className='py-12 px-4 min-h-screen grid md:grid-cols-2 items-center gap-10'>
 				{/* Illustration Section */}
 				<div className='hidden md:block'>

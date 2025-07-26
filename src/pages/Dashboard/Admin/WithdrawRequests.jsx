@@ -4,6 +4,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
 import toast from "react-hot-toast";
 import WithdrawRequestsSkeleton from "../../../components/ui/WithdrawRequestsSkeleton";
+import PageTitle from "../../../components/PageTitle";
 
 const WithdrawRequests = () => {
 	const axiosSecure = useAxiosSecure();
@@ -43,6 +44,7 @@ const WithdrawRequests = () => {
 	};
 	return (
 		<div className="space-y-8">
+			<PageTitle title="Withdrawal Requests" description="Review and process user withdrawal requests." />
 			<div>
 				<div>
 					<h2 className='text-2xl font-semibold mb-2'>Pending Requests</h2>
