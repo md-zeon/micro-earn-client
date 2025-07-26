@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Profile = () => {
-	const { user, updateUserProfile, loading } = useAuth();
+	const { user, updateUserProfile, refreshUser, loading } = useAuth();
 	const { role, isLoading: roleLoading } = useRole();
 	const { microCoins: coins, isMicroCoinsLoading } = useAvailableCoins();
 	const axiosSecure = useAxiosSecure();
@@ -52,9 +52,8 @@ const Profile = () => {
 			}
 
 			await updateUserProfile(name, updatedPhotoURL);
-
 			await axiosSecure.patch("/update-profile", { name, photoURL: updatedPhotoURL });
-
+			await refreshUser();
 			setOriginalName(name);
 			setOriginalPhotoURL(updatedPhotoURL);
 			setPreview(updatedPhotoURL);

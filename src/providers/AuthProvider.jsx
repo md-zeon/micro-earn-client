@@ -36,11 +36,16 @@ const AuthProvider = ({ children }) => {
 	const signInUser = (email, password) => {
 		setLoading(true);
 		return signInWithEmailAndPassword(auth, email, password);
-	} 
+	};
 
 	const logOut = () => {
 		setLoading(true);
 		return signOut(auth);
+	};
+
+	const refreshUser = async () => {
+		await auth.currentUser?.reload();
+		setUser({ ...auth.currentUser });
 	};
 
 	useEffect(() => {
@@ -59,6 +64,7 @@ const AuthProvider = ({ children }) => {
 		signInWithGoogle,
 		signInUser,
 		logOut,
+		refreshUser,
 	};
 	return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;
 };

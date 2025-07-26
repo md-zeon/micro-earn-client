@@ -28,8 +28,9 @@ const ManageUsers = () => {
 				text: "You really want to delete this user!",
 				icon: "warning",
 				showCancelButton: true,
+				buttonsStyling: false,
 				customClass: {
-					confirmButton: "btn bg-gradient-error",
+					confirmButton: "btn mr-5 bg-gradient-error",
 					cancelButton: "btn bg-gradient-success",
 				},
 				confirmButtonText: "Yes, delete user!",
@@ -40,8 +41,9 @@ const ManageUsers = () => {
 				await Swal.fire({
 					icon: "success",
 					title: "User deleted",
+					buttonsStyling: false,
 					customClass: {
-						confirmButton: "btn bg-gradient-success",
+						confirmButton: "btn mr-5 bg-gradient-success",
 					},
 				});
 			}
@@ -50,8 +52,9 @@ const ManageUsers = () => {
 			Swal.fire({
 				icon: "error",
 				title: "Failed to delete user",
+				buttonsStyling: false,
 				customClass: {
-					confirmButton: "btn bg-gradient-error",
+					confirmButton: "btn mr-5 bg-gradient-error",
 				},
 			});
 		}
@@ -61,7 +64,10 @@ const ManageUsers = () => {
 
 	return (
 		<div className='mt-10'>
-			<PageTitle title="Manage Users" description="Manage platform users, roles, and account statuses." />
+			<PageTitle
+				title='Manage Users'
+				description='Manage platform users, roles, and account statuses.'
+			/>
 			<h2 className='text-xl font-semibold mb-4'>Manage Users</h2>
 			<div className='overflow-x-auto'>
 				<table className='table w-full'>

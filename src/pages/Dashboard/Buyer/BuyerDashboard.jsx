@@ -55,7 +55,6 @@ const BuyerDashboard = ({ greeting }) => {
 			{/* Main Content */}
 			<main className='py-8 sm:px-4'>
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
-					{/* Total Tasks Card */}
 					<StatsCard
 						label='Total Tasks'
 						Icon={LuListTodo}
@@ -64,16 +63,14 @@ const BuyerDashboard = ({ greeting }) => {
 						color='text-base-content'
 					/>
 
-					{/* Pending Workers Card */}
 					<StatsCard
-						label='Pending Workers'
+						label='Pending Tasks'
 						Icon={LuUsers}
 						value={totalPendingWorkers}
 						subtitle='Workers needed for tasks'
 						color='text-base-content'
 					/>
 
-					{/* Total Payments Card */}
 					<StatsCard
 						label='Total Payments'
 						Icon={LuDollarSign}
@@ -83,7 +80,6 @@ const BuyerDashboard = ({ greeting }) => {
 						color='text-base-content'
 					/>
 
-					{/* Available Coins Card */}
 					<StatsCard
 						label='Available Coins'
 						Icon={LuClock}

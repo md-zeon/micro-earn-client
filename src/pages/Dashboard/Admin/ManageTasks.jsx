@@ -19,8 +19,9 @@ const ManageTasks = () => {
 				icon: "warning",
 				showCancelButton: true,
 				confirmButtonText: "Yes, delete it!",
+				buttonsStyling: false,
 				customClass: {
-					confirmButton: "btn bg-gradient-success",
+					confirmButton: "btn mr-5 bg-gradient-success",
 					cancelButton: "btn bg-gradient-error",
 				},
 			});
@@ -44,7 +45,10 @@ const ManageTasks = () => {
 
 	return (
 		<div className='mt-10'>
-			<PageTitle title="Manage Tasks" description="Oversee all platform tasks and moderate content." />
+			<PageTitle
+				title='Manage Tasks'
+				description='Oversee all platform tasks and moderate content.'
+			/>
 			<h2 className='text-xl font-semibold mb-4'>Manage Tasks</h2>
 			<div className='overflow-x-auto'>
 				<table className='table w-full'>

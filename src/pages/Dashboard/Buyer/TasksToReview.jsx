@@ -31,27 +31,40 @@ const TasksToReview = () => {
 			refetch();
 			Swal.fire({
 				icon: "success",
-				title: "Submission approved and coins rewarded!",
+				title: "Approved",
+				text: "Submission approved and coins rewarded!",
+				showCancelButton: false,
+				buttonsStyling: false,
 				customClass: {
-					confirmButton: "btn bg-gradient",
+					confirmButton: "btn mr-5 bg-gradient",
 				},
+				confirmButtonText: "Ok",
 			});
 		} catch (error) {
 			console.error(error);
-			Swal.fire("Error", "Failed to approve submission.", "error");
+			Swal.fire({
+				icon: "error",
+				title: "Error!",
+				text: "Failed to approve submission.",
+				buttonsStyling: false,
+				customClass: {
+					confirmButton: "btn mr-5 bg-gradient-error",
+				},
+			});
 		}
 	};
 
 	const handleReject = async (submission) => {
 		try {
 			const result = await Swal.fire({
+				icon: "warning",
 				title: "Are you sure?",
 				text: "You won't be able to revert this!",
-				icon: "warning",
 				showCancelButton: true,
+				buttonsStyling: false,
 				customClass: {
-					confirmButton: "btn btn-sm bg-gradient-success",
-					cancelButton: "btn btn-sm btn-gradient-error",
+					confirmButton: "btn mr-5 bg-gradient-success",
+					cancelButton: "btn bg-gradient-error",
 				},
 				confirmButtonText: "Yes, reject it!",
 			});
@@ -67,11 +80,27 @@ const TasksToReview = () => {
 					status: "increase",
 				});
 				refetch();
-				Swal.fire("Success", "Submission rejected!", "success");
+				Swal.fire({
+					icon: "success",
+					title: "Success!",
+					text: "Submission Rejected!",
+					buttonsStyling: false,
+					customClass: {
+						confirmButton: "btn mr-5 btn-sm bg-gradient",
+					},
+				});
 			}
 		} catch (error) {
 			console.error(error);
-			Swal.fire("Error", "Failed to reject submission.", "error");
+			Swal.fire({
+				icon: "error",
+				title: "Error",
+				text: "Failed to reject submission.",
+				buttonsStyling: false,
+				customClass: {
+					confirmButton: "btn mr-5 btn-sm bg-gradient-error",
+				},
+			});
 		}
 	};
 
@@ -85,7 +114,10 @@ const TasksToReview = () => {
 
 	return (
 		<div className='mt-12'>
-			<PageTitle title="Tasks to Review" description="Review and approve task submissions from workers." />
+			<PageTitle
+				title='Tasks to Review'
+				description='Review and approve task submissions from workers.'
+			/>
 			<h2 className='text-xl font-bold mb-4'>Tasks To Review</h2>
 			{buyerSubmissions?.length === 0 ? (
 				<p>No submissions to review.</p>
@@ -105,10 +137,10 @@ const TasksToReview = () => {
 							{buyerSubmissions?.map((s) => (
 								<tr key={s._id}>
 									<td>
-										<p className="w-max">{s.worker_name}</p>
+										<p className='w-max'>{s.worker_name}</p>
 									</td>
 									<td>
-										<p className="w-max">{s.task_title}</p>
+										<p className='w-max'>{s.task_title}</p>
 									</td>
 									<td>{s.payable_amount}</td>
 									<td className='capitalize'>{s.status}</td>

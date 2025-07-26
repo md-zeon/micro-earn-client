@@ -12,7 +12,7 @@ import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 import PageTitle from "../../../components/PageTitle";
 
 const MyTasks = () => {
-	const {user} = useAuth();
+	const { user } = useAuth();
 	const { tasks, isTasksLoading, refetch } = useBuyerTasks();
 	const { refetch: refetchCoins } = useAvailableCoins();
 	const axiosSecure = useAxiosSecure();
@@ -31,8 +31,11 @@ const MyTasks = () => {
 			text: "This task will be deleted, and coins will be refunded for uncompleted tasks.",
 			icon: "warning",
 			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
+			buttonsStyling: false,
+			customClass: {
+				confirmButton: "btn mr-5 bg-gradient-success",
+				cancelButton: "btn bg-gradient-error",
+			},
 			confirmButtonText: "Yes, delete it!",
 		});
 
@@ -48,7 +51,15 @@ const MyTasks = () => {
 				}
 				refetch();
 				refetchCoins();
-				Swal.fire("Deleted!", "Task has been deleted.", "success");
+				Swal.fire({
+					icon: "success",
+					title: "Deleted!",
+					text: "Task deleted successfully",
+					buttonsStyling: false,
+					customClass: {
+						confirmButton: "btn mr-5 bg-gradient-success",
+					},
+				});
 			} catch (err) {
 				console.error("Delete Task Error:", err);
 				toast.error("Failed to delete task. Please try again.");
@@ -73,14 +84,28 @@ const MyTasks = () => {
 			await axiosSecure.patch(`/tasks/${selectedTask._id}`, formData);
 			refetch();
 			setIsModalOpen(false);
-			Swal.fire("Updated!", "Task has been updated.", "success");
+			Swal.fire({
+				icon: "success",
+				title: "Updated!",
+				text: "Task has been updated successfully",
+				buttonsStyling: false,
+				customClass: {
+					confirmButton: "btn mr-5 bg-gradient-success",
+				},
+			});
 		} catch (err) {
 			console.error("Update Task Error:", err);
 			toast.error("Failed to update task. Please try again.");
 		}
 	};
 
-	if (isTasksLoading) return <DashboardSkeleton statsCount={4} showTable={true}/>;
+	if (isTasksLoading)
+		return (
+			<DashboardSkeleton
+				statsCount={4}
+				showTable={true}
+			/>
+		);
 
 	const totalTasks = tasks.length;
 	const activeTasks = tasks.filter((task) => task.status === "active").length;
@@ -89,7 +114,10 @@ const MyTasks = () => {
 
 	return (
 		<div>
-			<PageTitle title="My Tasks" description="Manage your posted tasks and track their progress." />
+			<PageTitle
+				title='My Tasks'
+				description='Manage your posted tasks and track their progress.'
+			/>
 			<div className='flex justify-between items-center mb-6'>
 				<h1 className='text-3xl font-bold'>My Tasks</h1>
 				<button className='btn btn-sm bg-gradient-success rounded-full'>{tasks.length}</button>

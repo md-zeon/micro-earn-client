@@ -62,12 +62,20 @@ const PurchaseCoin = () => {
 				confirmButtonText: "OK",
 				buttonsStyling: false,
 				customClass: {
-					confirmButton: "btn bg-gradient",
+					confirmButton: "btn mr-5 bg-gradient",
 				},
 			});
 		} catch (err) {
 			console.error("Purchase Error:", err);
-			Swal.fire("Error!", "Payment failed. Please try again.", "error");
+			Swal.fire({
+				icon: "error",
+				title: "Error!",
+				text: "Payment failed. Please try again.",
+				buttonsStyling: false,
+				customClass: {
+					confirmButton: "btn mr-5 bg-gradient-error",
+				},
+			});
 		} finally {
 			setProcessing(false);
 			setIsModalOpen(false);
@@ -79,7 +87,10 @@ const PurchaseCoin = () => {
 
 	return (
 		<div className='max-w-6xl mx-auto px-4 py-6 space-y-6'>
-			<PageTitle title="Purchase Coins" description="Buy coins to pay workers for completing your tasks." />
+			<PageTitle
+				title='Purchase Coins'
+				description='Buy coins to pay workers for completing your tasks.'
+			/>
 			<div className='text-center'>
 				<h1 className='text-3xl font-bold mb-2'>Purchase Coins</h1>
 				<p className='text-gray-500'>Choose a package to add coins to your account</p>

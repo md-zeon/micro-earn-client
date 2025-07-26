@@ -18,8 +18,9 @@ const WithdrawRequests = () => {
 				text: "You want to approve this withdrawal request?",
 				icon: "warning",
 				showCancelButton: true,
+				buttonsStyling: false,
 				customClass: {
-					confirmButton: "btn bg-gradient-success",
+					confirmButton: "btn mr-5 bg-gradient-success",
 					cancelButton: "btn bg-gradient-error",
 				},
 				confirmButtonText: "Yes, approve it!",
@@ -43,8 +44,11 @@ const WithdrawRequests = () => {
 		}
 	};
 	return (
-		<div className="space-y-8">
-			<PageTitle title="Withdrawal Requests" description="Review and process user withdrawal requests." />
+		<div className='space-y-8'>
+			<PageTitle
+				title='Withdrawal Requests'
+				description='Review and process user withdrawal requests.'
+			/>
 			<div>
 				<div>
 					<h2 className='text-2xl font-semibold mb-2'>Pending Requests</h2>

@@ -10,7 +10,7 @@ const MyTaskTable = ({ tasks, onUpdateClick, onDeleteClick }) => {
 						<th>Workers</th>
 						<th>Payment</th>
 						<th>Deadline</th>
-						<th>Total Cost</th>
+						<th>Cost</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
