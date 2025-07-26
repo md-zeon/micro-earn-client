@@ -75,9 +75,20 @@ const WithdrawalForm = ({ onSuccess }) => {
 						<input
 							type='number'
 							value={coinToWithdraw}
-							onChange={(e) => setCoinToWithdraw(e.target.value)}
 							min='200'
 							max={coins}
+							onChange={(e) => {
+								const val = parseInt(e.target.value);
+								if (!isNaN(val)) {
+									if (val > coins) {
+										setCoinToWithdraw(coins);
+									} else {
+										setCoinToWithdraw(val);
+									}
+								} else {
+									setCoinToWithdraw("");
+								}
+							}}
 							onWheel={(e) => e.target.blur()}
 							className='input input-bordered w-full p-2'
 							placeholder='Enter coins'
@@ -144,7 +155,9 @@ const WithdrawalForm = ({ onSuccess }) => {
 				) : (
 					<button
 						type='submit'
-						className={`btn w-full ${!coinToWithdraw || !paymentSystem || !accountNumber ? "cursor-not-allowed" : "cursor-pointer bg-gradient"}`}
+						className={`btn w-full ${
+							!coinToWithdraw || !paymentSystem || !accountNumber ? "cursor-not-allowed" : "cursor-pointer bg-gradient"
+						}`}
 						disabled={loading || !coinToWithdraw || !paymentSystem || !accountNumber}
 					>
 						{loading ? "Processing..." : "Submit Withdrawal Request"}
