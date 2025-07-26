@@ -6,6 +6,8 @@ import GoogleSignIn from "./GoogleSignIn";
 import { Link, useLocation, useNavigate } from "react-router";
 import { imageUpload, saveUserInDb } from "../../api/utils";
 import toast from "react-hot-toast";
+import registerImg from "../../assets/signUp.svg";
+import Container from "../../components/Container";
 
 const Register = () => {
 	const { createUser, updateUserProfile, user: authUser } = useAuth();
@@ -67,203 +69,215 @@ const Register = () => {
 	};
 
 	return (
-		<div className='py-12 px-4 min-h-screen flex justify-center items-center'>
-			<div className='max-w-md mx-auto p-6 border rounded-xl bg-base-100 shadow text-base-content'>
-				<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
-					<LuUserPlus />
+		<Container>
+			<div className='py-12 px-4 min-h-screen grid md:grid-cols-2 items-center gap-10'>
+				{/* Illustration Section */}
+				<div className='hidden md:block'>
+					<img
+						src={registerImg}
+						alt='Register Illustration'
+						className='w-full max-w-md mx-auto'
+					/>
 				</div>
-				<h2 className='text-2xl font-bold text-center mb-2'>Create Account</h2>
-				<p className='text-center text-xs text-gray-400 mb-5'>Join MicroEarn and start your earning journey today</p>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className='space-y-4'
-				>
-					{/* Full Name */}
-					<div>
-						<label className='text-sm'>
-							Full Name <span className='text-red-500'>*</span>
-						</label>
-						<div className='input input-bordered w-full'>
-							<LuUser className='text-gray-500' />
-							<input
-								type='text'
-								className='grow'
-								placeholder='Enter your name'
-								{...register("name", { required: "Name is required" })}
-							/>
-						</div>
-						{errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
-					</div>
-					{/* Email */}
-					<div>
-						<label className='text-sm'>
-							Email Address <span className='text-red-500 text-sm'>*</span>
-						</label>
-						<div className='input input-bordered w-full'>
-							<LuMail className='text-gray-500' />
-							<input
-								type='email'
-								className='grow'
-								{...register("email", {
-									required: "Email is required",
-									pattern: {
-										value: /^\S+@\S+$/i,
-										message: "Invalid email address",
-									},
-								})}
-								placeholder='example@mail.com'
-								autoComplete='email'
-							/>
-						</div>
-						{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
-					</div>
-					{/* Profile Picture Upload */}
-					<div>
-						<label className='text-sm'>
-							Profile Picture <span className='text-red-500 text-sm'>*</span>
-						</label>
-						<input
-							type='file'
-							accept='image/*'
-							className='file-input file-input-accent file-input-bordered w-full'
-							{...register("photo", { required: "Photo is required" })}
-						/>
-						{errors.photo && <p className='text-red-500 text-sm'>{errors.photo.message}</p>}
-					</div>
-					{/* Role */}
-					<div>
-						<label className='text-sm'>
-							Select Role <span className='text-red-500 text-sm'>*</span>
-						</label>
-						<select
-							className='select select-bordered w-full'
-							{...register("role", { required: "Select a role" })}
-						>
-							<option
-								value=''
-								disabled
-							>
-								Select Role
-							</option>
-							<option value='worker'>Worker</option>
-							<option value='buyer'>Buyer</option>
-						</select>
-						{errors.role && <p className='text-red-500 text-sm'>{errors.role.message}</p>}
-					</div>
-					{/* Password */}
-					<div>
-						<label className='text-sm'>
-							Password <span className='text-red-500 text-sm'>*</span>
-						</label>
-						<div className='input input-bordered w-full'>
-							{showPassword ? (
-								<LuLockOpen
-									className='text-gray-700 cursor-pointer'
-									onClick={() => setShowPassword(!showPassword)}
-								/>
-							) : (
-								<LuLock
-									className='text-gray-500 cursor-pointer'
-									onClick={() => setShowPassword(!showPassword)}
-								/>
-							)}
-							<input
-								type={showPassword ? "text" : "password"}
-								className='grow'
-								{...register("password", {
-									required: "Password is required",
-									minLength: { value: 6, message: "Min 6 characters" },
-									pattern: {
-										value: /^(?=.*[A-Z])(?=.*[!@#$&*])/,
-										message: "At least one uppercase and one special character",
-									},
-								})}
-								placeholder='Enter your password'
-								autoComplete='new-password'
-							/>
-							{!showPassword ? (
-								<LuEye
-									className='text-lg cursor-pointer'
-									onClick={() => setShowPassword(!showPassword)}
-								/>
-							) : (
-								<LuEyeClosed
-									className='text-lg cursor-pointer'
-									onClick={() => setShowPassword(!showPassword)}
-								/>
-							)}
-						</div>
-						{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
-					</div>
-					{/* Confirm Password */}
-					<div>
-						<label className='text-sm'>
-							Confirm Password <span className='text-red-500 text-sm'>*</span>
-						</label>
-						<div className='input input-bordered w-full'>
-							{showConfirmPassword ? (
-								<LuLockOpen
-									className='text-gray-700 cursor-pointer'
-									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								/>
-							) : (
-								<LuLock
-									className='text-gray-500 cursor-pointer'
-									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								/>
-							)}
-							<input
-								type={showConfirmPassword ? "text" : "password"}
-								className='grow'
-								{...register("confirmPassword", {
-									required: "Please confirm your password",
-									minLength: { value: 6, message: "Min 6 characters" },
-									validate: (value) => value === password || "Password did not match",
-								})}
-								placeholder='Confirm your password'
-								autoComplete='new-password'
-							/>
-							{!showConfirmPassword ? (
-								<LuEye
-									className='text-lg cursor-pointer'
-									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								/>
-							) : (
-								<LuEyeClosed
-									className='text-lg cursor-pointer'
-									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								/>
-							)}
-						</div>
-						{errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
-					</div>
 
-					<button
-						type='submit'
-						className='btn w-full bg-gradient text-white'
-						disabled={loading}
+				{/* Form Section */}
+				<div className='mx-auto p-6 border rounded-xl bg-base-100 shadow text-base-content'>
+					<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
+						<LuUserPlus />
+					</div>
+					<h2 className='text-2xl font-bold text-center mb-2'>Create Account</h2>
+					<p className='text-center text-xs text-gray-400 mb-5'>Join MicroEarn and start your earning journey today</p>
+					<form
+						onSubmit={handleSubmit(onSubmit)}
+						className='space-y-4'
 					>
-						{loading ? "Registering..." : "Create Account"}
-					</button>
-				</form>
-				<GoogleSignIn
-					loading={loading}
-					setLoading={setLoading}
-				/>
-				{/* Login Link */}
-				<div className='mt-6 text-center'>
-					<p className='text-sm text-gray-400'>
-						Already have an account?{" "}
-						<Link
-							to='/login'
-							className='text-accent hover:underline font-medium'
+						{/* Full Name */}
+						<div>
+							<label className='text-sm'>
+								Full Name <span className='text-red-500'>*</span>
+							</label>
+							<div className='input input-bordered w-full'>
+								<LuUser className='text-gray-500' />
+								<input
+									type='text'
+									className='grow'
+									placeholder='Enter your name'
+									{...register("name", { required: "Name is required" })}
+								/>
+							</div>
+							{errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
+						</div>
+						{/* Email */}
+						<div>
+							<label className='text-sm'>
+								Email Address <span className='text-red-500 text-sm'>*</span>
+							</label>
+							<div className='input input-bordered w-full'>
+								<LuMail className='text-gray-500' />
+								<input
+									type='email'
+									className='grow'
+									{...register("email", {
+										required: "Email is required",
+										pattern: {
+											value: /^\S+@\S+$/i,
+											message: "Invalid email address",
+										},
+									})}
+									placeholder='example@mail.com'
+									autoComplete='email'
+								/>
+							</div>
+							{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
+						</div>
+						{/* Profile Picture Upload */}
+						<div>
+							<label className='text-sm'>
+								Profile Picture <span className='text-red-500 text-sm'>*</span>
+							</label>
+							<input
+								type='file'
+								accept='image/*'
+								className='file-input file-input-accent file-input-bordered w-full'
+								{...register("photo", { required: "Photo is required" })}
+							/>
+							{errors.photo && <p className='text-red-500 text-sm'>{errors.photo.message}</p>}
+						</div>
+						{/* Role */}
+						<div>
+							<label className='text-sm'>
+								Select Role <span className='text-red-500 text-sm'>*</span>
+							</label>
+							<select
+								className='select select-bordered w-full'
+								{...register("role", { required: "Select a role" })}
+							>
+								<option
+									value=''
+									disabled
+								>
+									Select Role
+								</option>
+								<option value='worker'>Worker</option>
+								<option value='buyer'>Buyer</option>
+							</select>
+							{errors.role && <p className='text-red-500 text-sm'>{errors.role.message}</p>}
+						</div>
+						{/* Password */}
+						<div>
+							<label className='text-sm'>
+								Password <span className='text-red-500 text-sm'>*</span>
+							</label>
+							<div className='input input-bordered w-full'>
+								{showPassword ? (
+									<LuLockOpen
+										className='text-gray-700 cursor-pointer'
+										onClick={() => setShowPassword(!showPassword)}
+									/>
+								) : (
+									<LuLock
+										className='text-gray-500 cursor-pointer'
+										onClick={() => setShowPassword(!showPassword)}
+									/>
+								)}
+								<input
+									type={showPassword ? "text" : "password"}
+									className='grow'
+									{...register("password", {
+										required: "Password is required",
+										minLength: { value: 6, message: "Min 6 characters" },
+										pattern: {
+											value: /^(?=.*[A-Z])(?=.*[!@#$&*])/,
+											message: "At least one uppercase and one special character",
+										},
+									})}
+									placeholder='Enter your password'
+									autoComplete='new-password'
+								/>
+								{!showPassword ? (
+									<LuEye
+										className='text-lg cursor-pointer'
+										onClick={() => setShowPassword(!showPassword)}
+									/>
+								) : (
+									<LuEyeClosed
+										className='text-lg cursor-pointer'
+										onClick={() => setShowPassword(!showPassword)}
+									/>
+								)}
+							</div>
+							{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
+						</div>
+						{/* Confirm Password */}
+						<div>
+							<label className='text-sm'>
+								Confirm Password <span className='text-red-500 text-sm'>*</span>
+							</label>
+							<div className='input input-bordered w-full'>
+								{showConfirmPassword ? (
+									<LuLockOpen
+										className='text-gray-700 cursor-pointer'
+										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+									/>
+								) : (
+									<LuLock
+										className='text-gray-500 cursor-pointer'
+										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+									/>
+								)}
+								<input
+									type={showConfirmPassword ? "text" : "password"}
+									className='grow'
+									{...register("confirmPassword", {
+										required: "Please confirm your password",
+										minLength: { value: 6, message: "Min 6 characters" },
+										validate: (value) => value === password || "Password did not match",
+									})}
+									placeholder='Confirm your password'
+									autoComplete='new-password'
+								/>
+								{!showConfirmPassword ? (
+									<LuEye
+										className='text-lg cursor-pointer'
+										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+									/>
+								) : (
+									<LuEyeClosed
+										className='text-lg cursor-pointer'
+										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+									/>
+								)}
+							</div>
+							{errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
+						</div>
+
+						<button
+							type='submit'
+							className='btn w-full bg-gradient text-white'
+							disabled={loading}
 						>
-							Sign in here
-						</Link>
-					</p>
+							{loading ? "Registering..." : "Create Account"}
+						</button>
+					</form>
+					<GoogleSignIn
+						loading={loading}
+						setLoading={setLoading}
+					/>
+					{/* Login Link */}
+					<div className='mt-6 text-center'>
+						<p className='text-sm text-gray-400'>
+							Already have an account?{" "}
+							<Link
+								to='/login'
+								className='text-accent hover:underline font-medium'
+							>
+								Sign in here
+							</Link>
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</Container>
 	);
 };
 
