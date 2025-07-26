@@ -53,7 +53,7 @@ const AddTask = () => {
 
 		if (totalCost > microCoins) {
 			toast.error("Not enough coins. Please purchase more.");
-			navigate("/dashboard/purchase-coins");
+			navigate("/dashboard/purchase-coin");
 			setLoading(false);
 			return;
 		}

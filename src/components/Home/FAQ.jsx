@@ -41,7 +41,7 @@ const faqs = [
 
 const FAQ = () => {
 	return (
-		<section className='p-16'>
+		<section className='py-16'>
 			<div className='max-w-7xl mx-auto px-4'>
 				<h2 className='text-3xl md:text-4xl font-bold text-center text-gradient mb-3'>Frequently Asked Questions</h2>
 				<p className='text-center text-gray-500 mb-10'>Answers to common questions about MicroEarn.</p>
