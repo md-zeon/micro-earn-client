@@ -1,4 +1,4 @@
-import faqIllustration from "../../assets/faq.svg"; // ✅ update the path if needed
+import faqIllustration from "../../assets/faq.svg";
 
 const faqs = [
 	{
@@ -41,8 +41,8 @@ const faqs = [
 
 const FAQ = () => {
 	return (
-		<section className='bg-base-200 py-16'>
-			<div className='max-w-6xl mx-auto px-4'>
+		<section className='p-16'>
+			<div className='max-w-7xl mx-auto px-4'>
 				<h2 className='text-3xl md:text-4xl font-bold text-center text-gradient mb-3'>Frequently Asked Questions</h2>
 				<p className='text-center text-gray-500 mb-10'>Answers to common questions about MicroEarn.</p>
 
@@ -64,7 +64,7 @@ const FAQ = () => {
 					<div className='w-full md:w-1/2 space-y-4'>
 						{faqs.map(({ id, question, answer }, index) => (
 							<div
-								className='collapse collapse-plus bg-base-100 border border-base-300'
+								className='collapse collapse-plus bg-base-100/50 border border-base-300'
 								key={id}
 								data-aos='fade-up'
 								data-aos-delay={index * 100}
