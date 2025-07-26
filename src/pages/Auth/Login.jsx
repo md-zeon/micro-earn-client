@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import loginImage from "../../assets/login.svg";
 import Container from "../../components/Container";
 import PageTitle from "../../components/PageTitle";
+import { getFirebaseLoginError } from "../../api/utils";
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +44,7 @@ const Login = () => {
 			reset();
 		} catch (error) {
 			console.error("Login Error:", error);
-			toast.error(error.message || "Something went wrong during login");
+			toast.error(getFirebaseLoginError(error.code));
 		} finally {
 			setLoading(false);
 		}

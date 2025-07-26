@@ -1,9 +1,9 @@
 import toast from "react-hot-toast";
-import { saveUserInDb } from "../../api/utils";
+import { getGoogleAuthError, saveUserInDb } from "../../api/utils";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
 
-const GoogleSignIn = ({ loading, setLoading, from = '/dashboard' }) => {
+const GoogleSignIn = ({ loading, setLoading, from = "/dashboard" }) => {
 	const navigate = useNavigate();
 	const { signInWithGoogle, user: authUser } = useAuth();
 	const handleGoogleSignIn = async () => {
@@ -31,7 +31,7 @@ const GoogleSignIn = ({ loading, setLoading, from = '/dashboard' }) => {
 			toast(`Welcome ${user.displayName}`);
 		} catch (error) {
 			console.error("Google Sign-in Error:", error);
-			toast.error(error.message || "Google sign-in failed");
+			toast.error(getGoogleAuthError(error.code));
 		} finally {
 			setLoading(false);
 		}

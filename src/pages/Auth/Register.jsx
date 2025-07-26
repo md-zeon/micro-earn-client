@@ -14,7 +14,7 @@ import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
 import { Link, useLocation, useNavigate } from "react-router";
-import { imageUpload, saveUserInDb } from "../../api/utils";
+import { getFirebaseRegisterError, imageUpload, saveUserInDb } from "../../api/utils";
 import toast from "react-hot-toast";
 import registerImg from "../../assets/signUp.svg";
 import Container from "../../components/Container";
@@ -81,7 +81,7 @@ const Register = () => {
 			reset();
 		} catch (error) {
 			console.error("Registration Error:", error);
-			toast.error(error.message || "Something went wrong during registration");
+			toast.error(getFirebaseRegisterError(error.code));
 		} finally {
 			setLoading(false);
 		}
