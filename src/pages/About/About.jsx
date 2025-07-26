@@ -4,21 +4,15 @@ import { LuBadgeDollarSign, LuUserCheck, LuShieldCheck, LuGlobe } from "react-ic
 
 const About = () => {
 	return (
-		<section className='bg-base-200 text-base-content py-16 px-4'>
+		<section className='bg-base-200 text-base-content py-12 px-4 sm:px-6 md:px-8'>
 			{/* Top Section */}
-			<div className='max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-10'>
+			<div className='max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-8 sm:gap-10'>
 				{/* Text */}
-				<div
-					className='flex-1 space-y-4'
-					data-aos='fade-right'
-					data-aos-duration='1000'
-				>
+				<div className='flex-1 space-y-3'>
 					<h2 className='text-3xl md:text-4xl text-center sm:text-start font-bold text-gradient'>About MicroEarn</h2>
-					<p className='text-gray-600 leading-relaxed text-justify md:text-left'>
-						MicroEarn is a dynamic micro-task and earning platform that connects Buyers (task providers) with global
-						Workers (freelancers). Buyers post digital tasks like surveys, app tests, or content sharing, and reward
-						Workers with coins. Whether you're looking to outsource tasks or earn from home, MicroEarn empowers you with
-						the tools, flexibility, and security to succeed in the digital gig economy.
+					<p className='text-gray-600 leading-[1.7] text-left sm:text-justify'>
+						MicroEarn is a micro-task platform that connects Buyers and Workers globally. Post tasks or earn coins
+						completing them — securely, efficiently, and from anywhere.
 					</p>
 				</div>
 
@@ -38,7 +32,7 @@ const About = () => {
 
 			{/* Feature Cards */}
 			<div
-				className='mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 max-w-5xl mx-auto'
+				className='mt-14 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-5xl mx-auto'
 				data-aos='fade-up'
 				data-aos-delay='200'
 			>
