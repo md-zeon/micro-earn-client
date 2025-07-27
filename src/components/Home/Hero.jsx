@@ -54,7 +54,7 @@ const Hero = () => {
 					transition={{ duration: 0.6, delay: 0.6 }}
 				>
 					<Link to='/register'>
-						<button className='bg-gradient hover:opacity-100 font-semibold py-3 px-10 rounded-full text-lg transition-transform duration-300 transform hover:scale-105 shadow-md'>
+						<button className='bg-gradient hover:opacity-100 font-semibold py-3 px-10 rounded-full text-lg transition-transform duration-300 transform hover:scale-105 shadow-md hover:cursor-pointer'>
 							Start Earning Now
 						</button>
 					</Link>
