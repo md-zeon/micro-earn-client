@@ -18,7 +18,7 @@ const Contact = () => {
 
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
 				{/* Illustration */}
-				<div data-aos='fade-right'>
+				<div data-aos='zoom-in'>
 					<img
 						src={contactImage}
 						alt='Contact Illustration'
@@ -33,7 +33,7 @@ const Contact = () => {
 						toast.success("Thanks for reaching out! We'll get back to you soon.");
 					}}
 					className='bg-base-100 p-8 rounded-xl shadow-lg space-y-6'
-					data-aos='fade-left'
+					data-aos='fade-up'
 				>
 					<div>
 						<label className='block text-sm font-medium mb-1'>Your Name</label>

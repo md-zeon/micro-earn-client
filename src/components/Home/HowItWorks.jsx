@@ -25,7 +25,11 @@ const HowItWorks = () => {
 		<section className='py-20 px-4 md:px-10 bg-base-100'>
 			<div className='max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center'>
 				{/* Left: Steps */}
-				<div data-aos='fade-right'>
+				<div
+					data-aos='fade-up'
+					data-aos-delay='100'
+					
+				>
 					<h2 className='text-3xl md:text-4xl font-bold mb-6 text-gradient'>How MicroEarn Works</h2>
 					<p className='text-base-content/70 mb-10'>
 						MicroEarn is simple and flexible. Here's how you can start earning or hiring today:
@@ -36,6 +40,9 @@ const HowItWorks = () => {
 							<div
 								key={index}
 								className='flex items-start gap-4'
+								data-aos='fade-up'
+								data-aos-delay={200 + index * 100}
+								
 							>
 								<div className='p-3 bg-base-200 rounded-xl'>{step.icon}</div>
 								<div>
@@ -48,7 +55,11 @@ const HowItWorks = () => {
 				</div>
 
 				{/* Right: Illustration */}
-				<div data-aos='fade-left'>
+				<div
+					data-aos='zoom-in'
+					data-aos-delay='200'
+					
+				>
 					<img
 						src={HowItWorksIllustration}
 						alt='How it works illustration'

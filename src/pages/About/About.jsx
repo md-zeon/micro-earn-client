@@ -25,7 +25,7 @@ const About = () => {
 				{/* Image */}
 				<div
 					className='flex-1'
-					data-aos='fade-left'
+					data-aos='zoom-in'
 					data-aos-duration='1000'
 				>
 					<img

@@ -26,9 +26,15 @@ const WhyChooseUs = () => {
 				{/* Left Content */}
 				<div
 					className='w-full lg:w-1/2'
-					data-aos='fade-right'
+					data-aos='fade-up'
+					data-aos-delay='100'
+					
 				>
-					<h2 className='text-4xl md:text-5xl font-bold mb-6 text-center sm:text-start'>
+					<h2
+						className='text-4xl md:text-5xl font-bold mb-6 text-center sm:text-start'
+						data-aos='fade-down'
+						data-aos-delay='0'
+					>
 						Why Choose <span className='text-gradient'>MicroEarn?</span>
 					</h2>
 					<p className='text-gray-600 mb-8 max-w-lg text-center sm:text-start'>
@@ -40,8 +46,8 @@ const WhyChooseUs = () => {
 						{reasons.map((item, index) => (
 							<div
 								key={index}
-								data-aos='fade-down'
-								data-aos-delay={index * 100}
+								data-aos='fade-up'
+								data-aos-delay={300 + index * 100}
 								className='flex items-start gap-4'
 							>
 								<div>{item.icon}</div>
@@ -57,7 +63,8 @@ const WhyChooseUs = () => {
 				{/* Right Illustration */}
 				<div
 					className='w-full lg:w-1/2'
-					data-aos='fade-left'
+					data-aos='zoom-in'
+					data-aos-delay='100'
 				>
 					<img
 						src={illustration}

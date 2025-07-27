@@ -34,7 +34,6 @@ const BestWorkers = () => {
 				<p
 					className='text-center text-base text-gray-500 mb-12 max-w-2xl mx-auto'
 					data-aos='fade-up'
-					data-aos-delay='100'
 				>
 					Meet our highest-rated workers who consistently deliver top-quality results and earn the most coins on the
 					platform.
@@ -46,7 +45,7 @@ const BestWorkers = () => {
 							<div
 								key={i}
 								className='bg-base-200 p-6 rounded-2xl shadow'
-								data-aos='fade-up'
+								data-aos='zoom-in'
 								data-aos-delay={i * 100}
 							>
 								<div className='flex flex-col items-center gap-4'>
@@ -67,7 +66,7 @@ const BestWorkers = () => {
 							<GlassCard
 								key={worker._id}
 								className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'
-								data-aos='fade-up'
+								data-aos='zoom-in'
 								data-aos-delay={i * 100}
 							>
 								<div className='flex flex-col items-center text-center gap-3'>
