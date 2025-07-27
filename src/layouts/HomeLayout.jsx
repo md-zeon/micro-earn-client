@@ -1,7 +1,7 @@
 import { Outlet, useNavigation } from "react-router";
 import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
-import Aos from "aos";
+import AOS from "aos";
 import { useEffect } from "react";
 import Footer from "../components/Footer";
 
@@ -10,7 +10,7 @@ const HomeLayout = () => {
 	const state = navigation?.state;
 
 	useEffect(() => {
-		Aos?.init({ duration: 600, once: true });
+		AOS?.init({ duration: 700, once: true });
 	}, []);
 
 	return (

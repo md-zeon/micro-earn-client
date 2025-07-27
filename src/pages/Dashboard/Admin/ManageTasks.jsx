@@ -31,8 +31,10 @@ const ManageTasks = () => {
 				await Swal.fire({
 					icon: "success",
 					title: "Task deleted successfully",
-					showConfirmButton: false,
-					timer: 1500,
+					buttonsStyling: false,
+					customClass: {
+						confirmButton: "btn mr-5 bg-gradient-success",
+					},
 				});
 			}
 		} catch (err) {

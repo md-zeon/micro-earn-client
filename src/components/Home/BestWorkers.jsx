@@ -40,13 +40,16 @@ const BestWorkers = () => {
 				</p>
 
 				{loading ? (
-					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+					<div
+						className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'
+						data-aos='fade-up'
+					>
 						{[...Array(6)].map((_, i) => (
 							<div
 								key={i}
 								className='bg-base-200 p-6 rounded-2xl shadow'
 								data-aos='zoom-in'
-								data-aos-delay={i * 100}
+								data-aos-delay={100 + i * 100}
 							>
 								<div className='flex flex-col items-center gap-4'>
 									<div className='w-24 h-24 rounded-full skeleton' />
@@ -61,28 +64,32 @@ const BestWorkers = () => {
 						<p className='mt-4 text-sm opacity-60'>No workers found</p>
 					</div>
 				) : (
-					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+					<div
+						className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'
+						data-aos='fade-up'
+					>
 						{workers.map((worker, i) => (
-							<GlassCard
+							<div
 								key={worker._id}
-								className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'
-								data-aos='zoom-in'
-								data-aos-delay={i * 100}
+								data-aos=''
+								data-aos-delay={100 + i * 200}
 							>
-								<div className='flex flex-col items-center text-center gap-3'>
-									<img
-										src={worker.photoURL}
-										alt={worker.name}
-										className='w-24 h-24 rounded-full object-cover border-4 border-accent'
-										referrerPolicy="no-referrer"
-									/>
-									<h3 className='text-lg font-semibold'>{worker.name}</h3>
-									<p className='flex items-center gap-1 text-green-600 font-medium'>
-										<LuCoins className='text-xl' />
-										<span className='text-gradient'>{worker.microCoins} Coins</span>
-									</p>
-								</div>
-							</GlassCard>
+								<GlassCard className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'>
+									<div className='flex flex-col items-center text-center gap-3'>
+										<img
+											src={worker.photoURL}
+											alt={worker.name}
+											className='w-24 h-24 rounded-full object-cover border-4 border-accent'
+											referrerPolicy='no-referrer'
+										/>
+										<h3 className='text-lg font-semibold'>{worker.name}</h3>
+										<p className='flex items-center gap-1 text-green-600 font-medium'>
+											<LuCoins className='text-xl' />
+											<span className='text-gradient'>{worker.microCoins} Coins</span>
+										</p>
+									</div>
+								</GlassCard>
+							</div>
 						))}
 					</div>
 				)}

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import useAuth from "./useAuth";
+import toast from "react-hot-toast";
 
 const axiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_API_URL,
@@ -26,9 +27,11 @@ const useAxiosSecure = () => {
 				const status = error?.response?.status;
 
 				if (status === 401 || status === 400) {
+					toast.error("Session expired. Please login again.");
 					await logOut();
 					navigate("/login");
 				} else if (status === 403) {
+					toast.error("You do not have permission to access this.");
 					navigate("/forbidden");
 				}
 

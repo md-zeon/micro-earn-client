@@ -16,7 +16,11 @@ const Navbar = () => {
 			<li>
 				<NavLink
 					to='/'
-					className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
+					className={({ isActive }) =>
+						isActive
+							? "text-gradient"
+							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
+					}
 				>
 					Home
 				</NavLink>
@@ -25,7 +29,11 @@ const Navbar = () => {
 				<li>
 					<NavLink
 						to='/dashboard'
-						className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
+						className={({ isActive }) =>
+							isActive
+								? "text-gradient"
+								: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
+						}
 					>
 						Dashboard
 					</NavLink>
@@ -34,7 +42,11 @@ const Navbar = () => {
 			<li>
 				<NavLink
 					to='/about'
-					className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
+					className={({ isActive }) =>
+						isActive
+							? "text-gradient"
+							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
+					}
 				>
 					About Us
 				</NavLink>
@@ -42,7 +54,11 @@ const Navbar = () => {
 			<li>
 				<NavLink
 					to='/contact'
-					className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
+					className={({ isActive }) =>
+						isActive
+							? "text-gradient"
+							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
+					}
 				>
 					Contact Us
 				</NavLink>
@@ -125,7 +141,7 @@ const Navbar = () => {
 									</div>
 									<div
 										tabIndex={0}
-										className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow space-y-2'
+										className='menu menu-sm dropdown-content min-w-52 w-fit bg-base-100 rounded-box z-1 mt-3 p-2 shadow space-y-2'
 									>
 										<div>
 											{/* Email */}
@@ -173,7 +189,7 @@ const Navbar = () => {
 							</>
 						)}
 						<a
-							href='https://github.com/md-zeon'
+							href='https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-md-zeon'
 							target='_blank'
 							rel='noreferrer'
 							className='btn btn-outline hidden lg:inline-flex'

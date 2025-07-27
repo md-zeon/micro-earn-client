@@ -41,7 +41,7 @@ const HowItWorks = () => {
 								key={index}
 								className='flex items-start gap-4'
 								data-aos='fade-up'
-								data-aos-delay={200 + index * 100}
+								data-aos-delay={index * 100}
 								
 							>
 								<div className='p-3 bg-base-200 rounded-xl'>{step.icon}</div>
@@ -57,7 +57,6 @@ const HowItWorks = () => {
 				{/* Right: Illustration */}
 				<div
 					data-aos='zoom-in'
-					data-aos-delay='200'
 					
 				>
 					<img

@@ -39,3 +39,9 @@ body {
 .my-swiper .swiper-pagination-bullet {
 	@apply !hidden md:!inline-block;
 }
+
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.green.600') theme('colors.base.200');
+}

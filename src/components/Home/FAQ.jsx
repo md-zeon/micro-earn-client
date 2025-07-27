@@ -51,7 +51,6 @@ const FAQ = () => {
 					<div
 						className='w-full md:w-1/2'
 						data-aos='fade-up'
-						data-aos-delay='100'
 					>
 						<img
 							src={faqIllustration}
