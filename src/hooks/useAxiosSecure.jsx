@@ -15,7 +15,7 @@ const useAxiosSecure = () => {
 		// Set up interceptors only once
 		const requestInterceptor = axiosInstance.interceptors.request.use((config) => {
 			if (user?.accessToken) {
-				config.headers.Authorization = `Bearer ${user.accessToken}`;
+				config.headers.Authorization = `Bearer ${user?.accessToken}`;
 			}
 			return config;
 		});

@@ -19,13 +19,13 @@ const WorkerDashboard = ({ greeting }) => {
 		);
 
 	// Calculate Stats
-	const totalSubmissions = submissions.length;
-	const pendingSubmissions = submissions.filter((s) => s.status === "pending").length;
-	const totalEarnings = submissions
-		.filter((s) => s.status === "approved")
-		.reduce((sum, item) => sum + item.payable_amount, 0);
+	const totalSubmissions = submissions?.length ?? 0;
+	const pendingSubmissions = submissions?.filter((s) => s?.status === "pending")?.length ?? 0;
+	const totalEarnings =
+		submissions?.filter((s) => s?.status === "approved")?.reduce((sum, item) => sum + (item?.payable_amount ?? 0), 0) ??
+		0;
 
-	const approvedSubmissions = submissions.filter((s) => s.status === "approved");
+	const approvedSubmissions = submissions?.filter((s) => s?.status === "approved") ?? [];
 
 	return (
 		<div className='space-y-8'>
@@ -80,7 +80,7 @@ const WorkerDashboard = ({ greeting }) => {
 					<LuFileCheck2 className='text-success' /> Approved Submissions
 				</h2>
 
-				{approvedSubmissions.length === 0 ? (
+				{(approvedSubmissions?.length ?? 0) === 0 ? (
 					<p className='text-sm text-gray-400'>No approved submissions yet.</p>
 				) : (
 					<table className='table'>
@@ -94,14 +94,14 @@ const WorkerDashboard = ({ greeting }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{approvedSubmissions.map((submission, idx) => (
-								<tr key={submission._id}>
+							{approvedSubmissions?.map((submission, idx) => (
+								<tr key={submission?._id}>
 									<td>{idx + 1}</td>
-									<td>{submission.task_title}</td>
-									<td>${submission.payable_amount}</td>
-									<td>{submission.buyer_name}</td>
+									<td>{submission?.task_title}</td>
+									<td>${submission?.payable_amount}</td>
+									<td>{submission?.buyer_name}</td>
 									<td>
-										<span className='badge bg-gradient-success capitalize'>{submission.status}</span>
+										<span className='badge bg-gradient-success capitalize'>{submission?.status}</span>
 									</td>
 								</tr>
 							))}

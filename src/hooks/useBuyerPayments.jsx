@@ -15,7 +15,7 @@ const useBuyerPayments = () => {
 		enabled: !loading && !!user?.email,
 		queryFn: async () => {
 			const res = await axiosSecure.get('/payments');
-			return res.data;
+			return res?.data;
 		},
 	});
 	return { payments, isPaymentsLoading, refetch };

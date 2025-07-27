@@ -6,10 +6,13 @@ import { useEffect } from "react";
 import Footer from "../components/Footer";
 
 const HomeLayout = () => {
-	const { state } = useNavigation();
+	const navigation = useNavigation();
+	const state = navigation?.state;
+
 	useEffect(() => {
-		Aos.init({ duration: 600, once: true });
+		Aos?.init({ duration: 600, once: true });
 	}, []);
+
 	return (
 		<>
 			<header className='sticky top-0 z-50 w-full bg-base-200/95 backdrop-blur supports-[backdrop-filter]:bg-base-200/60 border-b border-accent'>

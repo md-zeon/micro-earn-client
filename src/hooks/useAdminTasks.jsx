@@ -12,7 +12,7 @@ const useAdminTasks = () => {
 		queryKey: ["adminTasks"],
 		queryFn: async () => {
 			const res = await axiosSecure.get("/admin/tasks");
-			return res.data;
+			return res?.data;
 		},
 	});
 

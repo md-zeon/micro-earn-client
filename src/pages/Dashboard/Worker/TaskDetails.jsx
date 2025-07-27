@@ -57,21 +57,21 @@ const TaskDetails = () => {
 
 		setLoading(true);
 		const submission = {
-			task_id: task._id,
-			task_title: task.task_title,
-			payable_amount: task.payable_amount,
+			task_id: task?._id,
+			task_title: task?.task_title,
+			payable_amount: task?.payable_amount,
 			worker_email: user?.email,
 			submission_details: submissionDetails,
 			worker_name: user?.displayName,
-			buyer_name: task.buyer_name,
-			buyer_email: task.posted_by,
+			buyer_name: task?.buyer_name,
+			buyer_email: task?.posted_by,
 			submission_date: new Date().toISOString(),
 			proof_img: proof_img_url,
 		};
 
 		try {
 			await axiosSecure.post("/submissions", submission);
-			await axiosSecure.patch(`/update-workers/${task._id}`, { status: "decrease" });
+			await axiosSecure.patch(`/update-workers/${task?._id}`, { status: "decrease" });
 			toast.success("Submission successful!");
 			navigate("/dashboard/my-submissions");
 		} catch (err) {
@@ -87,7 +87,10 @@ const TaskDetails = () => {
 
 	return (
 		<div className='sm:px-4 py-8 space-y-8'>
-			<PageTitle title="Task Details" description="View detailed information about the selected task." />
+			<PageTitle
+				title='Task Details'
+				description='View detailed information about the selected task.'
+			/>
 			{/* Back Button */}
 			<button
 				onClick={() => navigate("/dashboard/tasks-list")}
@@ -102,24 +105,24 @@ const TaskDetails = () => {
 				{/* Left: Task Content */}
 				<div className='flex-1 bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500 space-y-6'>
 					{/* Title */}
-					<h1 className='text-xl sm:text-2xl lg:text-3xl font-bold mb-2'>{task.task_title}</h1>
+					<h1 className='text-xl sm:text-2xl lg:text-3xl font-bold mb-2'>{task?.task_title}</h1>
 					{/* Task Image */}
 					<div className='border border-gray-500 rounded-lg sm:p-3 my-6 overflow-hidden'>
-						{task.task_image_url && (
+						{task?.task_image_url && (
 							<img
-								src={task.task_image_url}
-								alt={task.task_title}
+								src={task?.task_image_url}
+								alt={task?.task_title}
 								className='w-full h-64 object-cover hover:scale-105 cursor-pointer transition-transform duration-300 ease-linear rounded-lg'
 							/>
 						)}
 					</div>
 					<div>
 						<h2 className='text-xl font-semibold mb-2'>Description</h2>
-						<p className='text-gray-500 whitespace-pre-line'>{task.task_detail}</p>
+						<p className='text-gray-500 whitespace-pre-line'>{task?.task_detail}</p>
 					</div>
 					<div>
 						<h2 className='text-xl font-semibold mb-2'>Submission Requirements</h2>
-						<p className='text-gray-500 whitespace-pre-line'>{task.submission_info}</p>
+						<p className='text-gray-500 whitespace-pre-line'>{task?.submission_info}</p>
 					</div>
 				</div>
 
@@ -133,26 +136,26 @@ const TaskDetails = () => {
 									<LuDollarSign /> Payment
 								</span>
 								<span className='badge badge-outline border-green-500 text-green-500'>
-									{task.payable_amount} <LuCoins className='inline' />
+									{task?.payable_amount} <LuCoins className='inline' />
 								</span>
 							</div>
 							<div className='flex items-center justify-between'>
 								<span className='flex items-center gap-2 text-gray-500'>
 									<LuCalendarDays /> Deadline
 								</span>
-								<span>{new Date(task.completion_deadline).toLocaleDateString()}</span>
+								<span>{new Date(task?.completion_deadline).toLocaleDateString()}</span>
 							</div>
 							<div className='flex items-center justify-between'>
 								<span className='flex items-center gap-2 text-gray-500'>
 									<LuUsers /> Workers Needed
 								</span>
-								<span>{task.required_workers}</span>
+								<span>{task?.required_workers}</span>
 							</div>
 							<div className='flex items-center justify-between'>
 								<span className='flex items-center gap-2 text-gray-500'>
 									<LuUser /> Posted By
 								</span>
-								<span>{task.buyer_name}</span>
+								<span>{task?.buyer_name}</span>
 							</div>
 						</div>
 					</div>
@@ -182,7 +185,7 @@ const TaskDetails = () => {
 						This task is no longer accepting submissions (Deadline passed).
 					</p>
 				)}
-				
+
 				<form
 					onSubmit={handleSubmit}
 					className='space-y-4'
@@ -196,7 +199,9 @@ const TaskDetails = () => {
 							onChange={(e) => {
 								const file = e.target.files[0];
 								setProofImage(file);
-								setPreviewUrl(URL.createObjectURL(file));
+								if (file) {
+									setPreviewUrl(URL.createObjectURL(file));
+								}
 							}}
 							className='file-input w-full'
 						/>
@@ -226,7 +231,7 @@ const TaskDetails = () => {
 					<button
 						type='submit'
 						className='btn bg-gradient w-full'
-						disabled={loading || deadlinePassed || task.required_workers <= 0}
+						disabled={loading || deadlinePassed || (task?.required_workers ?? 0) <= 0}
 					>
 						{loading ? "Submitting..." : "Submit Work"}
 					</button>

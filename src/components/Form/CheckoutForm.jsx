@@ -19,7 +19,7 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 		if (totalPrice) {
 			axiosSecure
 				.post("/create-payment-intent", { amount: totalPrice })
-				.then((res) => setClientSecret(res.data.clientSecret))
+				.then((res) => setClientSecret(res?.data?.clientSecret))
 				.catch(() => toast.error("Failed to initialize payment."));
 		}
 	}, [axiosSecure, totalPrice]);
@@ -42,26 +42,26 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 		});
 
 		if (methodErr) {
-			setCardError(methodErr.message);
+			setCardError(methodErr?.message);
 			return;
 		}
 		setCardError("");
 		setProcessing(true);
 
 		const { paymentIntent, error: confirmErr } = await stripe.confirmCardPayment(clientSecret, {
-			payment_method: paymentMethod.id,
+			payment_method: paymentMethod?.id,
 			receipt_email: user?.email,
 		});
 
 		if (confirmErr) {
-			setCardError(confirmErr.message);
+			setCardError(confirmErr?.message);
 			setProcessing(false);
 			return;
 		}
 
-		if (paymentIntent.status === "succeeded") {
+		if (paymentIntent?.status === "succeeded") {
 			// Payment successful!
-			await onSuccess(pkg, paymentIntent.id); // Call parent function to update DB & coins
+			await onSuccess(pkg, paymentIntent?.id); // Call parent function to update DB & coins
 		}
 
 		setProcessing(false);

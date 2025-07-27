@@ -12,11 +12,11 @@ const useWithdrawRequests = () => {
 		queryKey: ["withdrawRequests"],
 		queryFn: async () => {
 			const res = await axiosSecure.get("/admin/withdraw-requests");
-			return res.data;
+			return res?.data;
 		},
 	});
 
-	return { pendingRequests: withdrawRequests.pendingRequests, approvedRequests: withdrawRequests.approvedRequests, isWithdrawLoading, refetch };
+	return { pendingRequests: withdrawRequests?.pendingRequests, approvedRequests: withdrawRequests?.approvedRequests, isWithdrawLoading, refetch };
 };
 
 export default useWithdrawRequests;

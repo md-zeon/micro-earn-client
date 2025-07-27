@@ -16,12 +16,12 @@ const MySubmissions = () => {
 
 	// Filter logic
 	const filteredSubmissions =
-		filteredStatus === "all" ? submissions : submissions.filter((s) => s.status === filteredStatus);
+		filteredStatus === "all" ? submissions : submissions?.filter((s) => s?.status === filteredStatus);
 
 	// Pagination logic
-	const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage);
+	const totalPages = Math.ceil((filteredSubmissions?.length ?? 0) / itemsPerPage);
 	const startIndex = (currentPage - 1) * itemsPerPage;
-	const paginatedSubmissions = filteredSubmissions.slice(startIndex, startIndex + itemsPerPage);
+	const paginatedSubmissions = filteredSubmissions?.slice(startIndex, startIndex + itemsPerPage);
 
 	const handleStatusChange = (status) => {
 		setFilteredStatus(status);
@@ -70,7 +70,7 @@ const MySubmissions = () => {
 				</div>
 
 				{/* Submissions Table */}
-				{filteredSubmissions.length === 0 ? (
+				{(filteredSubmissions?.length ?? 0) === 0 ? (
 					<div className='text-center text-gray-500'>No submissions found.</div>
 				) : (
 					<div className='overflow-x-auto overflow-y-hidden shadow rounded-lg'>
@@ -86,32 +86,34 @@ const MySubmissions = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{paginatedSubmissions.map((submission, index) => (
+								{paginatedSubmissions?.map((submission, index) => (
 									<tr key={submission?._id}>
 										<td>{startIndex + index + 1}</td>
 										<td className='font-medium'>{submission?.task_title}</td>
-										<td>{new Date(submission?.submission_date).toLocaleDateString()}</td>
+										<td>
+											{submission?.submission_date ? new Date(submission.submission_date).toLocaleDateString() : "N/A"}
+										</td>
 										<td className='flex items-center gap-1 text-green-500 font-semibold'>
 											<LuDollarSign className='inline' />
-											{submission.payable_amount}
+											{submission?.payable_amount}
 										</td>
 										<td>
 											<span
 												className={`badge ${
-													submission.status === "pending"
+													submission?.status === "pending"
 														? "bg-gradient-warning"
-														: submission.status === "approved"
+														: submission?.status === "approved"
 														? "bg-gradient-success"
 														: "bg-gradient-error"
 												}`}
 											>
-												{submission.status}
+												{submission?.status}
 											</span>
 										</td>
 										<td>
 											<div
 												className='tooltip tooltip-left'
-												data-tip={submission.submission_details}
+												data-tip={submission?.submission_details}
 											>
 												<button className='btn btn-sm btn-ghost text-blue-500'>
 													<LuFileText className='w-5 h-5' />

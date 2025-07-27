@@ -22,7 +22,7 @@ export const saveUserInDb = async (user) => {
 		const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/user`, user);
 		return data;
 	} catch (error) {
-		console.error("User Save Error:", error);
+		console.error("User Save Error:", error?.message || error);
 		throw new Error("Failed to save user. Please try again.");
 	}
 };

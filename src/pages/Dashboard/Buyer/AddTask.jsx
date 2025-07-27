@@ -41,12 +41,12 @@ const AddTask = () => {
 		setLoading(true);
 		const form = e.target;
 		const newTask = {
-			task_title: form.task_title.value,
-			task_detail: form.task_detail.value,
+			task_title: form?.task_title?.value,
+			task_detail: form?.task_detail?.value,
 			required_workers: requiredWorkers,
 			payable_amount: payableAmount,
-			completion_deadline: form.completion_deadline.value,
-			submission_info: form.submission_info.value,
+			completion_deadline: form?.completion_deadline?.value,
+			submission_info: form?.submission_info?.value,
 			task_image_url: taskImageUrl,
 			posted_by: user?.email,
 			buyer_name: user?.displayName,
@@ -70,7 +70,7 @@ const AddTask = () => {
 			toast.success("Task created");
 			setLoading(false);
 			navigate("/dashboard/my-tasks");
-			form.reset();
+			form?.reset();
 			setRequiredWorkers("");
 			setPayableAmount("");
 			setTaskImageUrl("");
@@ -136,10 +136,10 @@ const AddTask = () => {
 									name='required_workers'
 									value={requiredWorkers}
 									onChange={(e) => {
-										const value = e.target.value;
+										const value = e?.target?.value;
 										setRequiredWorkers(value === "" ? "" : parseInt(value));
 									}}
-									onWheel={(e) => e.target.blur()}
+									onWheel={(e) => e?.target?.blur()}
 									className='input input-bordered w-full'
 									min='1'
 									placeholder='e.g. 100'
@@ -156,10 +156,10 @@ const AddTask = () => {
 									name='payable_amount'
 									value={payableAmount}
 									onChange={(e) => {
-										const value = e.target.value;
+										const value = e?.target?.value;
 										setPayableAmount(value === "" ? "" : parseInt(value));
 									}}
-									onWheel={(e) => e.target.blur()}
+									onWheel={(e) => e?.target?.blur()}
 									className='input input-bordered w-full'
 									min='1'
 									placeholder='e.g. 10 (Micro Coins)'

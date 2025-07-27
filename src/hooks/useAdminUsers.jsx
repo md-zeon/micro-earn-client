@@ -8,7 +8,7 @@ const useAdminUsers = () => {
 		queryKey: ["admin-users"],
 		queryFn: async () => {
 			const res = await axiosSecure.get("/users");
-			return res.data;
+			return res?.data;
 		},
 	});
 

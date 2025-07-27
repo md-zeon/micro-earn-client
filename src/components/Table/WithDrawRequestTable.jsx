@@ -7,7 +7,7 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 		);
 	}
 
-	const hasPending = withdrawRequests.some((w) => w.status === "pending");
+	const hasPending = withdrawRequests?.some((w) => w?.status === "pending");
 
 	return (
 		<div className='overflow-x-auto'>
@@ -23,30 +23,30 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 					</tr>
 				</thead>
 				<tbody>
-					{withdrawRequests.map((withdraw) => (
-						<tr key={withdraw._id}>
-							<td>{withdraw.worker_name}</td>
-							<td>{withdraw.worker_email}</td>
-							<td className='text-green-500'>${withdraw.withdrawal_amount}</td>
-							<td>{new Date(withdraw.withdraw_date).toLocaleDateString()}</td>
+					{withdrawRequests?.map((withdraw) => (
+						<tr key={withdraw?._id}>
+							<td>{withdraw?.worker_name}</td>
+							<td>{withdraw?.worker_email}</td>
+							<td className='text-green-500'>${withdraw?.withdrawal_amount}</td>
+							<td>{withdraw?.withdraw_date ? new Date(withdraw.withdraw_date).toLocaleDateString() : "N/A"}</td>
 							<td>
 								<span
-									className={`badge ${withdraw.status === "pending" ? "bg-gradient-warning" : "bg-gradient-success"}`}
+									className={`badge ${withdraw?.status === "pending" ? "bg-gradient-warning" : "bg-gradient-success"}`}
 								>
-									{withdraw.status}
+									{withdraw?.status}
 								</span>
 							</td>
 							<td>
-								{withdraw.status === "pending" ? (
+								{withdraw?.status === "pending" ? (
 									<button
 										onClick={() => handleApprove(withdraw)}
 										className='btn bg-gradient-success btn-sm'
-										disabled={withdraw.status === "approved"}
+										disabled={withdraw?.status === "approved"}
 									>
 										Approve
 									</button>
 								) : (
-									<span>{new Date(withdraw.updatedAt).toLocaleDateString()}</span>
+									<span>{withdraw?.updatedAt ? new Date(withdraw.updatedAt).toLocaleDateString() : "N/A"}</span>
 								)}
 							</td>
 						</tr>
@@ -56,6 +56,5 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 		</div>
 	);
 };
-
 
 export default WithdrawRequestTable;

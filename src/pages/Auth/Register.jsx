@@ -1,15 +1,5 @@
 import { useForm } from "react-hook-form";
-import {
-	LuArrowLeft,
-	LuEye,
-	LuEyeClosed,
-	LuLock,
-	LuLockOpen,
-	LuMail,
-	LuUser,
-	LuUserPlus,
-	LuVoicemail,
-} from "react-icons/lu";
+import { LuArrowLeft, LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUser, LuUserPlus } from "react-icons/lu";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
@@ -81,7 +71,7 @@ const Register = () => {
 			reset();
 		} catch (error) {
 			console.error("Registration Error:", error);
-			toast.error(getFirebaseRegisterError(error.code));
+			toast.error(getFirebaseRegisterError(error?.code));
 		} finally {
 			setLoading(false);
 		}
@@ -128,6 +118,7 @@ const Register = () => {
 											className='grow'
 											placeholder='Enter your name'
 											{...register("name", { required: "Name is required" })}
+											autoComplete='username'
 										/>
 									</div>
 									{errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
