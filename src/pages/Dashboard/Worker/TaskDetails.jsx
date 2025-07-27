@@ -115,11 +115,11 @@ const TaskDetails = () => {
 					</div>
 					<div>
 						<h2 className='text-xl font-semibold mb-2'>Description</h2>
-						<p className='text-gray-500'>{task.task_detail}</p>
+						<p className='text-gray-500 whitespace-pre-line'>{task.task_detail}</p>
 					</div>
 					<div>
 						<h2 className='text-xl font-semibold mb-2'>Submission Requirements</h2>
-						<p className='text-gray-500'>{task.submission_info}</p>
+						<p className='text-gray-500 whitespace-pre-line'>{task.submission_info}</p>
 					</div>
 				</div>
 
