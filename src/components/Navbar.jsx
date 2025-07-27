@@ -16,7 +16,7 @@ const Navbar = () => {
 			<li>
 				<NavLink
 					to='/'
-					className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content")}
+					className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
 				>
 					Home
 				</NavLink>
@@ -24,18 +24,28 @@ const Navbar = () => {
 			{user && (
 				<li>
 					<NavLink
-						to={`/dashboard`}
-						className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content")}
+						to='/dashboard'
+						className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
 					>
 						Dashboard
 					</NavLink>
 				</li>
 			)}
 			<li>
-				<NavLink to='/about'>About Us</NavLink>
+				<NavLink
+					to='/about'
+					className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
+				>
+					About Us
+				</NavLink>
 			</li>
 			<li>
-				<NavLink to='/contact'>Contact Us</NavLink>
+				<NavLink
+					to='/contact'
+					className={({ isActive }) => (isActive ? "text-gradient" : "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent")}
+				>
+					Contact Us
+				</NavLink>
 			</li>
 		</>
 	);
@@ -146,7 +156,7 @@ const Navbar = () => {
 								<div className='hidden sm:block'>
 									<ThemeController />
 								</div>
-								<div className="space-x-1">
+								<div className='space-x-1'>
 									<Link
 										to='/login'
 										className='btn btn-sm sm:btn-md btn-ghost'
