@@ -29,7 +29,7 @@ const AddTask = () => {
 			setTaskImageUrl(url);
 			toast.success("Image uploaded successfully");
 		} catch (err) {
-			console.error("Image upload failed",err);
+			console.error("Image upload failed", err);
 			toast.error("Image upload failed");
 		} finally {
 			setImgUploading(false);
@@ -65,7 +65,7 @@ const AddTask = () => {
 			await axiosSecure.patch(`/update-coins/${user?.email}`, {
 				coinsToUpdate: totalCost,
 				status: "decrease",
-			})
+			});
 			refetch();
 			toast.success("Task created");
 			setLoading(false);
@@ -86,7 +86,10 @@ const AddTask = () => {
 
 	return (
 		<div className='max-w-3xl mx-auto sm:px-4 py-6'>
-			<PageTitle title="Add New Task" description="Create a new task for workers to complete and earn money." />
+			<PageTitle
+				title='Add New Task'
+				description='Create a new task for workers to complete and earn money.'
+			/>
 			<div className='text-center mb-2'>
 				<h1 className='text-3xl font-bold mb-2'> Add New Task</h1>
 				<p className='text-gray-400'>Create a new task for workers to complete</p>
@@ -136,6 +139,7 @@ const AddTask = () => {
 										const value = e.target.value;
 										setRequiredWorkers(value === "" ? "" : parseInt(value));
 									}}
+									onWheel={(e) => e.target.blur()}
 									className='input input-bordered w-full'
 									min='1'
 									placeholder='e.g. 100'
@@ -155,6 +159,7 @@ const AddTask = () => {
 										const value = e.target.value;
 										setPayableAmount(value === "" ? "" : parseInt(value));
 									}}
+									onWheel={(e) => e.target.blur()}
 									className='input input-bordered w-full'
 									min='1'
 									placeholder='e.g. 10 (Micro Coins)'
