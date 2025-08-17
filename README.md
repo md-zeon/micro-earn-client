@@ -170,6 +170,42 @@ npm run dev
 
 This project is for educational purpose only.
 
+
+
+## 🗂️ Project Structure
+
+```
+micro-earn-client/
+├── public/                # Static assets (SVGs, video, favicon)
+├── src/
+│   ├── api/               # API utilities
+│   ├── assets/            # SVGs and images
+│   ├── components/        # Reusable UI components
+│   ├── contexts/          # React context providers
+│   ├── firebase/          # Firebase config
+│   ├── hooks/             # Custom React hooks
+│   ├── layouts/           # Page layouts
+│   ├── pages/             # Route pages (Home, About, Auth, Dashboard, etc.)
+│   ├── providers/         # App-level providers
+│   ├── Routes/            # Route protection and role-based routes
+│   └── index.css, main.jsx, App.jsx
+├── package.json           # Project metadata and dependencies
+├── vite.config.js         # Vite configuration
+├── firebase.json          # Firebase hosting config
+├── eslint.config.js       # ESLint configuration
+└── README.md
+```
+
+### Home Page Sections
+
+The Home page (`src/pages/Home/Home.jsx`) features these main sections:
+- **Hero** – Landing banner and introduction
+- **HowItWorks** – Steps to get started
+- **BestWorkers** – Showcase of top workers
+- **TestimonialSlider** – User testimonials
+- **WhyChooseUs** – Platform benefits
+- **FAQ** – Frequently asked questions
+
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to fork the repo and submit pull requests. Whether it's fixing bugs, improving documentation, or adding new features — all efforts are appreciated.

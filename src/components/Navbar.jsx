@@ -25,6 +25,18 @@ const Navbar = () => {
 					Home
 				</NavLink>
 			</li>
+			<li>
+				<NavLink
+					to='/all-tasks'
+					className={({ isActive }) =>
+						isActive
+							? "text-gradient"
+							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
+					}
+				>
+					All Tasks
+				</NavLink>
+			</li>
 			{user && (
 				<li>
 					<NavLink

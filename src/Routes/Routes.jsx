@@ -27,13 +27,22 @@ import Forbidden from "../pages/Forbidden/Forbidden";
 import NotFound from "../pages/NotFound/NotFound";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
+import AllTasks from "../pages/AllTasks/AllTasks";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		Component: HomeLayout,
 		children: [
-			{ path: "/", element: <Home /> },
+			{
+				index: true,
+				element: <Home />,
+			},
+			{
+				path: "/all-tasks",
+				Component: AllTasks,
+				loader: () => fetch("http://localhost:3000/tasks"),
+			},
 			{
 				path: "/about",
 				Component: About,
