@@ -7,6 +7,7 @@ import StatsCard from "../../../components/shared/StatsCard";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 import TasksToReview from "./TasksToReview";
 import PageTitle from "../../../components/PageTitle";
+import BuyerOverview from "../../../components/Dashboard/BuyerOverview";
 
 const BuyerDashboard = ({ greeting }) => {
 	const { user, loading: authLoading } = useAuth();
@@ -88,6 +89,9 @@ const BuyerDashboard = ({ greeting }) => {
 						color='text-base-content'
 					/>
 				</div>
+
+				{/* Dashboard Overview */}
+				<BuyerOverview />
 
 				{/* Tasks to Review Section */}
 				<TasksToReview />

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import PageTitle from "../../components/PageTitle";
 import { LuDollarSign, LuUsers, LuCalendarDays } from "react-icons/lu";
 import { useLoaderData, useNavigate } from "react-router";
+import Container from "../../components/Container";
 
 const AllTasks = () => {
 	const tasks = useLoaderData();
@@ -48,7 +49,7 @@ const AllTasks = () => {
 				description='Browse and apply for available micro-tasks to earn coins.'
 			/>
 
-			<div className='max-w-7xl mx-auto'>
+			<Container>
 				<h1 className='text-3xl font-bold mb-2'>Available Tasks</h1>
 				<p className='text-gray-600 mb-8'>Browse and apply for available micro-tasks to earn coins.</p>
 
@@ -122,7 +123,7 @@ const AllTasks = () => {
 						))}
 					</div>
 				)}
-			</div>
+			</Container>
 		</div>
 	);
 };

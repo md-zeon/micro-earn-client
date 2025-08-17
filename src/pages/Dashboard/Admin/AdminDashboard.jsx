@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable";
 import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import PageTitle from "../../../components/PageTitle";
+import AdminOverview from "../../../components/Dashboard/AdminOverview";
 
 const AdminDashboard = ({ greeting }) => {
 	const { user } = useAuth();
@@ -108,6 +109,9 @@ const AdminDashboard = ({ greeting }) => {
 					subtitle='Total payments processed'
 				/>
 			</div>
+
+			{/* Dashboard Overview */}
+			<AdminOverview />
 
 			{/* Withdrawal Requests */}
 			<div className='mt-10'>

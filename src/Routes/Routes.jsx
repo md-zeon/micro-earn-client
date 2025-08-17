@@ -28,6 +28,8 @@ import NotFound from "../pages/NotFound/NotFound";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
 import AllTasks from "../pages/AllTasks/AllTasks";
+import TaskDetailsPage from "../pages/TaskDetails/TaskDetailsPage";
+import TaskDetailsSkeleton from "../components/ui/TaskDetailsSkeleton";
 
 const router = createBrowserRouter([
 	{
@@ -41,7 +43,13 @@ const router = createBrowserRouter([
 			{
 				path: "/all-tasks",
 				Component: AllTasks,
-				loader: () => fetch("http://localhost:3000/tasks"),
+				loader: () => fetch(`${import.meta.env.VITE_API_URL}/tasks`),
+			},
+			{
+				path: "/task-details/:id",
+				Component: TaskDetailsPage,
+				loader: () => fetch(`${import.meta.env.VITE_API_URL}/tasks`),
+				HydrateFallback: TaskDetailsSkeleton,
 			},
 			{
 				path: "/about",

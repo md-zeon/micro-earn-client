@@ -18,7 +18,7 @@ const HomeLayout = () => {
 			<header className='sticky top-0 z-50 w-full bg-base-200/95 backdrop-blur supports-[backdrop-filter]:bg-base-200/60 border-b border-accent'>
 				<Navbar />
 			</header>
-			<main>{state === "loading" ? <Loader /> : <Outlet />}</main>
+			<main className="min-h-[calc(100vh-23rem)]">{state === "loading" ? <Loader /> : <Outlet />}</main>
 			<footer>
 				<Footer />
 			</footer>

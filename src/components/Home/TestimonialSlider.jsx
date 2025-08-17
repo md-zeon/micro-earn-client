@@ -9,40 +9,40 @@ import { LuChevronLeft, LuChevronRight, LuHandCoins, LuQuote, LuUsersRound } fro
 const testimonials = [
 	{
 		quote: "MicroEarn helped me earn money consistently as a student. The micro-tasks are simple and payout is smooth!",
-		name: "Nusrat Jahan",
+		name: "Ayesha Rahman",
 		title: "Top Worker",
-		image: "https://img.daisyui.com/images/profile/demo/4@94.webp",
+		image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
 	},
 	{
 		quote:
 			"As a startup owner, posting tasks and managing submissions on MicroEarn is super intuitive. Love the system!",
-		name: "Tanvir Hossain",
+		name: "Rahim Ahmed",
 		title: "Frequent Buyer",
-		image: "https://img.daisyui.com/images/profile/demo/2@94.webp",
+		image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
 	},
 	{
-		quote: "Managing users and withdrawal requests as admin is simple with MicroEarn’s dashboard. Very efficient!",
-		name: "Sharmin Akter",
+		quote: "Managing users and withdrawal requests as admin is simple with MicroEarn's dashboard. Very efficient!",
+		name: "Tasnim Islam",
 		title: "Platform Admin",
-		image: "https://img.daisyui.com/images/profile/demo/3@94.webp",
+		image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
 	},
 	{
 		quote: "Best platform for earning coins doing productive work. The UI and features are next level!",
-		name: "Farhan Malik",
+		name: "Karim Hossain",
 		title: "Top Earner",
-		image: "https://img.daisyui.com/images/profile/demo/kenobee@192.webp",
+		image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
 	},
 	{
 		quote: "MicroEarn makes online micro job management truly effortless. Love the payment transparency.",
-		name: "Sadia Kabir",
+		name: "Sadia Akter",
 		title: "Task Creator",
-		image: "https://img.daisyui.com/images/profile/demo/anakeen@192.webp",
+		image: "https://images.unsplash.com/photo-1544037976-1000e0000000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
 	},
 	{
 		quote: "Great system, real payouts, helpful support. Highly recommend to friends.",
-		name: "Imran Chowdhury",
+		name: "Nasir Uddin",
 		title: "Verified Worker",
-		image: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp",
+		image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
 	},
 ];
 

@@ -5,6 +5,7 @@ import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
 import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import PageTitle from "../../../components/PageTitle";
+import WorkerOverview from "../../../components/Dashboard/WorkerOverview";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
@@ -73,6 +74,9 @@ const WorkerDashboard = ({ greeting }) => {
 					Icon={LuCoins}
 				/>
 			</div>
+
+			{/* Dashboard Overview */}
+			<WorkerOverview />
 
 			{/* Approved Submissions Table */}
 			<div className='overflow-x-auto bg-base-200 rounded-lg shadow-md p-4'>
