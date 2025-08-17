@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import GlassCard from "../ui/GlassCard";
 import { LuCoins, LuCalendar, LuUser } from "react-icons/lu";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 const FeaturedTasks = () => {
 	const [tasks, setTasks] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchFeaturedTasks = async () => {
@@ -76,8 +78,8 @@ const FeaturedTasks = () => {
 								data-aos-delay={100 + i * 100}
 							>
 								<GlassCard className='bg-base-200 p-6 h-full rounded-2xl shadow hover:shadow-lg transition duration-300'>
-									<div className="flex flex-col" >
-										<div className="flex-1">
+									<div className='flex flex-col'>
+										<div className='flex-1'>
 											<div className='flex justify-between items-start mb-3'>
 												<h3 className='text-lg font-semibold'>{task.task_title}</h3>
 												<span className='badge bg-gradient'>
@@ -100,7 +102,12 @@ const FeaturedTasks = () => {
 										</div>
 										<div className='flex justify-between items-center mt-4'>
 											<span className='text-xs text-gray-500'>Posted by: {task.buyer_name}</span>
-											<button className='btn btn-sm bg-gradient'>See More</button>
+											<button
+												onClick={() => navigate(`/task-details/${task._id}`)}
+												className='btn btn-sm bg-gradient'
+											>
+												See More
+											</button>
 										</div>
 									</div>
 								</GlassCard>

@@ -16,7 +16,7 @@ const TaskDetailsPage = () => {
 	const navigate = useNavigate();
 	const tasks = useLoaderData();
 	const task = tasks.find((t) => t._id === id);
-	console.log(tasks, task);
+	console.log(id, tasks, task);
 	if (!task) return <div className='text-center text-gray-500'>Task not found</div>;
 
 	return (
@@ -28,7 +28,7 @@ const TaskDetailsPage = () => {
 				/>
 				{/* Back Button */}
 				<button
-					onClick={() => navigate("/all-tasks")}
+					onClick={() => navigate(-1)}
 					className='btn btn-sm bg-gradient flex items-center gap-2'
 				>
 					<LuChevronLeft />

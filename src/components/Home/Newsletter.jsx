@@ -11,19 +11,19 @@ const Newsletter = () => {
       toast.error("Please enter your email address");
       return;
     }
-    
-    // In a real app, you would send this to your backend
+
+    // TODO: Implement logic to send the email to a backend API or service
     toast.success("Thank you for subscribing to our newsletter!");
     setEmail("");
   };
 
   return (
-    <section className="py-16">
+    <section className="py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gradient">
             Stay Updated
           </h2>
-          <p className="mb-8 max-w-2xl mx-auto">
+          <p className="mb-8 max-w-2xl mx-auto text-gray-500">
             Subscribe to our newsletter and never miss out on new tasks, platform updates, and earning tips.
           </p>
           

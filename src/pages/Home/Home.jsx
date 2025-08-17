@@ -25,8 +25,8 @@ const Home = () => {
 				<StatsSection />
 				<FeaturedTasks />
 				<TestimonialSlider />
-				<WhyChooseUs />
 				<CTA />
+				<WhyChooseUs />
 				<FAQ />
 				<Newsletter />
 			</div>
