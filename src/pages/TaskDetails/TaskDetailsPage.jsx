@@ -1,0 +1,116 @@
+import { useParams, useNavigate, useLoaderData } from "react-router";
+import {
+	LuCalendarDays,
+	LuDollarSign,
+	LuUsers,
+	LuUser,
+	LuMessageSquareWarning,
+	LuCoins,
+	LuChevronLeft,
+} from "react-icons/lu";
+import PageTitle from "../../components/PageTitle";
+import Container from "../../components/Container";
+
+const TaskDetailsPage = () => {
+	const { id } = useParams();
+	const navigate = useNavigate();
+	const tasks = useLoaderData();
+	const task = tasks.find((t) => t._id === id);
+	console.log(tasks, task);
+	if (!task) return <div className='text-center text-gray-500'>Task not found</div>;
+
+	return (
+		<Container>
+			<div className='sm:px-4 py-8 space-y-8'>
+				<PageTitle
+					title='Task Details'
+					description='View detailed information about the selected task.'
+				/>
+				{/* Back Button */}
+				<button
+					onClick={() => navigate("/all-tasks")}
+					className='btn btn-sm bg-gradient flex items-center gap-2'
+				>
+					<LuChevronLeft />
+					Back to Tasks
+				</button>
+
+				{/* Content */}
+				<div className='flex flex-col lg:flex-row gap-8'>
+					{/* Left: Task Content */}
+					<div className='flex-1 bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500 space-y-6'>
+						{/* Title */}
+						<h1 className='text-xl sm:text-2xl lg:text-3xl font-bold mb-2'>{task?.task_title}</h1>
+						{/* Task Image */}
+						<div className='border border-gray-500 rounded-lg sm:p-3 my-6 overflow-hidden'>
+							{task?.task_image_url && (
+								<img
+									src={task?.task_image_url}
+									alt={task?.task_title}
+									className='w-full h-64 object-cover hover:scale-105 cursor-pointer transition-transform duration-300 ease-linear rounded-lg'
+								/>
+							)}
+						</div>
+						<div>
+							<h2 className='text-xl font-semibold mb-2'>Description</h2>
+							<p className='text-gray-500 whitespace-pre-line'>{task?.task_detail}</p>
+						</div>
+						<div>
+							<h2 className='text-xl font-semibold mb-2'>Submission Requirements</h2>
+							<p className='text-gray-500 whitespace-pre-line'>{task?.submission_info}</p>
+						</div>
+					</div>
+
+					{/* Right: Info Sidebar */}
+					<div className='lg:w-1/3 space-y-6'>
+						<div className='bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500'>
+							<h2 className='text-xl font-semibold mb-4'>Task Information</h2>
+							<div className='space-y-4 text-sm'>
+								<div className='flex items-center justify-between'>
+									<span className='flex items-center gap-2 text-gray-500'>
+										<LuDollarSign /> Payment
+									</span>
+									<span className='badge badge-outline border-green-500 text-green-500'>
+										{task?.payable_amount} <LuCoins className='inline' />
+									</span>
+								</div>
+								<div className='flex items-center justify-between'>
+									<span className='flex items-center gap-2 text-gray-500'>
+										<LuCalendarDays /> Deadline
+									</span>
+									<span>{new Date(task?.completion_deadline).toLocaleDateString()}</span>
+								</div>
+								<div className='flex items-center justify-between'>
+									<span className='flex items-center gap-2 text-gray-500'>
+										<LuUsers /> Workers Needed
+									</span>
+									<span>{task?.required_workers}</span>
+								</div>
+								<div className='flex items-center justify-between'>
+									<span className='flex items-center gap-2 text-gray-500'>
+										<LuUser /> Posted By
+									</span>
+									<span>{task?.buyer_name}</span>
+								</div>
+							</div>
+						</div>
+
+						<div className='bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500'>
+							<h2 className='text-xl font-semibold mb-2'>
+								<LuMessageSquareWarning className='inline' /> Notes
+							</h2>
+							<ul className='list-disc list-inside text-gray-500 text-sm space-y-1'>
+								<li>Complete all requirements before submitting</li>
+								<li>Submissions are reviewed within 24-48 hours</li>
+								<li>Payment is released upon approval</li>
+								<li>Rejected submissions won't be paid</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</Container>
+	);
+};
+
+export default TaskDetailsPage;
