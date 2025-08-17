@@ -7,7 +7,6 @@ const BuyerOverview = () => {
 	const { tasks } = useBuyerTasks();
 	const axiosSecure = useAxiosSecure();
 	const [taskStats, setTaskStats] = useState([]);
-	const [paymentData, setPaymentData] = useState([]); // ✅ added missing state
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -16,10 +15,7 @@ const BuyerOverview = () => {
 				// Fetch task statistics
 				const statsRes = await axiosSecure.get("/buyer/task-stats");
 				setTaskStats(statsRes.data);
-
-				// Fetch payment data
-				const paymentRes = await axiosSecure.get("/buyer/payment-stats");
-				setPaymentData(paymentRes.data);
+				console.log("Task Stats:", statsRes.data);
 			} catch (error) {
 				console.error("Failed to fetch buyer dashboard data:", error);
 			} finally {
@@ -46,9 +42,7 @@ const BuyerOverview = () => {
 	const COLORS = ["#0088FE", "#00C49F"];
 
 	return (
-		<div className='space-y-8'>
-			<h2 className='text-2xl font-bold'>Task Overview</h2>
-
+		<div className='mt-8'>
 			{/* Charts */}
 			<div className='grid grid-cols-1 gap-8'>
 				{/* Task Distribution */}

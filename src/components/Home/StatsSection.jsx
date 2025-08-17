@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { LuUsers, LuCoins, LuListTodo, LuCheck } from "react-icons/lu";
+import GlassCard from "../ui/GlassCard";
 
 const StatsSection = () => {
 	const [stats, setStats] = useState({
@@ -63,7 +64,7 @@ const StatsSection = () => {
 
 				<div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
 					{statItems.map((item, index) => (
-						<div
+						<GlassCard
 							key={index}
 							className='bg-base-200 p-6 rounded-2xl shadow text-center'
 							data-aos='fade-up'
@@ -78,7 +79,7 @@ const StatsSection = () => {
 								)}
 							</h3>
 							<p className='text-sm text-gray-600'>{item.label}</p>
-						</div>
+						</GlassCard>
 					))}
 				</div>
 			</div>

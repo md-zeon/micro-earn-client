@@ -20,14 +20,14 @@ const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 	const { loading, logOut } = useAuth();
 	const navItems = {
 		worker: [
-			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
+			{ path: "/dashboard", label: "Overview", icon: <LuHouse /> },
 			{ path: "/dashboard/tasks-list", label: "Task List", icon: <LuListTodo /> },
 			{ path: "/dashboard/my-submissions", label: "My Submissions", icon: <LuFileText /> },
 			{ path: "/dashboard/approved-submissions", label: "Approved Submissions", icon: <LuCheckCheck /> },
 			{ path: "/dashboard/withdrawals", label: "Withdrawals", icon: <LuDollarSign /> },
 		],
 		buyer: [
-			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
+			{ path: "/dashboard", label: "Overview", icon: <LuHouse /> },
 			{ path: "/dashboard/add-task", label: "Add New Task", icon: <LuPlus /> },
 			{ path: "/dashboard/my-tasks", label: "My Tasks", icon: <LuListTodo /> },
 			{ path: "/dashboard/purchase-coin", label: "Purchase Coin", icon: <LuCreditCard /> },
@@ -35,7 +35,7 @@ const DashboardSidebar = ({ role, isSidebarOpen, isRoleLoading }) => {
 			{ path: "/dashboard/payment-history", label: "Payment History", icon: <LuChartBar /> },
 		],
 		admin: [
-			{ path: "/dashboard", label: "Home", icon: <LuHouse /> },
+			{ path: "/dashboard", label: "Overview", icon: <LuHouse /> },
 			{ path: "/dashboard/manage-users", label: "Manage Users", icon: <LuUsers /> },
 			{ path: "/dashboard/manage-tasks", label: "Manage Tasks", icon: <LuSettings /> },
 			{ path: "/dashboard/withdraw-requests", label: "Withdraw Requests", icon: <LuDollarSign /> },
