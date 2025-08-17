@@ -6,10 +6,12 @@ import { Link } from "react-router";
 import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import PageTitle from "../../../components/PageTitle";
 import WorkerOverview from "../../../components/Dashboard/WorkerOverview";
+import useAvailableCoins from "../../../hooks/useAvailableCoins";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
 	const { user } = useAuth();
+	const { microCoins } = useAvailableCoins();
 
 	if (isLoading)
 		return (
@@ -53,18 +55,20 @@ const WorkerDashboard = ({ greeting }) => {
 			</div>
 
 			{/* Stats */}
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
 				<StatsCard
 					label='Total Submissions'
 					value={totalSubmissions}
-					color='text-gradient'
+					color='text-accent'
 					Icon={LuListChecks}
+					subtitle="Tasks you have submitted"
 				/>
 				<StatsCard
 					label='Pending Submissions'
 					value={pendingSubmissions}
 					color='text-warning'
 					Icon={LuFileClock}
+					subtitle="Tasks that are still being reviewed"
 				/>
 				<StatsCard
 					label='Total Earnings'
@@ -72,6 +76,15 @@ const WorkerDashboard = ({ greeting }) => {
 					suffix='Micro Coins'
 					color='text-success'
 					Icon={LuCoins}
+					subtitle="Money earned for completed tasks"
+				/>
+				<StatsCard
+					label='Available Coins'
+					value={microCoins}
+					suffix='Micro Coins'
+					color='text-info'
+					Icon={LuCoins}
+					subtitle="Coins available to spend"
 				/>
 			</div>
 
