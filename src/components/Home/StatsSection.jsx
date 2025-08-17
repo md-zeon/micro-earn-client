@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuUsers, LuCoins, LuListTodo, LuCheck } from "react-icons/lu";
 import GlassCard from "../ui/GlassCard";
+import Counter from "../shared/Counter";
 
 const StatsSection = () => {
 	const [stats, setStats] = useState({
@@ -75,9 +76,13 @@ const StatsSection = () => {
 								{loading ? (
 									<div className='skeleton h-6 w-16 mx-auto rounded'></div>
 								) : (
-									`${item.value.toLocaleString()}${item.suffix}`
+									<Counter
+										value={item.value}
+										suffix={item.suffix}
+									/>
 								)}
 							</h3>
+
 							<p className='text-sm text-gray-600'>{item.label}</p>
 						</GlassCard>
 					))}
