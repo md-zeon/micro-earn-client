@@ -34,9 +34,10 @@ const testimonials = [
 	},
 	{
 		quote: "MicroEarn makes online micro job management truly effortless. Love the payment transparency.",
-		name: "Sadia Akter",
+		name: "Saad Hossain",
 		title: "Task Creator",
-		image: "https://images.unsplash.com/photo-1544037976-1000e0000000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
+		image: "https://img.daisyui.com/images/profile/demo/anakeen@192.webp",
+
 	},
 	{
 		quote: "Great system, real payouts, helpful support. Highly recommend to friends.",
