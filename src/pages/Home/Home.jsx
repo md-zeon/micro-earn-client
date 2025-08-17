@@ -6,6 +6,10 @@ import HowItWorks from "../../components/Home/HowItWorks";
 import TestimonialSlider from "../../components/Home/TestimonialSlider";
 import WhyChooseUs from "../../components/Home/WhyChooseUs";
 import PageTitle from "../../components/PageTitle";
+import FeaturedTasks from "../../components/Home/FeaturedTasks";
+import Newsletter from "../../components/Home/Newsletter";
+import StatsSection from "../../components/Home/StatsSection";
+import CTA from "../../components/Home/CTA";
 
 const Home = () => {
 	return (
@@ -18,9 +22,13 @@ const Home = () => {
 				<Hero />
 				<HowItWorks />
 				<BestWorkers />
+				<StatsSection />
+				<FeaturedTasks />
 				<TestimonialSlider />
 				<WhyChooseUs />
+				<CTA />
 				<FAQ />
+				<Newsletter />
 			</div>
 		</Container>
 	);
