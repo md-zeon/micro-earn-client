@@ -1,5 +1,15 @@
 import { useForm } from "react-hook-form";
-import { LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUserPlus } from "react-icons/lu";
+import {
+	LuEye,
+	LuEyeClosed,
+	LuLock,
+	LuLockOpen,
+	LuMail,
+	LuSettings,
+	LuUser,
+	LuUserPlus,
+	LuWrench,
+} from "react-icons/lu";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import GoogleSignIn from "./GoogleSignIn";
@@ -73,6 +83,52 @@ const Login = () => {
 					</div>
 					<h2 className='text-2xl font-bold text-center mb-2'>Welcome Back</h2>
 					<p className='text-center text-xs text-gray-400 mb-5'>Sign in to your MicroEarn account</p>
+
+					{/* 🚀 Demo Login Buttons */}
+					<div className='flex flex-wrap gap-2 justify-center mb-6'>
+						{/* Buyer */}
+						<button
+							type='button'
+							onClick={() => {
+								reset({ email: "ken@kaneki.com", password: "Ken@1234" });
+								toast.success("Demo Buyer credentials loaded");
+							}}
+							className='btn btn-sm px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:shadow-lg transition-all flex items-center gap-2'
+						>
+							<span>
+								<LuUser className='inline' /> Autofill Buyer
+							</span>
+						</button>
+
+						{/* Worker */}
+						<button
+							type='button'
+							onClick={() => {
+								reset({ email: "beluga@cat.com", password: "Beluga@1234" });
+								toast.success("Demo Worker credentials loaded");
+							}}
+							className='btn btn-sm px-4 py-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md hover:shadow-lg transition-all flex items-center gap-2'
+						>
+							<span>
+								<LuWrench className='inline' /> Autofill Worker
+							</span>
+						</button>
+
+						{/* Admin */}
+						<button
+							type='button'
+							onClick={() => {
+								reset({ email: "admin@microearn.com", password: "Admin@1234" });
+								toast.success("Demo Admin credentials loaded");
+							}}
+							className='btn btn-sm px-4 py-2 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-md hover:shadow-lg transition-all flex items-center gap-2'
+						>
+							<span>
+								<LuSettings className='inline' /> Autofill Admin
+							</span>
+						</button>
+					</div>
+
 					<form
 						onSubmit={handleSubmit(onSubmit)}
 						className='space-y-4'
