@@ -3,7 +3,6 @@ import useAdminTasks from "../../../hooks/useAdminTasks";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { LuCoins, LuTrash2 } from "react-icons/lu";
-import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import ManageTasksSkeleton from "../../../components/ui/ManageTasksSkeleton";
 import PageTitle from "../../../components/PageTitle";
 
@@ -76,15 +75,19 @@ const ManageTasks = () => {
 								<td>{task.required_workers}</td>
 								<td>{task.total_workers - task.required_workers}</td>
 								<td className='capitalize'>
-									<span className={`badge ${task?.status === "active" ? "bg-gradient" : "bg-gradient-success"}`}>
+									<span
+										className={`badge ${
+											task?.status === "active"
+												? "bg-gradient"
+												: "bg-gradient-success"
+										}`}>
 										{task?.status}
 									</span>
 								</td>
 								<td>
 									<button
 										className='btn bg-gradient-error btn-sm'
-										onClick={() => handleDelete(task._id)}
-									>
+										onClick={() => handleDelete(task._id)}>
 										<LuTrash2 className='inline' /> Delete
 									</button>
 								</td>

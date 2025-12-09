@@ -1,24 +1,39 @@
 import { LuDollarSign, LuFileText } from "react-icons/lu";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import Container from "../../../components/Container";
-import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import PageTitle from "../../../components/PageTitle";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const ApprovedSubmissions = () => {
 	const { submissions: data, isLoading } = useWorkerSubmissions();
 
-	if (isLoading) return <DashboardSkeleton statsCount={0} showTable={true} />;
+	if (isLoading)
+		return (
+			<DashboardSkeleton
+				statsCount={0}
+				showTable={true}
+			/>
+		);
 
-	const submissions = data.filter((submission) => submission.status === "approved");
+	const submissions = data.filter(
+		(submission) => submission.status === "approved",
+	);
 
 	return (
 		<Container>
 			<div className='px-4 py-8'>
-				<PageTitle title="Approved Submissions" description="View your approved task submissions and earnings." />
-				<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>Approved Submissions</h1>
+				<PageTitle
+					title='Approved Submissions'
+					description='View your approved task submissions and earnings.'
+				/>
+				<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>
+					Approved Submissions
+				</h1>
 
 				{submissions.length === 0 ? (
-					<div className='text-center text-gray-500'>No approved submissions yet.</div>
+					<div className='text-center text-gray-500'>
+						No approved submissions yet.
+					</div>
 				) : (
 					<div className='shadow rounded-lg'>
 						<table className='table table-zebra w-full'>
@@ -37,19 +52,24 @@ const ApprovedSubmissions = () => {
 									<tr key={submission._id}>
 										<td>{index + 1}</td>
 										<td className='font-medium'>{submission.task_title}</td>
-										<td>{new Date(submission.submission_date).toLocaleDateString()}</td>
+										<td>
+											{new Date(
+												submission.submission_date,
+											).toLocaleDateString()}
+										</td>
 										<td className='flex items-center gap-1 text-green-500 font-semibold'>
 											<LuDollarSign className='inline' />
 											{submission.payable_amount}
 										</td>
 										<td>
-											<span className='badge badge-success text-white'>Approved</span>
+											<span className='badge badge-success text-white'>
+												Approved
+											</span>
 										</td>
 										<td>
 											<div
 												className='tooltip tooltip-left'
-												data-tip={submission.submission_details}
-											>
+												data-tip={submission.submission_details}>
 												<button className='btn btn-sm btn-ghost text-blue-500'>
 													<LuFileText className='w-5 h-5' />
 												</button>

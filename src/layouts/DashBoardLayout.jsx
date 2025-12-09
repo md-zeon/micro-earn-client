@@ -6,8 +6,8 @@ import DashboardNavbar from "../pages/Dashboard/Common/DashboardNavbar";
 import { useState } from "react";
 import Container from "../components/Container";
 import DashboardLayoutSkeleton from "../components/ui/DashboardLayoutSkeleton";
-import DashboardSkeleton from "../components/ui/DashBoardSkeleton";
 import PageTitle from "../components/PageTitle";
+import DashboardSkeleton from "../components/ui/DashboardSkeleton";
 
 const DashboardLayout = () => {
 	const { state } = useNavigation();
@@ -62,8 +62,7 @@ const DashboardLayout = () => {
 			{isSidebarOpen && (
 				<div
 					className='fixed inset-0 z-30 bg-base-100/80 backdrop-blur-sm lg:hidden'
-					onClick={() => setIsSidebarOpen(false)}
-				></div>
+					onClick={() => setIsSidebarOpen(false)}></div>
 			)}
 		</Container>
 	);

@@ -4,7 +4,7 @@ import AdminDashboard from "../Admin/AdminDashboard";
 import BuyerDashboard from "../Buyer/BuyerDashboard";
 import WorkerDashboard from "../Worker/WorkerDashboard";
 import { Navigate } from "react-router";
-import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const Dashboard = () => {
 	const { role, isRoleLoading } = useRole();

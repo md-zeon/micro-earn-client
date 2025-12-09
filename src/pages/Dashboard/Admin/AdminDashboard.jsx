@@ -2,20 +2,30 @@ import StatsCard from "../../../components/shared/StatsCard";
 import useAdminStats from "../../../hooks/useAdminStats";
 import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { LuUsers, LuCoins, LuCreditCard, LuUserCheck, LuUserRound } from "react-icons/lu";
+import {
+	LuUsers,
+	LuCoins,
+	LuCreditCard,
+	LuUserCheck,
+	LuUserRound,
+} from "react-icons/lu";
 import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable";
-import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import PageTitle from "../../../components/PageTitle";
 import AdminOverview from "../../../components/Dashboard/AdminOverview";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const AdminDashboard = ({ greeting }) => {
 	const { user } = useAuth();
 	const { adminStats: stats, isLoading: isStatsLoading } = useAdminStats();
-	const { pendingRequests: withdrawRequests, isWithdrawLoading, refetch } = useWithdrawRequests();
+	const {
+		pendingRequests: withdrawRequests,
+		isWithdrawLoading,
+		refetch,
+	} = useWithdrawRequests();
 	const axiosSecure = useAxiosSecure();
 
 	if (isStatsLoading || isWithdrawLoading)
@@ -75,8 +85,7 @@ const AdminDashboard = ({ greeting }) => {
 					</div>
 					<Link
 						to='/dashboard/profile'
-						className='btn bg-gradient hidden sm:inline-flex'
-					>
+						className='btn bg-gradient hidden sm:inline-flex'>
 						<LuUserRound className='w-4 h-4 mr-2' />
 						Profile
 					</Link>
@@ -116,7 +125,9 @@ const AdminDashboard = ({ greeting }) => {
 			{/* Withdrawal Requests */}
 			<div className='mt-10'>
 				<h2 className='text-2xl font-semibold mb-2'>Withdrawal Requests</h2>
-				<p className='text-gray-400 text-xs mb-4'>Pending withdrawal requests from workers</p>
+				<p className='text-gray-400 text-xs mb-4'>
+					Pending withdrawal requests from workers
+				</p>
 				<WithdrawRequestTable
 					withdrawRequests={withdrawRequests}
 					handleApprove={handleApprove}

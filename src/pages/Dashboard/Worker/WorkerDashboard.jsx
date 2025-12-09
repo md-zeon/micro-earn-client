@@ -1,12 +1,18 @@
-import { LuCoins, LuCreditCard, LuFileCheck2, LuFileClock, LuListChecks } from "react-icons/lu";
+import {
+	LuCoins,
+	LuCreditCard,
+	LuFileCheck2,
+	LuFileClock,
+	LuListChecks,
+} from "react-icons/lu";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import StatsCard from "../../../components/shared/StatsCard";
 import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
-import DashboardSkeleton from "../../../components/ui/DashBoardSkeleton";
 import PageTitle from "../../../components/PageTitle";
 import WorkerOverview from "../../../components/Dashboard/WorkerOverview";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
+import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
@@ -23,12 +29,15 @@ const WorkerDashboard = ({ greeting }) => {
 
 	// Calculate Stats
 	const totalSubmissions = submissions?.length ?? 0;
-	const pendingSubmissions = submissions?.filter((s) => s?.status === "pending")?.length ?? 0;
+	const pendingSubmissions =
+		submissions?.filter((s) => s?.status === "pending")?.length ?? 0;
 	const totalEarnings =
-		submissions?.filter((s) => s?.status === "approved")?.reduce((sum, item) => sum + (item?.payable_amount ?? 0), 0) ??
-		0;
+		submissions
+			?.filter((s) => s?.status === "approved")
+			?.reduce((sum, item) => sum + (item?.payable_amount ?? 0), 0) ?? 0;
 
-	const approvedSubmissions = submissions?.filter((s) => s?.status === "approved") ?? [];
+	const approvedSubmissions =
+		submissions?.filter((s) => s?.status === "approved") ?? [];
 
 	return (
 		<div className='space-y-8'>
@@ -46,8 +55,7 @@ const WorkerDashboard = ({ greeting }) => {
 					</div>
 					<Link
 						to='/dashboard/withdrawals'
-						className='btn bg-gradient hidden sm:inline-flex'
-					>
+						className='btn bg-gradient hidden sm:inline-flex'>
 						<LuCreditCard className='w-4 h-4 mr-2' />
 						Withdraw Money
 					</Link>
@@ -61,14 +69,14 @@ const WorkerDashboard = ({ greeting }) => {
 					value={totalSubmissions}
 					color='text-accent'
 					Icon={LuListChecks}
-					subtitle="Tasks you have submitted"
+					subtitle='Tasks you have submitted'
 				/>
 				<StatsCard
 					label='Pending Submissions'
 					value={pendingSubmissions}
 					color='text-warning'
 					Icon={LuFileClock}
-					subtitle="Tasks that are still being reviewed"
+					subtitle='Tasks that are still being reviewed'
 				/>
 				<StatsCard
 					label='Total Earnings'
@@ -76,7 +84,7 @@ const WorkerDashboard = ({ greeting }) => {
 					suffix='Micro Coins'
 					color='text-success'
 					Icon={LuCoins}
-					subtitle="Money earned for completed tasks"
+					subtitle='Money earned for completed tasks'
 				/>
 				<StatsCard
 					label='Available Coins'
@@ -84,7 +92,7 @@ const WorkerDashboard = ({ greeting }) => {
 					suffix='Micro Coins'
 					color='text-info'
 					Icon={LuCoins}
-					subtitle="Coins available to spend"
+					subtitle='Coins available to spend'
 				/>
 			</div>
 
@@ -118,7 +126,9 @@ const WorkerDashboard = ({ greeting }) => {
 									<td>${submission?.payable_amount}</td>
 									<td>{submission?.buyer_name}</td>
 									<td>
-										<span className='badge bg-gradient-success capitalize'>{submission?.status}</span>
+										<span className='badge bg-gradient-success capitalize'>
+											{submission?.status}
+										</span>
 									</td>
 								</tr>
 							))}

@@ -18,7 +18,7 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 	useEffect(() => {
 		if (totalPrice) {
 			axiosSecure
-				.post("/create-payment-intent", { amount: totalPrice })
+				.post("/payments/create-payment-intent", { amount: totalPrice })
 				.then((res) => setClientSecret(res?.data?.clientSecret))
 				.catch(() => toast.error("Failed to initialize payment."));
 		}
@@ -32,14 +32,15 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 		const card = elements.getElement(CardElement);
 		if (!card) return;
 
-		const { error: methodErr, paymentMethod } = await stripe.createPaymentMethod({
-			type: "card",
-			card,
-			billing_details: {
-				name: user?.displayName,
-				email: user?.email,
-			},
-		});
+		const { error: methodErr, paymentMethod } =
+			await stripe.createPaymentMethod({
+				type: "card",
+				card,
+				billing_details: {
+					name: user?.displayName,
+					email: user?.email,
+				},
+			});
 
 		if (methodErr) {
 			setCardError(methodErr?.message);
@@ -48,10 +49,11 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 		setCardError("");
 		setProcessing(true);
 
-		const { paymentIntent, error: confirmErr } = await stripe.confirmCardPayment(clientSecret, {
-			payment_method: paymentMethod?.id,
-			receipt_email: user?.email,
-		});
+		const { paymentIntent, error: confirmErr } =
+			await stripe.confirmCardPayment(clientSecret, {
+				payment_method: paymentMethod?.id,
+				receipt_email: user?.email,
+			});
 
 		if (confirmErr) {
 			setCardError(confirmErr?.message);
@@ -70,8 +72,7 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className='space-y-4'
-		>
+			className='space-y-4'>
 			<CardElement
 				options={{
 					style: {
@@ -87,8 +88,7 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
 			<button
 				type='submit'
 				className='btn bg-gradient w-full'
-				disabled={!stripe || !clientSecret || processing}
-			>
+				disabled={!stripe || !clientSecret || processing}>
 				{processing ? "Processing..." : `Confirm Payment ($${totalPrice})`}
 			</button>
 		</form>
