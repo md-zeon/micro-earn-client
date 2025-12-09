@@ -56,10 +56,13 @@ const AdminDashboard = ({ greeting }) => {
 					status: "approved",
 				});
 				// update coins
-				await axiosSecure.patch(`/update-coins/${withdraw?.worker_email}`, {
-					coinsToUpdate: withdraw?.withdrawal_coin,
-					status: "decrease",
-				});
+				await axiosSecure.patch(
+					`/user/update-coins/${withdraw?.worker_email}`,
+					{
+						coinsToUpdate: withdraw?.withdrawal_coin,
+						status: "decrease",
+					},
+				);
 				toast.success("Withdrawal Approved");
 				refetch();
 			}

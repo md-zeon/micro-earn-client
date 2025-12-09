@@ -12,7 +12,7 @@ const ManageUsers = () => {
 
 	const handleRoleChange = async (id, role) => {
 		try {
-			await axiosSecure.patch(`/update-role/user/${id}`, { role });
+			await axiosSecure.patch(`/user/update-role/${id}`, { role });
 			toast.success("Role updated");
 			refetch();
 		} catch (err) {
@@ -105,8 +105,9 @@ const ManageUsers = () => {
 									<select
 										className='select select-bordered select-sm'
 										value={user?.role}
-										onChange={(e) => handleRoleChange(user?._id, e.target.value)}
-									>
+										onChange={(e) =>
+											handleRoleChange(user?._id, e.target.value)
+										}>
 										<option value='worker'>Worker</option>
 										<option value='buyer'>Buyer</option>
 										<option value='admin'>Admin</option>
@@ -115,8 +116,7 @@ const ManageUsers = () => {
 								<td>
 									<button
 										className='btn bg-gradient-error btn-sm'
-										onClick={() => handleDelete(user?._id)}
-									>
+										onClick={() => handleDelete(user?._id)}>
 										Delete
 									</button>
 								</td>

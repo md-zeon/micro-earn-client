@@ -4,10 +4,14 @@ import useAxiosSecure from "./useAxiosSecure";
 const useAdminUsers = () => {
 	const axiosSecure = useAxiosSecure();
 
-	const { data: users = [], isLoading, refetch } = useQuery({
+	const {
+		data: users = [],
+		isLoading,
+		refetch,
+	} = useQuery({
 		queryKey: ["admin-users"],
 		queryFn: async () => {
-			const res = await axiosSecure.get("/users");
+			const res = await axiosSecure.get("/user");
 			return res?.data;
 		},
 	});

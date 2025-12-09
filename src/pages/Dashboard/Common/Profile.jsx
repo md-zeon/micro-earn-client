@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { LuMail, LuCalendarDays, LuShield, LuUser, LuCoins, LuPen } from "react-icons/lu";
+import {
+	LuMail,
+	LuCalendarDays,
+	LuShield,
+	LuUser,
+	LuCoins,
+	LuPen,
+} from "react-icons/lu";
 import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../hooks/useRole";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
@@ -52,7 +59,10 @@ const Profile = () => {
 			}
 
 			await updateUserProfile(name, updatedPhotoURL);
-			await axiosSecure.patch("/update-profile", { name, photoURL: updatedPhotoURL });
+			await axiosSecure.patch("/user/update-profile", {
+				name,
+				photoURL: updatedPhotoURL,
+			});
 			await refreshUser();
 			setOriginalName(name);
 			setOriginalPhotoURL(updatedPhotoURL);
@@ -85,8 +95,7 @@ const Profile = () => {
 				{!isEditing && (
 					<button
 						className='btn btn-sm btn-outline bg-base-300 text-base-content flex items-center gap-1'
-						onClick={() => setIsEditing(true)}
-					>
+						onClick={() => setIsEditing(true)}>
 						<LuPen /> Edit Profile
 					</button>
 				)}
@@ -143,14 +152,12 @@ const Profile = () => {
 									<div className='flex gap-2 mt-2'>
 										<button
 											className='btn btn-sm bg-gradient'
-											onClick={handleSave}
-										>
+											onClick={handleSave}>
 											Save
 										</button>
 										<button
 											className='btn btn-sm bg-gradient-error'
-											onClick={handleCancel}
-										>
+											onClick={handleCancel}>
 											Cancel
 										</button>
 									</div>
@@ -161,7 +168,9 @@ const Profile = () => {
 										{name || "Unnamed User"}
 									</h2>
 									<div className='flex items-center justify-center sm:justify-start gap-2 mt-2'>
-										<span className='badge badge-soft capitalize badge-accent'>{role}</span>
+										<span className='badge badge-soft capitalize badge-accent'>
+											{role}
+										</span>
 										<span className='flex items-center gap-1 text-sm text-gradient'>
 											<LuCoins className='text-blue-500' /> {coins} coins
 										</span>

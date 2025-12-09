@@ -10,7 +10,9 @@ const BestWorkers = () => {
 	useEffect(() => {
 		const getTopWorkers = async () => {
 			try {
-				const res = await axios.get(`${import.meta.env.VITE_API_URL}/top-workers`);
+				const res = await axios.get(
+					`${import.meta.env.VITE_API_URL}/user/top-workers`,
+				);
 				// console.log(res.data);
 				setWorkers(res.data);
 			} catch (error) {
@@ -27,30 +29,26 @@ const BestWorkers = () => {
 			<div className='container mx-auto px-4'>
 				<h2
 					className='text-3xl md:text-4xl font-bold text-center mb-3 text-gradient'
-					data-aos='fade-up'
-				>
+					data-aos='fade-up'>
 					Top Performing Workers
 				</h2>
 				<p
 					className='text-center text-base text-gray-500 mb-12 max-w-2xl mx-auto'
-					data-aos='fade-up'
-				>
-					Meet our highest-rated workers who consistently deliver top-quality results and earn the most coins on the
-					platform.
+					data-aos='fade-up'>
+					Meet our highest-rated workers who consistently deliver top-quality
+					results and earn the most coins on the platform.
 				</p>
 
 				{loading ? (
 					<div
 						className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'
-						data-aos='fade-up'
-					>
+						data-aos='fade-up'>
 						{[...Array(6)].map((_, i) => (
 							<div
 								key={i}
 								className='bg-base-200 p-6 rounded-2xl shadow'
 								data-aos='zoom-in'
-								data-aos-delay={100 + i * 100}
-							>
+								data-aos-delay={100 + i * 100}>
 								<div className='flex flex-col items-center gap-4'>
 									<div className='w-24 h-24 rounded-full skeleton' />
 									<div className='w-32 h-4 rounded-md skeleton' />
@@ -66,14 +64,12 @@ const BestWorkers = () => {
 				) : (
 					<div
 						className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'
-						data-aos='fade-up'
-					>
+						data-aos='fade-up'>
 						{workers.map((worker, i) => (
 							<div
 								key={worker._id}
 								data-aos=''
-								data-aos-delay={100 + i * 200}
-							>
+								data-aos-delay={100 + i * 200}>
 								<GlassCard className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'>
 									<div className='flex flex-col items-center text-center gap-3'>
 										<img
@@ -85,7 +81,9 @@ const BestWorkers = () => {
 										<h3 className='text-lg font-semibold'>{worker.name}</h3>
 										<p className='flex items-center gap-1 text-green-600 font-medium'>
 											<LuCoins className='text-xl' />
-											<span className='text-gradient'>{worker.microCoins} Coins</span>
+											<span className='text-gradient'>
+												{worker.microCoins} Coins
+											</span>
 										</p>
 									</div>
 								</GlassCard>

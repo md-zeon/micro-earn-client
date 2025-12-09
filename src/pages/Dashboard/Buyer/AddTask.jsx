@@ -62,7 +62,7 @@ const AddTask = () => {
 		try {
 			await axiosSecure.post("/tasks", newTask);
 			// deduct buyer's coins
-			await axiosSecure.patch(`/update-coins/${user?.email}`, {
+			await axiosSecure.patch(`/user/update-coins/${user?.email}`, {
 				coinsToUpdate: totalCost,
 				status: "decrease",
 			});
@@ -92,15 +92,16 @@ const AddTask = () => {
 			/>
 			<div className='text-center mb-2'>
 				<h1 className='text-3xl font-bold mb-2'> Add New Task</h1>
-				<p className='text-gray-400'>Create a new task for workers to complete</p>
+				<p className='text-gray-400'>
+					Create a new task for workers to complete
+				</p>
 			</div>
 			<div className='card bg-base-100'>
 				<div className='card-body space-y-4'>
 					<h2 className='card-title items-center gap-2'>Task Information:</h2>
 					<form
 						onSubmit={handleSubmit}
-						className='space-y-4'
-					>
+						className='space-y-4'>
 						{/* Task Title */}
 						<div>
 							<label className='label'>Task Title *</label>
@@ -121,8 +122,7 @@ const AddTask = () => {
 								placeholder='Explain what workers need to do'
 								className='textarea textarea-bordered w-full'
 								rows='4'
-								required
-							></textarea>
+								required></textarea>
 						</div>
 
 						{/* Workers and Payment */}
@@ -190,8 +190,7 @@ const AddTask = () => {
 								placeholder='What should the worker submit as proof?'
 								className='textarea textarea-bordered w-full'
 								rows='3'
-								required
-							></textarea>
+								required></textarea>
 						</div>
 
 						{/* Task Image */}
@@ -205,7 +204,9 @@ const AddTask = () => {
 								disabled={imgUploading}
 								required
 							/>
-							{imgUploading && <p className='text-sm text-gray-400 mt-1'>Uploading...</p>}
+							{imgUploading && (
+								<p className='text-sm text-gray-400 mt-1'>Uploading...</p>
+							)}
 							{taskImageUrl && (
 								<img
 									src={taskImageUrl}
@@ -221,7 +222,9 @@ const AddTask = () => {
 								<p className='text-sm text-gray-500 mb-1'>
 									{requiredWorkers} x {payableAmount} Micro Coins
 								</p>
-								<p className='text-xl font-bold text-gradient'>Total: {totalCost} Micro Coins</p>
+								<p className='text-xl font-bold text-gradient'>
+									Total: {totalCost} Micro Coins
+								</p>
 							</div>
 						)}
 
@@ -229,8 +232,7 @@ const AddTask = () => {
 						<button
 							type='submit'
 							className='btn bg-gradient w-full'
-							disabled={imgUploading}
-						>
+							disabled={imgUploading}>
 							{loading ? "Creating Task..." : "Create Task"}
 						</button>
 						<p className='text-center text-sm text-gray-500 mb-6'>

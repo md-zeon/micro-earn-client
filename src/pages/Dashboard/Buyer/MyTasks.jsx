@@ -25,7 +25,12 @@ const MyTasks = () => {
 	});
 
 	// Handle Delete Task
-	const handleDelete = async (taskId, requiredWorkers, payableAmount, status) => {
+	const handleDelete = async (
+		taskId,
+		requiredWorkers,
+		payableAmount,
+		status,
+	) => {
 		const result = await Swal.fire({
 			title: "Are you sure?",
 			text: "This task will be deleted, and coins will be refunded for uncompleted tasks.",
@@ -44,7 +49,7 @@ const MyTasks = () => {
 				await axiosSecure.delete(`/tasks/${taskId}`);
 				if (status === "active") {
 					const refundAmount = requiredWorkers * payableAmount;
-					await axiosSecure.patch(`/update-coins/${user?.email}`, {
+					await axiosSecure.patch(`/user/update-coins/${user?.email}`, {
 						coinsToUpdate: refundAmount,
 						status: "increase",
 					});
@@ -109,8 +114,13 @@ const MyTasks = () => {
 
 	const totalTasks = tasks.length;
 	const activeTasks = tasks.filter((task) => task.status === "active").length;
-	const totalInvestment = tasks.reduce((sum, task) => sum + task.required_workers * task.payable_amount, 0);
-	const completedTasks = tasks.filter((task) => task.status === "completed").length;
+	const totalInvestment = tasks.reduce(
+		(sum, task) => sum + task.required_workers * task.payable_amount,
+		0,
+	);
+	const completedTasks = tasks.filter(
+		(task) => task.status === "completed",
+	).length;
 
 	return (
 		<div>
@@ -120,7 +130,9 @@ const MyTasks = () => {
 			/>
 			<div className='flex justify-between items-center mb-6'>
 				<h1 className='text-3xl font-bold'>My Tasks</h1>
-				<button className='btn btn-sm bg-gradient-success rounded-full'>{tasks.length}</button>
+				<button className='btn btn-sm bg-gradient-success rounded-full'>
+					{tasks.length}
+				</button>
 			</div>
 			{/* Stats Cards */}
 			<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6'>
@@ -150,7 +162,14 @@ const MyTasks = () => {
 			<MyTaskTable
 				tasks={tasks}
 				onUpdateClick={handleUpdateClick}
-				onDeleteClick={(task) => handleDelete(task._id, task.required_workers, task.payable_amount, task.status)}
+				onDeleteClick={(task) =>
+					handleDelete(
+						task._id,
+						task.required_workers,
+						task.payable_amount,
+						task.status,
+					)
+				}
 			/>
 
 			{/* Update Modal */}

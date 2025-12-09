@@ -26,7 +26,7 @@ const TasksToReview = () => {
 			});
 
 			// Update worker coins
-			await axiosSecure.patch(`/update-coins/${submission.worker_email}`, {
+			await axiosSecure.patch(`/user/update-coins/${submission.worker_email}`, {
 				coinsToUpdate: submission.payable_amount,
 				status: "increase",
 			});

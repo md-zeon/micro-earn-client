@@ -14,7 +14,8 @@ import PageTitle from "../../../components/PageTitle";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const PurchaseCoin = () => {
 	const axiosSecure = useAxiosSecure();
-	const { refetch: refetchCoins, isMicroCoinsLoading: coinsLoading } = useAvailableCoins();
+	const { refetch: refetchCoins, isMicroCoinsLoading: coinsLoading } =
+		useAvailableCoins();
 	const [selectedPackage, setSelectedPackage] = useState(null);
 	const [processing, setProcessing] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,7 +49,7 @@ const PurchaseCoin = () => {
 				status: "completed",
 			});
 
-			await axiosSecure.patch(`/update-coins/${user?.email}`, {
+			await axiosSecure.patch(`/user/update-coins/${user?.email}`, {
 				coinsToUpdate: totalCoins,
 				status: "increase",
 			});
@@ -93,7 +94,9 @@ const PurchaseCoin = () => {
 			/>
 			<div className='text-center'>
 				<h1 className='text-3xl font-bold mb-2'>Purchase Coins</h1>
-				<p className='text-gray-500'>Choose a package to add coins to your account</p>
+				<p className='text-gray-500'>
+					Choose a package to add coins to your account
+				</p>
 			</div>
 
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6'>

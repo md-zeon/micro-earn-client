@@ -8,7 +8,8 @@ import PageTitle from "../../../components/PageTitle";
 
 const WithdrawRequests = () => {
 	const axiosSecure = useAxiosSecure();
-	const { pendingRequests, approvedRequests, isWithdrawLoading, refetch } = useWithdrawRequests();
+	const { pendingRequests, approvedRequests, isWithdrawLoading, refetch } =
+		useWithdrawRequests();
 	if (isWithdrawLoading) return <WithdrawRequestsSkeleton />;
 
 	const handleApprove = async (withdraw) => {
@@ -31,10 +32,13 @@ const WithdrawRequests = () => {
 					status: "approved",
 				});
 				// update coins
-				await axiosSecure.patch(`/update-coins/${withdraw?.worker_email}`, {
-					coinsToUpdate: withdraw?.withdrawal_coin,
-					status: "decrease",
-				});
+				await axiosSecure.patch(
+					`/user/update-coins/${withdraw?.worker_email}`,
+					{
+						coinsToUpdate: withdraw?.withdrawal_coin,
+						status: "decrease",
+					},
+				);
 				toast.success("Withdrawal Approved");
 				refetch();
 			}
@@ -53,7 +57,9 @@ const WithdrawRequests = () => {
 				<div>
 					<h2 className='text-2xl font-semibold mb-2'>Pending Requests</h2>
 
-					<p className='text-gray-400 text-xs mb-4'>Pending withdrawal requests from workers</p>
+					<p className='text-gray-400 text-xs mb-4'>
+						Pending withdrawal requests from workers
+					</p>
 				</div>
 				<WithdrawRequestTable
 					withdrawRequests={pendingRequests}
@@ -63,7 +69,9 @@ const WithdrawRequests = () => {
 			<div>
 				<div>
 					<h2 className='text-2xl font-semibold mb-2'>Approved Requests</h2>
-					<p className='text-gray-400 text-xs mb-4'>Approved withdrawal requests from workers</p>
+					<p className='text-gray-400 text-xs mb-4'>
+						Approved withdrawal requests from workers
+					</p>
 				</div>
 				<WithdrawRequestTable
 					withdrawRequests={approvedRequests}
