@@ -15,7 +15,9 @@ const useWorkerStats = () => {
 		queryKey: ["workerEarnings", user?.email],
 		enabled: !!user?.email,
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/worker/earnings-stats");
+			const { data } = await axiosSecure.get(
+				"/statistics/worker/earnings-stats",
+			);
 			return data;
 		},
 	});
@@ -29,7 +31,9 @@ const useWorkerStats = () => {
 		queryKey: ["workerSubmissionStats", user?.email],
 		enabled: !!user?.email,
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/worker/submission-stats");
+			const { data } = await axiosSecure.get(
+				"/statistics/worker/submission-stats",
+			);
 			return data;
 		},
 	});

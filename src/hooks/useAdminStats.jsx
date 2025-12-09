@@ -6,7 +6,7 @@ const useAdminStats = () => {
 	const { data: adminStats, isLoading } = useQuery({
 		queryKey: ["admin-stats"],
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/admin/stats");
+			const { data } = await axiosSecure.get("/statistics/admin/stats");
 			return data; // { totalWorkers, totalBuyers, totalCoins, totalPayments }
 		},
 	});

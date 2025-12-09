@@ -14,7 +14,7 @@ const useBuyerPaymentStats = () => {
 		queryKey: ["buyerPaymentStats", user?.email],
 		enabled: !!user?.email,
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/buyer/payment-stats");
+			const { data } = await axiosSecure.get("/statistics/buyer/payment-stats");
 			return data;
 		},
 	});

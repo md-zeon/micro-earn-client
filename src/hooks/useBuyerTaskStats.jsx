@@ -14,7 +14,7 @@ const useBuyerTaskStats = () => {
 		queryKey: ["buyerTaskStats", user?.email],
 		enabled: !!user?.email,
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/buyer/task-stats");
+			const { data } = await axiosSecure.get("/statistics/buyer/task-stats");
 			return data;
 		},
 	});
