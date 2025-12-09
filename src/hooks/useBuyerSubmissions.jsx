@@ -14,7 +14,7 @@ const useBuyerSubmissions = () => {
 		queryKey: ["buyerSubmissions", user?.email],
 		enabled: !!user?.email,
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/buyer-submissions");
+			const { data } = await axiosSecure.get("/submissions/buyer");
 			return data;
 		},
 	});
