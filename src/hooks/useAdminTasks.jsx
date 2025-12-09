@@ -11,7 +11,7 @@ const useAdminTasks = () => {
 	} = useQuery({
 		queryKey: ["adminTasks"],
 		queryFn: async () => {
-			const res = await axiosSecure.get("/admin/tasks");
+			const res = await axiosSecure.get("/tasks/admin");
 			return res?.data;
 		},
 	});

@@ -13,7 +13,9 @@ const TasksToReview = () => {
 
 	const [selectedSubmission, setSelectedSubmission] = useState(null);
 
-	const buyerSubmissions = submissions?.filter((s) => s.buyer_email === user?.email && s.status === "pending");
+	const buyerSubmissions = submissions?.filter(
+		(s) => s.buyer_email === user?.email && s.status === "pending",
+	);
 
 	const handleApprove = async (submission) => {
 		try {
@@ -76,7 +78,7 @@ const TasksToReview = () => {
 				});
 
 				// update required workers by 1
-				await axiosSecure.patch(`/update-workers/${submission.task_id}`, {
+				await axiosSecure.patch(`/tasks/update-workers/${submission.task_id}`, {
 					status: "increase",
 				});
 				refetch();
@@ -148,20 +150,17 @@ const TasksToReview = () => {
 										<div className='flex gap-2 items-center'>
 											<button
 												onClick={() => setSelectedSubmission(s)}
-												className='btn btn-sm btn-outline'
-											>
+												className='btn btn-sm btn-outline'>
 												View
 											</button>
 											<button
 												onClick={() => handleApprove(s)}
-												className='btn btn-sm bg-gradient-success'
-											>
+												className='btn btn-sm bg-gradient-success'>
 												Approve
 											</button>
 											<button
 												onClick={() => handleReject(s)}
-												className='btn btn-sm bg-gradient-error'
-											>
+												className='btn btn-sm bg-gradient-error'>
 												Reject
 											</button>
 										</div>
@@ -177,7 +176,9 @@ const TasksToReview = () => {
 			{selectedSubmission && (
 				<div className='modal modal-open z-50'>
 					<div className='modal-box w-11/12 max-w-2xl border border-gray-500 rounded-xl shadow-xl'>
-						<h3 className='text-2xl font-bold mb-4 text-center'>Submission Details</h3>
+						<h3 className='text-2xl font-bold mb-4 text-center'>
+							Submission Details
+						</h3>
 
 						<div className='space-y-2 text-sm'>
 							<p>
@@ -193,7 +194,8 @@ const TasksToReview = () => {
 								<strong>Submission Text:</strong>
 							</p>
 							<p className='p-3 rounded bg-base-300'>
-								{selectedSubmission.submission_details || "No text submission provided."}
+								{selectedSubmission.submission_details ||
+									"No text submission provided."}
 							</p>
 							{selectedSubmission.proof_img && (
 								<div>
@@ -215,8 +217,7 @@ const TasksToReview = () => {
 									handleReject(selectedSubmission);
 									setSelectedSubmission(null);
 								}}
-								className='btn-sm text-sm btn sm:btn-md bg-gradient-error'
-							>
+								className='btn-sm text-sm btn sm:btn-md bg-gradient-error'>
 								Reject
 							</button>
 							<button
@@ -224,14 +225,12 @@ const TasksToReview = () => {
 									handleApprove(selectedSubmission);
 									setSelectedSubmission(null);
 								}}
-								className='btn-sm text-sm btn sm:btn-md bg-gradient-success'
-							>
+								className='btn-sm text-sm btn sm:btn-md bg-gradient-success'>
 								Approve
 							</button>
 							<button
 								onClick={() => setSelectedSubmission(null)}
-								className='btn-sm text-sm btn sm:btn-md'
-							>
+								className='btn-sm text-sm btn sm:btn-md'>
 								Close
 							</button>
 						</div>

@@ -25,7 +25,7 @@ const ManageTasks = () => {
 				},
 			});
 			if (result.isConfirmed) {
-				await axiosSecure.delete(`/admin/task/${id}`);
+				await axiosSecure.delete(`/tasks/admin/${id}`);
 				refetch();
 				await Swal.fire({
 					icon: "success",

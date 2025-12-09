@@ -4,18 +4,22 @@ import useAxiosSecure from "./useAxiosSecure";
 
 const useBuyerTasks = () => {
 	const { user, loading } = useAuth();
-	const axiosSecure = useAxiosSecure()
+	const axiosSecure = useAxiosSecure();
 
-	const { data: tasks = [], isLoading: isTasksLoading, refetch } = useQuery({
+	const {
+		data: tasks = [],
+		isLoading: isTasksLoading,
+		refetch,
+	} = useQuery({
 		queryKey: ["buyerTasks", user?.email],
 		enabled: !!user?.email && !loading,
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/my-tasks");
+			const { data } = await axiosSecure.get("/tasks/my-tasks");
 			return data;
 		},
 	});
 
-	return { tasks, isTasksLoading, refetch};
+	return { tasks, isTasksLoading, refetch };
 };
 
 export default useBuyerTasks;

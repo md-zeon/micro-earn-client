@@ -14,7 +14,7 @@ const useWorkerTasks = () => {
 		queryKey: ["workerTasks", user?.email],
 		enabled: !!user?.email && !loading, // Only fetch if user email is available and not loading
 		queryFn: async () => {
-			const { data } = await axiosSecure.get("/tasks-for-worker");
+			const { data } = await axiosSecure.get("/tasks/tasks-for-worker");
 			return data;
 		},
 	});
