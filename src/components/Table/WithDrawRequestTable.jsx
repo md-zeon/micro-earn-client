@@ -1,8 +1,10 @@
 const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
-	if (withdrawRequests.length <= 0) {
+	if (withdrawRequests?.length <= 0) {
 		return (
 			<div className='mt-10'>
-				<p className='text-gray-500 text-center font-semibold mb-4'>No pending withdraw requests</p>
+				<p className='text-gray-500 text-center font-semibold mb-4'>
+					No pending withdraw requests
+				</p>
 			</div>
 		);
 	}
@@ -28,11 +30,18 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 							<td>{withdraw?.worker_name}</td>
 							<td>{withdraw?.worker_email}</td>
 							<td className='text-green-500'>${withdraw?.withdrawal_amount}</td>
-							<td>{withdraw?.withdraw_date ? new Date(withdraw.withdraw_date).toLocaleDateString() : "N/A"}</td>
+							<td>
+								{withdraw?.withdraw_date
+									? new Date(withdraw.withdraw_date).toLocaleDateString()
+									: "N/A"}
+							</td>
 							<td>
 								<span
-									className={`badge ${withdraw?.status === "pending" ? "bg-gradient-warning" : "bg-gradient-success"}`}
-								>
+									className={`badge ${
+										withdraw?.status === "pending"
+											? "bg-gradient-warning"
+											: "bg-gradient-success"
+									}`}>
 									{withdraw?.status}
 								</span>
 							</td>
@@ -41,12 +50,15 @@ const WithdrawRequestTable = ({ withdrawRequests, handleApprove }) => {
 									<button
 										onClick={() => handleApprove(withdraw)}
 										className='btn bg-gradient-success btn-sm'
-										disabled={withdraw?.status === "approved"}
-									>
+										disabled={withdraw?.status === "approved"}>
 										Approve
 									</button>
 								) : (
-									<span>{withdraw?.updatedAt ? new Date(withdraw.updatedAt).toLocaleDateString() : "N/A"}</span>
+									<span>
+										{withdraw?.updatedAt
+											? new Date(withdraw.updatedAt).toLocaleDateString()
+											: "N/A"}
+									</span>
 								)}
 							</td>
 						</tr>
