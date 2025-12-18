@@ -20,8 +20,7 @@ const Navbar = () => {
 						isActive
 							? "text-gradient"
 							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}
-				>
+					}>
 					Home
 				</NavLink>
 			</li>
@@ -32,8 +31,7 @@ const Navbar = () => {
 						isActive
 							? "text-gradient"
 							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}
-				>
+					}>
 					All Tasks
 				</NavLink>
 			</li>
@@ -45,8 +43,7 @@ const Navbar = () => {
 							isActive
 								? "text-gradient"
 								: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-						}
-					>
+						}>
 						Dashboard
 					</NavLink>
 				</li>
@@ -58,8 +55,7 @@ const Navbar = () => {
 						isActive
 							? "text-gradient"
 							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}
-				>
+					}>
 					About Us
 				</NavLink>
 			</li>
@@ -70,8 +66,7 @@ const Navbar = () => {
 						isActive
 							? "text-gradient"
 							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}
-				>
+					}>
 					Contact Us
 				</NavLink>
 			</li>
@@ -86,15 +81,13 @@ const Navbar = () => {
 						<div
 							tabIndex={0}
 							role='button'
-							className='btn btn-ghost px-1 mr-1 sm:px-3 lg:hidden'
-						>
+							className='btn btn-ghost px-1 mr-1 sm:px-3 lg:hidden'>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								className='h-5 w-5'
 								fill='none'
 								viewBox='0 0 24 24'
-								stroke='currentColor'
-							>
+								stroke='currentColor'>
 								{" "}
 								<path
 									strokeLinecap='round'
@@ -106,16 +99,14 @@ const Navbar = () => {
 						</div>
 						<ul
 							tabIndex={0}
-							className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow space-y-2'
-						>
+							className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow space-y-2'>
 							{navLinks}
 							<li>
 								<a
 									href='https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-md-zeon'
 									target='_blank'
 									rel='noreferrer'
-									className='btn btn-sm bg-gradient'
-								>
+									className='btn btn-sm bg-gradient'>
 									Join As Developer
 								</a>
 							</li>
@@ -136,8 +127,7 @@ const Navbar = () => {
 									<div
 										tabIndex={0}
 										role='button'
-										className='btn btn-ghost btn-circle avatar'
-									>
+										className='btn btn-ghost btn-circle avatar'>
 										<div className='w-10 h-10 rounded-full overflow-hidden'>
 											{!user?.photoURL ? (
 												<div className='w-full h-full bg-base-300 animate-pulse rounded-full'></div>
@@ -153,8 +143,7 @@ const Navbar = () => {
 									</div>
 									<div
 										tabIndex={0}
-										className='menu menu-sm dropdown-content min-w-52 w-fit bg-base-100 rounded-box z-1 mt-3 p-2 shadow space-y-2'
-									>
+										className='menu menu-sm dropdown-content min-w-52 w-fit bg-base-100 rounded-box z-1 mt-3 p-2 shadow space-y-2'>
 										<div>
 											{/* Email */}
 											<p>{user?.email}</p>
@@ -163,15 +152,16 @@ const Navbar = () => {
 											{isRoleLoading ? (
 												<div className='skeleton badge'></div>
 											) : (
-												<span className='badge bg-gradient capitalize'>{role}</span>
+												<span className='badge bg-gradient capitalize'>
+													{role}
+												</span>
 											)}
 											<ThemeController />
 										</div>
 										<div>
 											<button
 												onClick={logOut}
-												className='flex gap-1 items-center cursor-pointer hover:scale-95'
-											>
+												className='flex gap-1 items-center cursor-pointer hover:scale-95'>
 												<LuLogOut />
 												Logout
 											</button>
@@ -187,25 +177,22 @@ const Navbar = () => {
 								<div className='space-x-1'>
 									<Link
 										to='/login'
-										className='btn btn-sm sm:btn-md btn-ghost'
-									>
+										className='btn btn-sm sm:btn-md btn-ghost'>
 										Login
 									</Link>
 									<Link
 										to='/register'
-										className='btn btn-sm sm:btn-md btn-ghost bg-gradient'
-									>
+										className='btn btn-sm sm:btn-md btn-ghost bg-gradient'>
 										Register
 									</Link>
 								</div>
 							</>
 						)}
 						<a
-							href='https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-md-zeon'
+							href='https://github.com/md-zeon/micro-earn-client'
 							target='_blank'
 							rel='noreferrer'
-							className='btn btn-outline hidden lg:inline-flex'
-						>
+							className='btn btn-outline hidden lg:inline-flex'>
 							Join As Developer
 						</a>
 					</div>
