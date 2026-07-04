@@ -13,7 +13,7 @@ import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import PageTitle from "../../../components/PageTitle";
 import { imageUpload } from "../../../api/utils";
 import ProfileSkeleton from "../../../components/ui/ProfileSkeleton";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Profile = () => {
