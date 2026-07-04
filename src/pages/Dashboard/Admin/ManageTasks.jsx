@@ -1,103 +1,203 @@
-import Swal from "sweetalert2";
+import { useState } from "react";
+import { toast } from "sonner";
 import useAdminTasks from "../../../hooks/useAdminTasks";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import toast from "react-hot-toast";
-import { LuCoins, LuTrash2 } from "react-icons/lu";
 import ManageTasksSkeleton from "../../../components/ui/ManageTasksSkeleton";
 import PageTitle from "../../../components/PageTitle";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const ManageTasks = () => {
-	const { tasks, isLoading, refetch } = useAdminTasks();
-	const axiosSecure = useAxiosSecure();
+  const { tasks, isLoading, refetch } = useAdminTasks();
+  const axiosSecure = useAxiosSecure();
+  const [actionTarget, setActionTarget] = useState(null);
+  const [actionType, setActionType] = useState(null); // 'approve' | 'reject' | 'delete'
 
-	const handleDelete = async (id) => {
-		try {
-			const result = await Swal.fire({
-				title: "Are you sure?",
-				text: "You won't be able to revert this!",
-				icon: "warning",
-				showCancelButton: true,
-				confirmButtonText: "Yes, delete it!",
-				buttonsStyling: false,
-				customClass: {
-					confirmButton: "btn mr-5 bg-gradient-success",
-					cancelButton: "btn bg-gradient-error",
-				},
-			});
-			if (result.isConfirmed) {
-				await axiosSecure.delete(`/tasks/admin/${id}`);
-				refetch();
-				await Swal.fire({
-					icon: "success",
-					title: "Task deleted successfully",
-					buttonsStyling: false,
-					customClass: {
-						confirmButton: "btn mr-5 bg-gradient-success",
-					},
-				});
-			}
-		} catch (err) {
-			console.error("Failed to delete task", err);
-			toast.error("Failed to delete task");
-		}
-	};
+  const handleApprove = (task) => {
+    setActionTarget(task);
+    setActionType("approve");
+  };
 
-	if (isLoading) return <ManageTasksSkeleton />;
+  const handleReject = (task) => {
+    setActionTarget(task);
+    setActionType("reject");
+  };
 
-	return (
-		<div className='mt-10'>
-			<PageTitle
-				title='Manage Tasks'
-				description='Oversee all platform tasks and moderate content.'
-			/>
-			<h2 className='text-xl font-semibold mb-4'>Manage Tasks</h2>
-			<div className='overflow-x-auto'>
-				<table className='table w-full'>
-					<thead>
-						<tr>
-							<th>Task Title</th>
-							<th>Buyer</th>
-							<th>Coins</th>
-							<th>Required</th>
-							<th>Completed</th>
-							<th>Status</th>
-							<th>Delete</th>
-						</tr>
-					</thead>
-					<tbody>
-						{tasks.map((task) => (
-							<tr key={task._id}>
-								<td>{task.task_title}</td>
-								<td>{task.posted_by}</td>
-								<td>
-									{task.payable_amount} <LuCoins className='inline' />
-								</td>
-								<td>{task.required_workers}</td>
-								<td>{task.total_workers - task.required_workers}</td>
-								<td className='capitalize'>
-									<span
-										className={`badge ${
-											task?.status === "active"
-												? "bg-gradient"
-												: "bg-gradient-success"
-										}`}>
-										{task?.status}
-									</span>
-								</td>
-								<td>
-									<button
-										className='btn bg-gradient-error btn-sm'
-										onClick={() => handleDelete(task._id)}>
-										<LuTrash2 className='inline' /> Delete
-									</button>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	);
+  const handleDelete = (task) => {
+    setActionTarget(task);
+    setActionType("delete");
+  };
+
+  const confirmAction = async () => {
+    if (!actionTarget) return;
+    try {
+      if (actionType === "approve") {
+        await axiosSecure.patch(`/admin/approve-task/${actionTarget._id}`);
+        toast.success("Task approved");
+      } else if (actionType === "reject") {
+        await axiosSecure.patch(`/admin/reject-task/${actionTarget._id}`);
+        toast.success("Task rejected");
+      } else if (actionType === "delete") {
+        await axiosSecure.delete(`/admin/delete-task/${actionTarget._id}`);
+        toast.success("Task deleted");
+      }
+      refetch();
+    } catch (err) {
+      toast.error(`Failed to ${actionType} task`);
+    } finally {
+      setActionTarget(null);
+      setActionType(null);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const variants = {
+      pending: "bg-gradient-warning",
+      active: "bg-gradient-success",
+      completed: "bg-gradient",
+      rejected: "bg-gradient-error",
+    };
+    return (
+      <Badge variant="secondary" className={variants[status] || ""}>
+        {status}
+      </Badge>
+    );
+  };
+
+  if (isLoading) return <ManageTasksSkeleton />;
+
+  return (
+    <div className="space-y-8">
+      <PageTitle
+        title="Manage Tasks"
+        description="Oversee and moderate all tasks on the platform."
+      />
+      <div className="overflow-x-auto rounded-lg border border-border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>#</TableHead>
+              <TableHead>Task Title</TableHead>
+              <TableHead>Buyer</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tasks?.map((task, idx) => (
+              <TableRow key={task._id}>
+                <TableCell>{idx + 1}</TableCell>
+                <TableCell className="font-medium">{task.task_title}</TableCell>
+                <TableCell>{task.buyer_name || task.buyer_email}</TableCell>
+                <TableCell>${task.payable_amount}</TableCell>
+                <TableCell>{getStatusBadge(task.status)}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    {task.status === "pending" && (
+                      <>
+                        <Button
+                          size="sm"
+                          className="bg-gradient-success"
+                          onClick={() => handleApprove(task)}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleReject(task)}
+                        >
+                          Reject
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDelete(task)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <AlertDialog
+        open={!!actionTarget}
+        onOpenChange={() => {
+          setActionTarget(null);
+          setActionType(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {actionType === "approve" && (
+                <>
+                  This will approve the task{" "}
+                  <strong>{actionTarget?.task_title}</strong>.
+                </>
+              )}
+              {actionType === "reject" && (
+                <>
+                  This will reject the task{" "}
+                  <strong>{actionTarget?.task_title}</strong>.
+                </>
+              )}
+              {actionType === "delete" && (
+                <>
+                  This will permanently delete the task{" "}
+                  <strong>{actionTarget?.task_title}</strong>. This action
+                  cannot be undone.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className={
+                actionType === "approve"
+                  ? "bg-gradient-success text-white hover:opacity-90"
+                  : "bg-gradient-error text-white hover:opacity-90"
+              }
+              onClick={confirmAction}
+            >
+              {actionType === "approve"
+                ? "Approve"
+                : actionType === "reject"
+                  ? "Reject"
+                  : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 };
 
 export default ManageTasks;

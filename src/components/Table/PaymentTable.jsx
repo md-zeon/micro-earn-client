@@ -1,45 +1,55 @@
-import { LuCalendar, LuCreditCard, LuCoins } from "react-icons/lu";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-const PaymentTable = ({ payments }) => {
-	return (
-		<div className='overflow-x-auto '>
-			<table className='table w-full'>
-				<thead>
-					<tr className='bg-base-300'>
-						<th>Date</th>
-						<th>Coins Purchased</th>
-						<th>Amount Paid</th>
-						<th>Payment Method</th>
-						<th>Status</th>
-						<th>Transaction ID</th>
-					</tr>
-				</thead>
-				<tbody>
-					{payments.map((payment) => (
-						<tr key={payment._id}>
-							<td className='flex items-center gap-1'>
-								<LuCalendar className='inline' />
-								<span>{new Date(payment.payment_date).toLocaleDateString()}</span>
-							</td>
-							<td>
-								<LuCoins className='inline text-blue-600' /> {payment.coins_purchased}
-							</td>
-							<td className='text-green-600 font-semibold'>${payment.amount_paid}</td>
-							<td className='flex items-center gap-2'>
-								<LuCreditCard className='inline' /> {payment.method || "Stripe"}
-							</td>
-							<td>
-								<span className='badge bg-gradient-success badge-outline lowercase'>{payment.status || "completed"}</span>
-							</td>
-							<td>
-								<span className=''>{payment.transaction_id || "N/A"}</span>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
-	);
+const PaymentTable = ({ payments = [] }) => {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>#</TableHead>
+            <TableHead>Transaction ID</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Coins</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {payments.map((payment, idx) => (
+            <TableRow key={payment._id}>
+              <TableCell>{idx + 1}</TableCell>
+              <TableCell className="font-mono text-xs">
+                {payment.transactionId || payment._id}
+              </TableCell>
+              <TableCell>${payment.amount_paid || payment.amount}</TableCell>
+              <TableCell>{payment.coins || payment.coins_purchased}</TableCell>
+              <TableCell>
+                {new Date(
+                  payment.createdAt || payment.date,
+                ).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <Badge
+                  variant="secondary"
+                  className="bg-gradient-success text-white lowercase"
+                >
+                  {payment.status || "completed"}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 };
 
 export default PaymentTable;

@@ -1,61 +1,64 @@
-import { LuCoins, LuPen, LuTrash2, LuUser } from "react-icons/lu";
+import { LuEye, LuTrash2 } from "react-icons/lu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
-const MyTaskTable = ({ tasks, onUpdateClick, onDeleteClick }) => {
-	return (
-		<div className='overflow-x-auto'>
-			<table className='table w-full'>
-				<thead>
-					<tr className='bg-base-300'>
-						<th>Task Title</th>
-						<th>Workers</th>
-						<th>Payment</th>
-						<th>Deadline</th>
-						<th>Cost</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{tasks.map((task) => {
-						const totalCost = task.required_workers * task.payable_amount;
-						return (
-							<tr
-								key={task._id}
-								className='bg-base-100 hover:bg-base-200'
-							>
-								<td className='opacity-80'>{task.task_title}</td>
-								<td className='opacity-80'>
-									<LuUser className='inline' /> {task.required_workers}
-								</td>
-								<td className='opacity-80'>
-									{task.payable_amount} <LuCoins className='inline text-green-400' />
-								</td>
-								<td className='opacity-80'>{new Date(task.completion_deadline).toLocaleDateString()}</td>
-								<td className='opacity-80'>
-									{totalCost} <LuCoins className='inline text-blue-400' />
-								</td>
-								<td>
-									<div className='flex gap-2'>
-										<button
-											className='btn btn-sm btn-circle btn-ghost text-gray-600 hover:text-blue-600'
-											onClick={() => onUpdateClick(task)}
-										>
-											<LuPen />
-										</button>
-										<button
-											className='btn btn-sm btn-circle btn-ghost text-gray-600 hover:text-red-600'
-											onClick={() => onDeleteClick(task)}
-										>
-											<LuTrash2 />
-										</button>
-									</div>
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</table>
-		</div>
-	);
+const MyTaskTable = ({ tasks, onViewClick, onDeleteClick }) => {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>#</TableHead>
+            <TableHead>Task Title</TableHead>
+            <TableHead>Payable Amount</TableHead>
+            <TableHead>Required Workers</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tasks?.map((task, idx) => (
+            <TableRow key={task._id}>
+              <TableCell>{idx + 1}</TableCell>
+              <TableCell className="font-medium">{task.task_title}</TableCell>
+              <TableCell>${task.payable_amount}</TableCell>
+              <TableCell>{task.required_workers}</TableCell>
+              <TableCell>
+                <span className="capitalize text-sm">{task.status}</span>
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-primary"
+                    onClick={() => onViewClick(task)}
+                  >
+                    <LuEye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                    onClick={() => onDeleteClick(task)}
+                  >
+                    <LuTrash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 };
 
 export default MyTaskTable;
