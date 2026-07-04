@@ -1,131 +1,156 @@
-import { useState, useMemo } from "react";
-import PageTitle from "../../components/PageTitle";
-import { LuDollarSign, LuUsers, LuCalendarDays } from "react-icons/lu";
-import { useLoaderData, useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { LuCoins, LuCalendar, LuUsers } from "react-icons/lu";
 import Container from "../../components/Container";
+import PageTitle from "../../components/PageTitle";
+import GlassCard from "../../components/ui/GlassCard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AllTasks = () => {
-	const tasks = useLoaderData();
-	const navigate = useNavigate();
-	const [sortOption, setSortOption] = useState("default");
-	const [searchTerm, setSearchTerm] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sortOption, setSortOption] = useState("deadline-soon");
+  const navigate = useNavigate();
 
-	// Sorting and filtering logic
-	const sortedAndFilteredTasks = useMemo(() => {
-		let result = [...tasks];
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/tasks`);
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTasks();
+  }, []);
 
-		// Filter by search term
-		if (searchTerm) {
-			result = result.filter(
-				(task) =>
-					task.task_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					task.task_detail.toLowerCase().includes(searchTerm.toLowerCase()),
-			);
-		}
+  const sortedTasks = [...tasks].sort((a, b) => {
+    switch (sortOption) {
+      case "deadline-soon":
+        return new Date(a.deadline) - new Date(b.deadline);
+      case "deadline-far":
+        return new Date(b.deadline) - new Date(a.deadline);
+      case "highest-pay":
+        return b.payable_amount - a.payable_amount;
+      case "lowest-pay":
+        return a.payable_amount - b.payable_amount;
+      default:
+        return 0;
+    }
+  });
 
-		// Sort based on option
-		switch (sortOption) {
-			case "price-asc":
-				result.sort((a, b) => a.payable_amount - b.payable_amount);
-				break;
-			case "price-desc":
-				result.sort((a, b) => b.payable_amount - a.payable_amount);
-				break;
-			case "deadline-soon":
-				result.sort((a, b) => new Date(a.completion_deadline) - new Date(b.completion_deadline));
-				break;
-			default:
-				// Default sorting (by creation date, newest first)
-				result.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
-		}
+  return (
+    <Container>
+      <PageTitle
+        title="All Tasks"
+        description="Browse all available micro-tasks posted by buyers. Find tasks that match your skills and start earning coins."
+      />
+      <div className="py-8 px-4 space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h1 className="text-3xl font-bold">Available Tasks</h1>
+          <div className="w-full sm:w-48">
+            <Select value={sortOption} onValueChange={setSortOption}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="deadline-soon">Deadline: Soonest</SelectItem>
+                <SelectItem value="deadline-far">Deadline: Farthest</SelectItem>
+                <SelectItem value="highest-pay">Highest Pay</SelectItem>
+                <SelectItem value="lowest-pay">Lowest Pay</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-		return result;
-	}, [tasks, sortOption, searchTerm]);
-
-	return (
-		<div className='py-8 px-4 sm:px-6'>
-			<PageTitle
-				title='All Tasks'
-				description='Browse and apply for available micro-tasks to earn coins.'
-			/>
-
-			<Container>
-				<h1 className='text-3xl font-bold mb-2'>Available Tasks</h1>
-				<p className='text-gray-600 mb-8'>Browse and apply for available micro-tasks to earn coins.</p>
-
-				{/* Search and Sort Controls */}
-				<div className='flex flex-col md:flex-row gap-4 mb-8'>
-					<div className='flex-1'>
-						<input
-							type='text'
-							placeholder='Search tasks...'
-							className='input input-bordered w-full'
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-						/>
-					</div>
-					<div className='w-full md:w-auto'>
-						<select
-							className='select select-bordered w-full'
-							value={sortOption}
-							onChange={(e) => setSortOption(e.target.value)}
-						>
-							<option value='default'>Sort by: Newest</option>
-							<option value='price-asc'>Price: Low to High</option>
-							<option value='price-desc'>Price: High to Low</option>
-							<option value='deadline-soon'>Deadline: Soonest</option>
-						</select>
-					</div>
-				</div>
-
-				{/* Task Cards Grid */}
-				{sortedAndFilteredTasks.length === 0 ? (
-					<div className='text-center py-12'>
-						<h3 className='text-xl font-semibold mb-2'>No tasks found</h3>
-						<p className='text-gray-600'>Try adjusting your search or filter criteria</p>
-					</div>
-				) : (
-					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-						{sortedAndFilteredTasks.map((task) => (
-							<div
-								key={task._id}
-								className='card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-500'
-							>
-								<div className='card-body'>
-									<h2 className='card-title text-xl font-semibold truncate line-clamp-1'>{task.task_title}</h2>
-									<p className='text-sm text-gray-600'>Posted by: {task.buyer_name}</p>
-									<div className='mt-4 space-y-2'>
-										<div className='flex items-center gap-2'>
-											<LuCalendarDays className='text-red-400' />
-											<span className='text-sm'>
-												Deadline: {new Date(task.completion_deadline).toLocaleDateString()}
-											</span>
-										</div>
-										<div className='flex items-center gap-2'>
-											<LuDollarSign className='text-green-400' />
-											<span className='text-sm'>Payment: {task.payable_amount} Micro Coins</span>
-										</div>
-										<div className='flex items-center gap-2'>
-											<LuUsers className='text-blue-400' />
-											<span className='text-sm'>Workers Needed: {task.required_workers}</span>
-										</div>
-									</div>
-									<div className='card-actions mt-4'>
-										<button
-											onClick={() => navigate(`/task-details/${task._id}`)}
-											className='btn bg-gradient w-full'
-										>
-											View Details
-										</button>
-									</div>
-								</div>
-							</div>
-						))}
-					</div>
-				)}
-			</Container>
-		</div>
-	);
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                  <CardHeader>
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                  </CardContent>
+                  <CardFooter>
+                    <Skeleton className="h-10 w-full" />
+                  </CardFooter>
+                </Card>
+              ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedTasks?.map((task) => (
+              <GlassCard key={task._id} className="h-full">
+                <Card className="h-full border-0 shadow-none bg-transparent">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-semibold truncate line-clamp-1">
+                      {task.task_title}
+                    </CardTitle>
+                    <CardDescription>
+                      Posted by: {task.buyer_name}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {task.task_description || task.task_detail}
+                    </p>
+                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <LuCoins className="h-4 w-4" />
+                        {task.payable_amount} coins
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <LuUsers className="h-4 w-4" />
+                        {task.required_workers} workers
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <LuCalendar className="h-4 w-4" />
+                        {new Date(task.deadline).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      className="w-full bg-gradient"
+                      onClick={() => navigate(`/task-details/${task._id}`)}
+                    >
+                      View Details
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </GlassCard>
+            ))}
+          </div>
+        )}
+      </div>
+    </Container>
+  );
 };
 
 export default AllTasks;
