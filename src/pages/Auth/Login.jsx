@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, User } from "lucide-react";
 import GoogleSignIn from "./GoogleSignIn";
 import PageTitle from "../../components/PageTitle";
 
@@ -28,30 +29,51 @@ const Login = () => {
     ? "/dashboard"
     : location?.state?.from?.pathname || "/dashboard";
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
     setLoading(true);
     try {
       await signInUser(email, password);
+      toast.success("Welcome back!");
       navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
+      toast.error("Invalid email or password. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async (demoEmail, demoPassword) => {
+    setLoading(true);
+    try {
+      await signInUser(demoEmail, demoPassword);
+      toast.success("Logged in with demo account!");
+      navigate(from, { replace: true });
+    } catch (err) {
+      console.error(err);
+      toast.error("Demo account login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background to-muted/20">
       <PageTitle
         title="Login"
         description="Sign in to your MicroEarn account."
       />
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center space-y-1">
+          <div className="flex justify-center mb-2">
+            <div className="p-3 bg-gradient rounded-full">
+              <User className="h-6 w-6 text-white" />
+            </div>
+          </div>
           <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
           <CardDescription>Sign in to your MicroEarn account</CardDescription>
         </CardHeader>
@@ -64,6 +86,8 @@ const Login = () => {
                 name="email"
                 type="email"
                 placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -75,6 +99,8 @@ const Login = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
                 <Button
@@ -107,6 +133,34 @@ const Login = () => {
               )}
             </Button>
           </form>
+
+          {/* Demo Account Buttons */}
+          <div className="mt-6 space-y-3">
+            <p className="text-center text-sm text-muted-foreground">
+              Try a demo account:
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={loading}
+                onClick={() => handleDemoLogin("demo@worker.com", "demo123")}
+              >
+                Demo Worker
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={loading}
+                onClick={() => handleDemoLogin("demo@buyer.com", "demo123")}
+              >
+                Demo Buyer
+              </Button>
+            </div>
+          </div>
+
           <div className="mt-4">
             <GoogleSignIn
               loading={loading}
