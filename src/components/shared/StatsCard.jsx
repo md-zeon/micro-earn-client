@@ -1,12 +1,32 @@
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+
+const toneStyles = {
+  emerald:
+    "bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 dark:text-emerald-400",
+  sky: "bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/20 dark:text-sky-400",
+  amber:
+    "bg-amber-500/10 text-amber-600 ring-1 ring-amber-500/20 dark:text-amber-400",
+  violet:
+    "bg-violet-500/10 text-violet-600 ring-1 ring-violet-500/20 dark:text-violet-400",
+  rose: "bg-rose-500/10 text-rose-600 ring-1 ring-rose-500/20 dark:text-rose-400",
+  teal: "bg-teal-500/10 text-teal-600 ring-1 ring-teal-500/20 dark:text-teal-400",
+};
+
+const formatValue = (value) => {
+  if (value === null || value === undefined) return "0";
+  if (typeof value === "number") return value.toLocaleString();
+  return value;
+};
 
 /**
  * Metric card used across dashboards.
  *
  * Keeps the legacy prop surface (`label`, `value`, `suffix`, `Icon`,
  * `subtitle`, `color`) so existing callers keep working, and adds
- * optional `trend` / `trendUp` for deltas.
+ * optional `tone`, `trend` / `trendUp` and `footer` for rich KPIs.
  */
 const StatsCard = ({
   label,
@@ -17,6 +37,8 @@ const StatsCard = ({
   subtitle,
   trend,
   trendUp = true,
+  tone = "emerald",
+  footer,
   className,
   "aria-label": ariaLabel,
 }) => {
@@ -37,7 +59,8 @@ const StatsCard = ({
             <span
               aria-hidden="true"
               className={cn(
-                "flex size-9 items-center justify-center rounded-full bg-muted text-foreground transition-colors group-hover/card:bg-primary/10 group-hover/card:text-primary [&>svg]:size-4",
+                "flex size-9 shrink-0 items-center justify-center rounded-full [&>svg]:size-4",
+                toneStyles[tone] ?? toneStyles.emerald,
               )}
             >
               <Icon />
@@ -52,7 +75,7 @@ const StatsCard = ({
               color,
             )}
           >
-            {value ?? 0}
+            {formatValue(value)}
           </span>
           {suffix && (
             <span className="text-sm font-semibold text-muted-foreground">
@@ -70,14 +93,23 @@ const StatsCard = ({
               <span
                 className={cn(
                   "inline-flex items-center gap-0.5 font-medium",
-                  trendUp ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400",
+                  trendUp
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-red-600 dark:text-red-400",
                 )}
               >
-                {trendUp ? "▲" : "▼"} {trend}
+                {trendUp ? (
+                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                ) : (
+                  <ArrowDownRight className="size-3.5" aria-hidden="true" />
+                )}
+                {trend}
               </span>
             )}
           </div>
         )}
+
+        {footer && <div className="pt-1">{footer}</div>}
       </CardContent>
     </Card>
   );
