@@ -83,9 +83,14 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
           style: {
             base: {
               fontSize: "16px",
-              color: "var(--muted-foreground)",
+              color:
+                typeof document !== "undefined" &&
+                document.documentElement.classList.contains("dark")
+                  ? "#e4e4e7"
+                  : "#27272a",
+              "::placeholder": { color: "#a1a1aa" },
             },
-            invalid: { color: "var(--destructive)" },
+            invalid: { color: "#ef4444" },
           },
         }}
       />
