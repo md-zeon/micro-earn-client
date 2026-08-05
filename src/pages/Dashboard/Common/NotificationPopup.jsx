@@ -1,8 +1,6 @@
 import { Link } from "react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, CheckCheck, MailOpen } from "lucide-react";
-import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useNotifications from "../../../hooks/useNotifications";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,55 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const relativeTimeFormatter = new Intl.RelativeTimeFormat(undefined, {
-  numeric: "auto",
-});
-
-const timeAgo = (date) => {
-  const diff = new Date(date).getTime() - Date.now();
-  const abs = Math.abs(diff);
-  if (abs < 60_000) return relativeTimeFormatter.format(0, "minute");
-  if (abs < 3_600_000)
-    return relativeTimeFormatter.format(Math.round(diff / 60_000), "minute");
-  if (abs < 86_400_000)
-    return relativeTimeFormatter.format(Math.round(diff / 3_600_000), "hour");
-  if (abs < 2_592_000_000)
-    return relativeTimeFormatter.format(Math.round(diff / 86_400_000), "day");
-  if (abs < 31_536_000_000)
-    return relativeTimeFormatter.format(Math.round(diff / 2_592_000_000), "month");
-  return relativeTimeFormatter.format(Math.round(diff / 31_536_000_000), "year");
-};
+import { timeAgo } from "@/lib/date";
 
 const NotificationPopup = () => {
-  const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
-
-  const { data, isPending } = useQuery({
-    queryKey: ["notifications"],
-    queryFn: async () => {
-      const { data } = await axiosSecure.get("/notifications");
-      return data;
-    },
-    enabled: Boolean(user?.email),
-    refetchInterval: 30_000,
-  });
-
-  const notifications = data?.data ?? null;
-  const unreadCount = data?.unreadCount ?? 0;
-
-  const markRead = useMutation({
-    mutationFn: (id) => axiosSecure.patch(`/notifications/${id}/read`),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["notifications"] }),
-  });
-
-  const markAllRead = useMutation({
-    mutationFn: () => axiosSecure.patch("/notifications/read-all"),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["notifications"] }),
-  });
+  const { notifications, unreadCount, isPending, markRead, markAllRead } =
+    useNotifications({ limit: 10 });
 
   return (
     <DropdownMenu>

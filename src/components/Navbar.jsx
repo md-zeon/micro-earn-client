@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
+  Coins,
   ExternalLink,
   House,
   Info,
@@ -44,6 +45,12 @@ const navItems = [
     label: "All Tasks",
     description: "Browse tasks and earn coins",
     icon: <ListTodo className="size-5" />,
+  },
+  {
+    to: "/pricing",
+    label: "Pricing",
+    description: "Buy coins to post tasks and pay workers",
+    icon: <Coins className="size-5" />,
   },
   {
     to: "/dashboard",

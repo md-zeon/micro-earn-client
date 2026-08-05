@@ -14,6 +14,7 @@ const pageTitles = {
   "/dashboard/my-submissions": "My Submissions",
   "/dashboard/approved-submissions": "Approved Submissions",
   "/dashboard/withdrawals": "Withdrawals",
+  "/dashboard/notifications": "Notifications",
   "/dashboard/profile": "My Profile",
   "/dashboard/add-task": "Add New Task",
   "/dashboard/my-tasks": "My Tasks",

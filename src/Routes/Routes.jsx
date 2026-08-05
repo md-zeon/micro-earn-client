@@ -23,6 +23,7 @@ import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageTasks from "../pages/Dashboard/Admin/ManageTasks";
 import WithdrawRequests from "../pages/Dashboard/Admin/WithdrawRequests";
 import Profile from "../pages/Dashboard/Common/Profile";
+import Notifications from "../pages/Dashboard/Common/Notifications";
 import Forbidden from "../pages/Forbidden/Forbidden";
 import NotFound from "../pages/NotFound/NotFound";
 import About from "../pages/About/About";
@@ -30,6 +31,8 @@ import Contact from "../pages/Contact/Contact";
 import AllTasks from "../pages/AllTasks/AllTasks";
 import TaskDetailsPage from "../pages/TaskDetails/TaskDetailsPage";
 import TaskDetailsSkeleton from "../components/ui/TaskDetailsSkeleton";
+import WorkerProfile from "../pages/WorkerProfile/WorkerProfile";
+import Pricing from "../pages/Pricing/Pricing";
 
 const router = createBrowserRouter([
 	{
@@ -59,6 +62,14 @@ const router = createBrowserRouter([
 					}
 				},
 				HydrateFallback: TaskDetailsSkeleton,
+			},
+			{
+				path: "/worker/:id",
+				Component: WorkerProfile,
+			},
+			{
+				path: "/pricing",
+				Component: Pricing,
 			},
 			{
 				path: "/about",
@@ -225,6 +236,14 @@ const router = createBrowserRouter([
 				element: (
 					<PrivateRoute>
 						<Profile />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "notifications",
+				element: (
+					<PrivateRoute>
+						<Notifications />
 					</PrivateRoute>
 				),
 			},

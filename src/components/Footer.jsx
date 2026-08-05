@@ -47,6 +47,7 @@ const Footer = () => {
     explore: [
       { name: "Home", path: "/" },
       { name: "All Tasks", path: "/all-tasks" },
+      { name: "Pricing", path: "/pricing" },
       { name: "About Us", path: "/about" },
       { name: "Contact", path: "/contact" },
     ],

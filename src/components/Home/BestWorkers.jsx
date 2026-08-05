@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { Coins, Medal, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -40,8 +41,13 @@ const BestWorkers = () => {
         ) : (
           <FadeContent className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {workers.map((worker, i) => (
-              <Card
+              <Link
                 key={worker._id}
+                to={`/worker/${worker._id}`}
+                className="group h-full"
+                aria-label={`View ${worker.name}'s profile`}
+              >
+              <Card
                 className="group relative flex h-full flex-col items-center overflow-hidden p-7 text-center transition-colors duration-300 hover:border-emerald-500/40"
               >
                 {i === 0 && (
@@ -81,6 +87,7 @@ const BestWorkers = () => {
                     {worker.microCoins?.toLocaleString() || 0} coins earned
                   </Badge>
                 </Card>
+              </Link>
             ))}
           </FadeContent>
         )}

@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router";
 import {
   BadgeCheck,
   BarChart3,
+  Bell,
   CheckCheck,
   CreditCard,
   FileQuestion,
@@ -126,6 +127,7 @@ const navItems = {
 
 const generalItems = [
   { path: "/dashboard/profile", label: "My Profile", icon: UserRound },
+  { path: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { path: "/", label: "Back to Website", icon: Globe },
 ];
 
