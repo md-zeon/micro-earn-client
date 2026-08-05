@@ -48,7 +48,17 @@ const router = createBrowserRouter([
 			{
 				path: "/task-details/:id",
 				Component: TaskDetailsPage,
-				loader: () => fetch(`${import.meta.env.VITE_API_URL}/tasks`),
+				loader: async ({ params }) => {
+					try {
+						const response = await fetch(
+							`${import.meta.env.VITE_API_URL}/tasks/${params.id}`,
+						);
+						if (!response.ok) return null;
+						return await response.json();
+					} catch {
+						return null;
+					}
+				},
 				HydrateFallback: TaskDetailsSkeleton,
 			},
 			{

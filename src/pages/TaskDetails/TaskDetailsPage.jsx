@@ -1,116 +1,529 @@
-import { useParams, useNavigate, useLoaderData } from "react-router";
+import { useEffect, useState } from "react";
+import { motion } from "motion/react";
+import { useLoaderData, useNavigate, useParams } from "react-router";
 import {
-	LuCalendarDays,
-	LuDollarSign,
-	LuUsers,
-	LuUser,
-	LuMessageSquareWarning,
-	LuCoins,
-	LuChevronLeft,
+  LuArrowRight,
+  LuBadgeCheck,
+  LuCalendar,
+  LuCheck,
+  LuChevronRight,
+  LuClock,
+  LuCoins,
+  LuListChecks,
+  LuMessageSquareWarning,
+  LuShieldCheck,
+  LuSparkles,
+  LuUser,
+  LuUsers,
+  LuZap,
 } from "react-icons/lu";
-import PageTitle from "../../components/PageTitle";
 import Container from "../../components/Container";
+import useAuth from "../../hooks/useAuth";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const getDeadlineInfo = (deadline) => {
+  const due = new Date(deadline);
+  const days = Math.ceil((due - Date.now()) / 86400000);
+  if (days < 0)
+    return { days, label: "Expired", className: "text-muted-foreground" };
+  if (days <= 2)
+    return {
+      days,
+      label: days === 1 ? "1 day left" : `${days} days left`,
+      className: "text-rose-500",
+    };
+  if (days <= 7)
+    return {
+      days,
+      label: `${days} days left`,
+      className: "text-amber-500",
+    };
+  return {
+    days,
+    label: `${days} days left`,
+    className: "text-emerald-600 dark:text-emerald-400",
+  };
+};
+
+const getInitials = (name = "") =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+const InfoRow = ({ icon, label, children }) => (
+  <div className="flex items-center justify-between gap-4">
+    <span className="flex items-center gap-2 text-sm text-muted-foreground">
+      {icon}
+      {label}
+    </span>
+    <span className="text-right text-sm font-medium text-foreground">
+      {children}
+    </span>
+  </div>
+);
+
+const RelatedTaskCard = ({ task, onOpen }) => (
+  <Card
+    className="group flex h-full cursor-pointer flex-col overflow-hidden p-0 transition-colors duration-300 hover:border-emerald-500/40"
+    onClick={() => onOpen(task._id)}
+  >
+    <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent">
+      {task.task_image_url ? (
+        <img
+          src={task.task_image_url}
+          alt={task.task_title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center">
+          <LuSparkles className="size-8 text-emerald-500/40" />
+        </div>
+      )}
+      <Badge className="absolute right-3 top-3 rounded-full bg-amber-500/15 font-semibold text-amber-600 backdrop-blur dark:text-amber-400">
+        <LuCoins className="mr-1 size-3.5" />
+        {task.payable_amount}
+      </Badge>
+    </div>
+    <div className="flex flex-1 flex-col p-5">
+      <h3 className="line-clamp-2 text-base font-semibold tracking-tight">
+        {task.task_title}
+      </h3>
+      <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+        {task.task_detail}
+      </p>
+      <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-4">
+        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <LuUsers className="size-3.5 text-emerald-500" />
+          {task.required_workers} slots left
+        </span>
+        <Button
+          size="sm"
+          className="rounded-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen(task._id);
+          }}
+        >
+          Details
+          <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+        </Button>
+      </div>
+    </div>
+  </Card>
+);
 
 const TaskDetailsPage = () => {
-	const { id } = useParams();
-	const navigate = useNavigate();
-	const tasks = useLoaderData();
-	const task = tasks.find((t) => t._id === id);
-	console.log(id, tasks, task);
-	if (!task) return <div className='text-center text-gray-500'>Task not found</div>;
+  const task = useLoaderData();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-	return (
-		<Container>
-			<div className='sm:px-4 py-8 space-y-8'>
-				<PageTitle
-					title='Task Details'
-					description='View detailed information about the selected task.'
-				/>
-				{/* Back Button */}
-				<button
-					onClick={() => navigate(-1)}
-					className='btn btn-sm bg-gradient flex items-center gap-2'
-				>
-					<LuChevronLeft />
-					Back to Tasks
-				</button>
+  const [related, setRelated] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(true);
 
-				{/* Content */}
-				<div className='flex flex-col lg:flex-row gap-8'>
-					{/* Left: Task Content */}
-					<div className='flex-1 bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500 space-y-6'>
-						{/* Title */}
-						<h1 className='text-xl sm:text-2xl lg:text-3xl font-bold mb-2'>{task?.task_title}</h1>
-						{/* Task Image */}
-						<div className='border border-gray-500 rounded-lg sm:p-3 my-6 overflow-hidden'>
-							{task?.task_image_url && (
-								<img
-									src={task?.task_image_url}
-									alt={task?.task_title}
-									className='w-full h-64 object-cover hover:scale-105 cursor-pointer transition-transform duration-300 ease-linear rounded-lg'
-								/>
-							)}
-						</div>
-						<div>
-							<h2 className='text-xl font-semibold mb-2'>Description</h2>
-							<p className='text-gray-500 whitespace-pre-line'>{task?.task_detail}</p>
-						</div>
-						<div>
-							<h2 className='text-xl font-semibold mb-2'>Submission Requirements</h2>
-							<p className='text-gray-500 whitespace-pre-line'>{task?.submission_info}</p>
-						</div>
-					</div>
+  useEffect(() => {
+    let active = true;
+    const fetchRelated = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/tasks?limit=6&exclude=${id}`,
+        );
+        if (!response.ok) throw new Error("Failed to load related tasks");
+        const data = await response.json();
+        if (!active) return;
+        const list = Array.isArray(data) ? data : [];
+        const base = task?.payable_amount || 0;
+        setRelated(
+          list
+            .sort((a, b) => {
+              const aSame = a.buyer_name === task?.buyer_name ? 1 : 0;
+              const bSame = b.buyer_name === task?.buyer_name ? 1 : 0;
+              if (aSame !== bSame) return bSame - aSame;
+              return (
+                Math.abs((a.payable_amount || 0) - base) -
+                Math.abs((b.payable_amount || 0) - base)
+              );
+            })
+            .slice(0, 3),
+        );
+      } catch (error) {
+        console.error("Failed to fetch related tasks:", error);
+        if (active) setRelated([]);
+      } finally {
+        if (active) setRelatedLoading(false);
+      }
+    };
+    fetchRelated();
+    return () => {
+      active = false;
+    };
+  }, [id, task?.buyer_name, task?.payable_amount]);
 
-					{/* Right: Info Sidebar */}
-					<div className='lg:w-1/3 space-y-6'>
-						<div className='bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500'>
-							<h2 className='text-xl font-semibold mb-4'>Task Information</h2>
-							<div className='space-y-4 text-sm'>
-								<div className='flex items-center justify-between'>
-									<span className='flex items-center gap-2 text-gray-500'>
-										<LuDollarSign /> Payment
-									</span>
-									<span className='badge badge-outline border-green-500 text-green-500'>
-										{task?.payable_amount} <LuCoins className='inline' />
-									</span>
-								</div>
-								<div className='flex items-center justify-between'>
-									<span className='flex items-center gap-2 text-gray-500'>
-										<LuCalendarDays /> Deadline
-									</span>
-									<span>{new Date(task?.completion_deadline).toLocaleDateString()}</span>
-								</div>
-								<div className='flex items-center justify-between'>
-									<span className='flex items-center gap-2 text-gray-500'>
-										<LuUsers /> Workers Needed
-									</span>
-									<span>{task?.required_workers}</span>
-								</div>
-								<div className='flex items-center justify-between'>
-									<span className='flex items-center gap-2 text-gray-500'>
-										<LuUser /> Posted By
-									</span>
-									<span>{task?.buyer_name}</span>
-								</div>
-							</div>
-						</div>
+  if (!task) {
+    return (
+      <Container>
+        <div className="flex min-h-80 flex-col items-center justify-center px-4 py-24 text-center">
+          <div className="flex size-16 items-center justify-center rounded-2xl bg-emerald-500/10">
+            <LuMessageSquareWarning className="size-8 text-emerald-500" />
+          </div>
+          <h1 className="mt-5 text-2xl font-bold">Task not found</h1>
+          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+            This task may have been removed or the link is incorrect.
+          </p>
+          <Button
+            className="mt-6 rounded-full"
+            onClick={() => navigate("/all-tasks")}
+          >
+            Browse all tasks
+            <LuArrowRight className="size-4" />
+          </Button>
+        </div>
+      </Container>
+    );
+  }
 
-						<div className='bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl border border-gray-500'>
-							<h2 className='text-xl font-semibold mb-2'>
-								<LuMessageSquareWarning className='inline' /> Notes
-							</h2>
-							<ul className='list-disc list-inside text-gray-500 text-sm space-y-1'>
-								<li>Complete all requirements before submitting</li>
-								<li>Submissions are reviewed within 24-48 hours</li>
-								<li>Payment is released upon approval</li>
-								<li>Rejected submissions won't be paid</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</Container>
-	);
+  const deadline = getDeadlineInfo(task.completion_deadline);
+  const totalWorkers = task.total_workers || task.required_workers;
+  const filled = Math.max(0, totalWorkers - task.required_workers);
+  const filledPct =
+    totalWorkers > 0 ? Math.min(100, Math.round((filled / totalWorkers) * 100)) : 0;
+  const openTask = (taskId) => navigate(`/task-details/${taskId}`);
+  const handleApply = () =>
+    user
+      ? navigate(`/dashboard/task-details/${task._id}`)
+      : navigate("/login");
+
+  return (
+    <Container>
+      <div className="relative px-4 py-10 pb-32 md:py-14 lg:pb-14">
+        <div className="pointer-events-none absolute -top-16 left-1/2 size-80 -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
+
+        <motion.nav
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          aria-label="Breadcrumb"
+          className="relative flex flex-wrap items-center gap-1 text-sm text-muted-foreground"
+        >
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="transition-colors hover:text-foreground"
+          >
+            Home
+          </button>
+          <LuChevronRight className="size-3.5" />
+          <button
+            type="button"
+            onClick={() => navigate("/all-tasks")}
+            className="transition-colors hover:text-foreground"
+          >
+            All tasks
+          </button>
+          <LuChevronRight className="size-3.5" />
+          <span className="max-w-56 truncate font-medium text-foreground">
+            {task.task_title}
+          </span>
+        </motion.nav>
+
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent ring-1 ring-foreground/10">
+              {task.task_image_url ? (
+                <img
+                  src={task.task_image_url}
+                  alt={task.task_title}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <LuSparkles className="size-16 text-emerald-500/40" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className="absolute right-4 top-4 flex gap-2">
+                <Badge className="rounded-full bg-amber-500/15 px-3 py-1 text-sm font-semibold text-amber-500 backdrop-blur">
+                  <LuCoins className="mr-1 size-4" />
+                  {task.payable_amount}
+                  <span className="font-normal opacity-80">coins</span>
+                </Badge>
+                {!deadline.className.includes("emerald") && (
+                  <Badge className="rounded-full bg-rose-500/15 px-3 py-1 text-sm font-semibold text-rose-500 backdrop-blur">
+                    <LuClock className="mr-1 size-4" />
+                    Ending soon
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
+                  {task.task_title}
+                </h1>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-white">
+                    {getInitials(task.buyer_name)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      <span className="truncate">{task.buyer_name}</span>
+                      <LuBadgeCheck className="size-4 shrink-0 text-emerald-500" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Posted{" "}
+                      {new Date(task.createdAt).toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 space-y-6">
+              <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
+                <h2 className="flex items-center gap-2 text-lg font-semibold">
+                  <LuListChecks className="size-5 text-emerald-500" />
+                  About this task
+                </h2>
+                <p className="mt-4 leading-relaxed whitespace-pre-line text-muted-foreground">
+                  {task.task_detail}
+                </p>
+              </section>
+
+              <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
+                <h2 className="flex items-center gap-2 text-lg font-semibold">
+                  <LuZap className="size-5 text-emerald-500" />
+                  Submission requirements
+                </h2>
+                <p className="mt-4 leading-relaxed whitespace-pre-line text-muted-foreground">
+                  {task.submission_info}
+                </p>
+              </section>
+
+              <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
+                <h2 className="flex items-center gap-2 text-lg font-semibold">
+                  <LuShieldCheck className="size-5 text-emerald-500" />
+                  How approval works
+                </h2>
+                <ul className="mt-4 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+                  <li className="flex items-start gap-2.5">
+                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    Complete every requirement before submitting.
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    Submissions are reviewed within 24–48 hours.
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    Payment is released as soon as a submission is approved.
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    Rejected submissions are not paid out.
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </motion.div>
+
+          <motion.aside
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="h-fit lg:sticky lg:top-24"
+          >
+            <Card className="p-0">
+              <div className="rounded-t-xl bg-gradient-to-br from-emerald-500 to-teal-500 p-6 text-white">
+                <p className="text-xs font-medium tracking-wide uppercase opacity-80">
+                  Pay per worker
+                </p>
+                <div className="mt-1 flex items-baseline gap-1.5">
+                  <span className="text-4xl font-bold tracking-tight">
+                    {task.payable_amount}
+                  </span>
+                  <span className="text-lg font-medium opacity-90">
+                    Micro Coins
+                  </span>
+                </div>
+                <p className="mt-1 text-sm opacity-90">
+                  ≈ Free to join · payout after approval
+                </p>
+              </div>
+
+              <div className="space-y-5 p-6">
+                <div>
+                  <InfoRow
+                    icon={
+                      <LuCalendar className="size-4 text-emerald-500" />
+                    }
+                    label="Deadline"
+                  >
+                    <span className={deadline.className}>
+                      {new Date(task.completion_deadline).toLocaleDateString()}
+                    </span>
+                  </InfoRow>
+                  <p className="mt-1 text-right text-xs text-muted-foreground">
+                    {deadline.label}
+                  </p>
+                </div>
+
+                <InfoRow
+                  icon={<LuUsers className="size-4 text-emerald-500" />}
+                  label="Workers needed"
+                >
+                  {task.required_workers} slots left
+                </InfoRow>
+
+                <InfoRow
+                  icon={<LuUser className="size-4 text-emerald-500" />}
+                  label="Posted by"
+                >
+                  <span className="inline-flex items-center gap-1">
+                    {task.buyer_name}
+                    <LuBadgeCheck className="size-4 text-emerald-500" />
+                  </span>
+                </InfoRow>
+
+                <div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      Slots filled
+                    </span>
+                    <span className="font-medium text-foreground">
+                      {filled} / {totalWorkers}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700"
+                      style={{ width: `${filledPct}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="border-t border-border/60 pt-5">
+                  <Button
+                    size="lg"
+                    className="w-full rounded-full text-base"
+                    onClick={handleApply}
+                  >
+                    {user ? "Apply for this task" : "Sign in to apply"}
+                    <LuArrowRight className="size-4" />
+                  </Button>
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    {user
+                      ? "You'll continue on your dashboard to submit."
+                      : "Create a free account to start earning today."}
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            <div className="mt-6 flex items-center justify-center gap-2 rounded-xl border border-border/60 bg-card/40 px-4 py-3 text-center text-xs text-muted-foreground">
+              <LuShieldCheck className="size-4 shrink-0 text-emerald-500" />
+              Payments are held securely until your work is approved.
+            </div>
+          </motion.aside>
+        </div>
+
+        <section className="mt-16">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Keep earning
+              </span>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
+                Similar tasks
+              </h2>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden rounded-full sm:inline-flex"
+              onClick={() => navigate("/all-tasks")}
+            >
+              View all
+              <LuArrowRight className="size-3.5" />
+            </Button>
+          </div>
+
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {relatedLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden p-0">
+                  <Skeleton className="aspect-[16/9] w-full rounded-none" />
+                  <div className="p-5">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="mt-3 h-4 w-full" />
+                    <Skeleton className="mt-2 h-4 w-2/3" />
+                    <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-4">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-8 w-24 rounded-full" />
+                    </div>
+                  </div>
+                </Card>
+              ))
+            ) : related.length > 0 ? (
+              related.map((item, i) => (
+                <motion.div
+                  key={item._id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{
+                    duration: 0.5,
+                    delay: i * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <RelatedTaskCard task={item} onOpen={openTask} />
+                </motion.div>
+              ))
+            ) : (
+              <p className="col-span-full text-center text-sm text-muted-foreground">
+                No similar tasks right now — check the full board.
+              </p>
+            )}
+          </div>
+        </section>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/90 p-4 backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-360 items-center justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+              Pay per worker
+            </p>
+            <p className="flex items-center gap-1.5 text-xl font-bold">
+              <LuCoins className="size-5 text-amber-500" />
+              {task.payable_amount}
+            </p>
+          </div>
+          <Button className="rounded-full" onClick={handleApply}>
+            {user ? "Apply now" : "Sign in to apply"}
+            <LuArrowRight className="size-4" />
+          </Button>
+        </div>
+      </div>
+    </Container>
+  );
 };
 
 export default TaskDetailsPage;
