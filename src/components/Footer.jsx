@@ -154,13 +154,24 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 text-sm text-muted-foreground">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 text-sm text-muted-foreground">
           <p>
             &copy; {new Date().getFullYear()} MicroEarn. All rights reserved.
           </p>
-          <div className="flex items-center gap-1 mt-4 md:mt-0">
-            Made with <Heart className="h-4 w-4 text-red-500 fill-red-500" />{" "}
-            by Zeon
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {footerLinks.legal.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="hover:text-gradient transition-colors inline-block"
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="flex items-center gap-1">
+              Made with <Heart className="h-4 w-4 text-red-500 fill-red-500" />{" "}
+              by Zeon
+            </div>
           </div>
         </div>
       </Container>

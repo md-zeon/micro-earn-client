@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import PageTitle from "../components/PageTitle";
 import DashboardSkeleton from "../components/ui/DashboardSkeleton";
 import DashboardLayoutSkeleton from "../components/ui/DashboardLayoutSkeleton";
+import ScrollToTopButton from "../components/effects/ScrollToTopButton";
 
 const pageTitles = {
   "/dashboard": "Overview",
@@ -74,6 +75,8 @@ const DashboardLayout = () => {
 
         <DashboardFooter />
       </div>
+
+      <ScrollToTopButton />
     </SidebarProvider>
   );
 };

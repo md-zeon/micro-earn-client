@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import ScrollToTopButton from "../components/effects/ScrollToTopButton";
 
 const HomeLayout = () => {
   const navigation = useNavigation();
@@ -23,6 +24,7 @@ const HomeLayout = () => {
       <footer>
         <Footer />
       </footer>
+      <ScrollToTopButton />
     </>
   );
 };
