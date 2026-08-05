@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import notfoundImg from "../../assets/notfound.svg";
 import PageTitle from "../../components/PageTitle";
-import { LuHouse } from "react-icons/lu";
+import { House } from "lucide-react";
 
 const NotFound = () => {
 	return (
@@ -21,7 +21,7 @@ const NotFound = () => {
 				to='/'
 				className='px-6 py-3 bg-gradient rounded-2xl flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring'
 			>
-				<LuHouse className='w-5 h-5' /> Back to Home
+				<House className='w-5 h-5' /> Back to Home
 			</Link>
 		</div>
 	);

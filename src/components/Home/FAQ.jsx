@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import FadeContent from "@/components/effects/FadeContent";
-import { LuMessageCircle, LuRocket } from "react-icons/lu";
+import { MessageCircle, Rocket } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 
 const faqs = [
@@ -84,11 +84,11 @@ const FAQ = () => {
             className="gap-2 rounded-full"
             render={<Link to="/contact" />}
           >
-            <LuMessageCircle className="size-4" />
+            <MessageCircle className="size-4" />
             Contact support
           </Button>
           <Button size="sm" className="gap-2 rounded-full" render={<Link to="/register" />}>
-            <LuRocket className="size-4" />
+            <Rocket className="size-4" />
             Get started
           </Button>
         </div>

@@ -11,20 +11,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/shared/StatusBadge";
-
-const formatDate = (date) => {
-  if (!date) return "—";
-  const d = new Date(date);
-  return Number.isNaN(d.getTime())
-    ? "—"
-    : d.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-};
+import { formatDate } from "@/lib/date";
 
 const CopyId = ({ value }) => {
   const [copied, setCopied] = useState(false);
@@ -98,7 +85,13 @@ const PaymentTable = ({ payments = [] }) => {
                 </span>
               </TableCell>
               <TableCell className="whitespace-nowrap text-sm text-muted-foreground tabular-nums">
-                {formatDate(payment.payment_date || payment.createdAt || payment.date)}
+                {formatDate(payment.payment_date || payment.createdAt || payment.date, {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+})}
               </TableCell>
               <TableCell className="text-sm capitalize text-muted-foreground">
                 {payment.payment_method || "card"}

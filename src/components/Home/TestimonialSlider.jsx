@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { LuChevronLeft, LuChevronRight, LuQuote, LuStar } from "react-icons/lu";
+import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { motion } from "motion/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -124,10 +124,10 @@ function TestimonialSlider() {
                       <div className="flex items-center justify-between">
                         <div className="flex gap-1 text-amber-400">
                           {Array.from({ length: item.rating }).map((_, i) => (
-                            <LuStar key={i} className="size-4 fill-current" />
+                            <Star key={i} className="size-4 fill-current" />
                           ))}
                         </div>
-                        <LuQuote
+                        <Quote
                           className={`size-8 ${
                             isActive
                               ? "text-emerald-500/40"
@@ -172,7 +172,7 @@ function TestimonialSlider() {
             onClick={() => swiperRef.current?.slidePrev()}
             aria-label="Previous testimonial"
           >
-            <LuChevronLeft className="size-5" />
+            <ChevronLeft className="size-5" />
           </Button>
           <Button
             variant="outline"
@@ -181,7 +181,7 @@ function TestimonialSlider() {
             onClick={() => swiperRef.current?.slideNext()}
             aria-label="Next testimonial"
           >
-            <LuChevronRight className="size-5" />
+            <ChevronRight className="size-5" />
           </Button>
         </div>
       </div>

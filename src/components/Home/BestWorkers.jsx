@@ -1,4 +1,4 @@
-import { LuCoins, LuMedal, LuStar } from "react-icons/lu";
+import { Coins, Medal, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -46,7 +46,7 @@ const BestWorkers = () => {
               >
                 {i === 0 && (
                     <Badge className="absolute top-4 right-4 gap-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                      <LuMedal className="size-3" />
+                      <Medal className="size-3" />
                       #1
                     </Badge>
                   )}
@@ -64,7 +64,7 @@ const BestWorkers = () => {
                     </Avatar>
                     {i < 3 && (
                       <div className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-amber-400 text-white shadow-md">
-                        <LuStar className="size-3.5 fill-white" />
+                        <Star className="size-3.5 fill-white" />
                       </div>
                     )}
                   </div>
@@ -77,7 +77,7 @@ const BestWorkers = () => {
                   </p>
 
                   <Badge className="mt-4 gap-1.5 rounded-full border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                    <LuCoins className="size-3.5" />
+                    <Coins className="size-3.5" />
                     {worker.microCoins?.toLocaleString() || 0} coins earned
                   </Badge>
                 </Card>

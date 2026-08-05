@@ -1,19 +1,19 @@
 import {
-  LuBadgeCheck,
-  LuClock3,
-  LuLock,
-  LuShieldCheck,
-  LuWallet,
-  LuZap,
-} from "react-icons/lu";
+  BadgeCheck,
+  Clock3,
+  Lock,
+  ShieldCheck,
+  Wallet,
+  Zap,
+} from "lucide-react";
 
 const items = [
-  { icon: <LuZap className="size-4" />, label: "Tasks posted daily" },
-  { icon: <LuBadgeCheck className="size-4" />, label: "Verified buyers & workers" },
-  { icon: <LuWallet className="size-4" />, label: "Fast payouts" },
-  { icon: <LuLock className="size-4" />, label: "Secure Stripe payments" },
-  { icon: <LuClock3 className="size-4" />, label: "Earn on your schedule" },
-  { icon: <LuShieldCheck className="size-4" />, label: "Reviewed submissions" },
+  { icon: <Zap className="size-4" />, label: "Tasks posted daily" },
+  { icon: <BadgeCheck className="size-4" />, label: "Verified buyers & workers" },
+  { icon: <Wallet className="size-4" />, label: "Fast payouts" },
+  { icon: <Lock className="size-4" />, label: "Secure Stripe payments" },
+  { icon: <Clock3 className="size-4" />, label: "Earn on your schedule" },
+  { icon: <ShieldCheck className="size-4" />, label: "Reviewed submissions" },
 ];
 
 const TrustBar = () => {

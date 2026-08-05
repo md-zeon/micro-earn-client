@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { LuBellRing, LuMail, LuSend, LuShieldCheck } from "react-icons/lu";
+import { BellRing, Mail, Send, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ const Newsletter = () => {
 
           <div className="relative flex flex-col items-center text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
-              <LuBellRing className="size-3.5" />
+              <BellRing className="size-3.5" />
               Never miss an update
             </span>
 
@@ -61,7 +61,7 @@ const Newsletter = () => {
                 className="w-full flex-1"
                 labelClassName="sr-only"
                 trailing={
-                  <LuMail
+                  <Mail
                     className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 size-4 text-muted-foreground"
                     aria-hidden="true"
                   />
@@ -78,13 +78,13 @@ const Newsletter = () => {
                 type="submit"
                 className="h-12 gap-2 rounded-full px-7 shadow-lg shadow-emerald-500/25"
               >
-                <LuSend className="size-4" />
+                <Send className="size-4" />
                 Subscribe
               </Button>
             </form>
 
             <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-              <LuShieldCheck className="size-3.5 text-emerald-500" />
+              <ShieldCheck className="size-3.5 text-emerald-500" />
               We respect your privacy. Unsubscribe anytime.
             </p>
           </div>

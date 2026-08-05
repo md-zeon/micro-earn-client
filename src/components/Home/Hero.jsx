@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { LuArrowRight, LuCoins, LuPlay, LuSparkles } from "react-icons/lu";
+import { ArrowRight, Coins, Play, Sparkles } from "lucide-react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import SplitText from "@/components/effects/SplitText";
 import { Avatar, AvatarFallback, AvatarImage, AvatarGroup } from "@/components/ui/avatar";
@@ -86,11 +86,11 @@ const Hero = () => {
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
       {/* Floating coins */}
-      <LuCoins className="hero-coin absolute top-[18%] left-[8%] hidden lg:block h-10 w-10 text-emerald-500/25 rotate-12" />
-      <LuCoins className="hero-coin absolute top-[64%] left-[5%] hidden lg:block h-7 w-7 text-teal-500/25 -rotate-12" />
-      <LuCoins className="hero-coin absolute top-[22%] right-[9%] hidden lg:block h-8 w-8 text-emerald-500/25" />
-      <LuCoins className="hero-coin absolute top-[70%] right-[6%] hidden lg:block h-12 w-12 text-teal-500/20 rotate-45" />
-      <LuCoins className="hero-coin absolute top-[40%] left-[45%] hidden lg:block h-6 w-6 text-emerald-500/15" />
+      <Coins className="hero-coin absolute top-[18%] left-[8%] hidden lg:block h-10 w-10 text-emerald-500/25 rotate-12" />
+      <Coins className="hero-coin absolute top-[64%] left-[5%] hidden lg:block h-7 w-7 text-teal-500/25 -rotate-12" />
+      <Coins className="hero-coin absolute top-[22%] right-[9%] hidden lg:block h-8 w-8 text-emerald-500/25" />
+      <Coins className="hero-coin absolute top-[70%] right-[6%] hidden lg:block h-12 w-12 text-teal-500/20 rotate-45" />
+      <Coins className="hero-coin absolute top-[40%] left-[45%] hidden lg:block h-6 w-6 text-emerald-500/15" />
 
       <div className="hero-content relative z-10 mx-auto w-full max-w-5xl px-4 py-24 text-center">
         {/* Badge */}
@@ -129,7 +129,7 @@ const Hero = () => {
               className="h-13 w-full gap-2 rounded-full px-8 text-base shadow-lg shadow-emerald-500/25 transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
             >
               Start earning now
-              <LuArrowRight className="size-4 transition-transform group-hover/button:translate-x-0.5" />
+              <ArrowRight className="size-4 transition-transform group-hover/button:translate-x-0.5" />
             </Button>
           </Link>
           <Link to="/all-tasks" className="hero-cta">
@@ -138,7 +138,7 @@ const Hero = () => {
               variant="outline"
               className="h-13 w-full gap-2 rounded-full px-8 text-base sm:w-auto"
             >
-              <LuPlay className="size-4" />
+              <Play className="size-4" />
               Browse tasks
             </Button>
           </Link>
@@ -160,7 +160,7 @@ const Hero = () => {
             <div className="flex items-center gap-2">
               <div className="flex text-amber-400">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <LuSparkles key={i} className="size-4 fill-current" />
+                  <Sparkles key={i} className="size-4 fill-current" />
                 ))}
               </div>
               <span className="text-sm font-semibold">4.9/5</span>

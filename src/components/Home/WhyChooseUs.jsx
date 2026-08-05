@@ -1,10 +1,10 @@
 import {
-  LuBadgeCheck,
-  LuClock3,
-  LuHeartHandshake,
-  LuWallet,
-  LuZap,
-} from "react-icons/lu";
+  BadgeCheck,
+  Clock3,
+  HeartHandshake,
+  Wallet,
+  Zap,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import FadeContent from "@/components/effects/FadeContent";
 import { Progress } from "@/components/ui/progress";
@@ -12,19 +12,19 @@ import SectionHeading from "./SectionHeading";
 
 const reasons = [
   {
-    icon: <LuClock3 className="size-5" />,
+    icon: <Clock3 className="size-5" />,
     title: "Work on your schedule",
     description:
       "No fixed hours, no deadlines pressure. Complete tasks whenever it suits you.",
   },
   {
-    icon: <LuBadgeCheck className="size-5" />,
+    icon: <BadgeCheck className="size-5" />,
     title: "Trusted & secure",
     description:
       "Every buyer and task is verified. Payments are protected end to end.",
   },
   {
-    icon: <LuHeartHandshake className="size-5" />,
+    icon: <HeartHandshake className="size-5" />,
     title: "Community driven",
     description:
       "Join a thriving network of earners who share tips and grow together.",
@@ -52,7 +52,7 @@ const WhyChooseUs = () => {
 
             <div className="relative flex items-center gap-3">
               <div className="flex size-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
-                <LuZap className="size-6" />
+                <Zap className="size-6" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold tracking-tight">
@@ -81,7 +81,7 @@ const WhyChooseUs = () => {
               <div className="mt-2 flex items-end gap-1">
                 <span className="text-3xl font-bold tracking-tight">$128.40</span>
                 <span className="mb-1 flex items-center gap-1 text-xs font-medium text-emerald-300">
-                  <LuZap className="size-3" /> +24%
+                  <Zap className="size-3" /> +24%
                 </span>
               </div>
               <div className="mt-4 space-y-2">
@@ -122,7 +122,7 @@ const WhyChooseUs = () => {
           {/* Coins card */}
           <Card className="group flex h-full flex-col items-center justify-center gap-3 border-dashed p-7 text-center transition-colors duration-300 hover:border-emerald-500/40">
             <div className="flex size-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
-              <LuWallet className="size-5" />
+              <Wallet className="size-5" />
             </div>
             <h3 className="text-lg font-semibold tracking-tight">
               Simple coin system

@@ -2,19 +2,7 @@ import { useMemo } from "react";
 import { Wallet, CreditCard } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import StatusBadge from "@/components/shared/StatusBadge";
-
-const formatDate = (date) => {
-  if (!date) return "—";
-  const d = new Date(date);
-  return Number.isNaN(d.getTime())
-    ? "—"
-    : d.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-};
+import { formatDateTime } from "@/lib/date";
 
 const RecentActivity = ({ payments = [], limit = 5 }) => {
   const recent = useMemo(
@@ -68,7 +56,7 @@ const RecentActivity = ({ payments = [], limit = 5 }) => {
                     Purchased {payment.coins_purchased || payment.coins || 0} coins
                   </p>
                   <p className="truncate text-xs text-muted-foreground">
-                    {formatDate(date)}
+                    {formatDateTime(date)}
                   </p>
                 </div>
               </div>

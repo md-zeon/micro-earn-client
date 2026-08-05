@@ -47,6 +47,7 @@ import ProfileSkeleton from "../../../components/ui/ProfileSkeleton";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { imageUpload } from "../../../api/utils";
+import { formatDate, timeAgo } from "../../../lib/date";
 
 const ROLE_BADGE = {
   admin: "bg-violet-500/10 text-violet-600 ring-1 ring-violet-500/25 dark:text-violet-400",
@@ -64,17 +65,6 @@ const profileSchema = z.object({
 });
 
 const EMPTY_STATS = {};
-
-const formatDate = (value) => {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-};
 
 const getInitials = (name) =>
   (name || "U")
@@ -139,7 +129,7 @@ const Profile = () => {
   const email = dbUser?.email || user?.email || "";
   const photoURL = dbUser?.photoURL || user?.photoURL || "";
   const memberSince = formatDate(dbUser?.createdAt || user?.metadata?.creationTime);
-  const lastLogin = formatDate(dbUser?.lastLoggedInAt);
+  const lastLogin = timeAgo(dbUser?.lastLoggedInAt);
   const initials = getInitials(displayName);
 
   const statCards = useMemo(() => {

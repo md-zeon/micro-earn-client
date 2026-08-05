@@ -39,6 +39,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import PageTitle from "../../../components/PageTitle";
+import { formatDateTime } from "../../../lib/date";
 
 const getInitials = (name = "") =>
   name
@@ -47,19 +48,6 @@ const getInitials = (name = "") =>
     .slice(0, 2)
     .map((n) => n[0]?.toUpperCase())
     .join("") || "?";
-
-const formatDate = (date) => {
-  if (!date) return "—";
-  const d = new Date(date);
-  return Number.isNaN(d.getTime())
-    ? "—"
-    : d.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-};
 
 const TasksToReview = () => {
   const { submissions, isLoading, refetch } = useBuyerSubmissions();
@@ -218,7 +206,7 @@ const TasksToReview = () => {
                   </TableCell>
 
                   <TableCell className="whitespace-nowrap text-sm text-muted-foreground tabular-nums">
-                    {formatDate(s.updatedAt)}
+                    {formatDateTime(s.updatedAt)}
                   </TableCell>
 
                   <TableCell>

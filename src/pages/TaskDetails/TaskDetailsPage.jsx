@@ -2,21 +2,21 @@ import { motion } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useParams, Link } from "react-router";
 import {
-  LuArrowRight,
-  LuBadgeCheck,
-  LuCalendar,
-  LuCheck,
-  LuChevronRight,
-  LuClock,
-  LuCoins,
-  LuListChecks,
-  LuMessageSquareWarning,
-  LuShieldCheck,
-  LuSparkles,
-  LuUser,
-  LuUsers,
-  LuZap,
-} from "react-icons/lu";
+  ArrowRight,
+  BadgeCheck,
+  Calendar,
+  Check,
+  ChevronRight,
+  Clock,
+  Coins,
+  ListChecks,
+  MessageSquareWarning,
+  ShieldCheck,
+  Sparkles,
+  User,
+  Users,
+  Zap,
+} from "lucide-react";
 import Container from "../../components/Container";
 import useAuth from "../../hooks/useAuth";
 import FadeContent from "@/components/effects/FadeContent";
@@ -26,30 +26,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import RichText from "@/components/shared/RichText";
 import { stripHtml } from "@/lib/utils";
-
-const getDeadlineInfo = (deadline) => {
-  const due = new Date(deadline);
-  const days = Math.ceil((due - Date.now()) / 86400000);
-  if (days < 0)
-    return { days, label: "Expired", className: "text-muted-foreground" };
-  if (days <= 2)
-    return {
-      days,
-      label: days === 1 ? "1 day left" : `${days} days left`,
-      className: "text-rose-500",
-    };
-  if (days <= 7)
-    return {
-      days,
-      label: `${days} days left`,
-      className: "text-amber-500",
-    };
-  return {
-    days,
-    label: `${days} days left`,
-    className: "text-emerald-600 dark:text-emerald-400",
-  };
-};
+import { getDeadlineInfo } from "@/lib/date";
 
 const getInitials = (name = "") =>
   name
@@ -86,11 +63,11 @@ const RelatedTaskCard = ({ task }) => (
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
-          <LuSparkles className="size-8 text-emerald-500/40" />
+          <Sparkles className="size-8 text-emerald-500/40" />
         </div>
       )}
       <Badge className="absolute right-3 top-3 rounded-full bg-amber-500/15 font-semibold text-amber-600 backdrop-blur dark:text-amber-400">
-        <LuCoins className="mr-1 size-3.5" />
+        <Coins className="mr-1 size-3.5" />
         {task.payable_amount}
       </Badge>
     </div>
@@ -103,12 +80,12 @@ const RelatedTaskCard = ({ task }) => (
       </p>
       <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-4">
         <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <LuUsers className="size-3.5 text-emerald-500" />
+          <Users className="size-3.5 text-emerald-500" />
           {task.required_workers} slots left
         </span>
         <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
           Details
-          <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
         </span>
       </div>
     </div>
@@ -151,7 +128,7 @@ const TaskDetailsPage = () => {
       <Container>
         <div className="flex min-h-80 flex-col items-center justify-center px-4 py-24 text-center">
           <div className="flex size-16 items-center justify-center rounded-2xl bg-emerald-500/10">
-            <LuMessageSquareWarning className="size-8 text-emerald-500" />
+            <MessageSquareWarning className="size-8 text-emerald-500" />
           </div>
           <h1 className="mt-5 text-2xl font-bold">Task not found</h1>
           <p className="mt-2 max-w-sm text-sm text-muted-foreground">
@@ -162,7 +139,7 @@ const TaskDetailsPage = () => {
             onClick={() => navigate("/all-tasks")}
           >
             Browse all tasks
-            <LuArrowRight className="size-4" />
+            <ArrowRight className="size-4" />
           </Button>
         </div>
       </Container>
@@ -198,7 +175,7 @@ const TaskDetailsPage = () => {
           >
             Home
           </button>
-          <LuChevronRight className="size-3.5" />
+          <ChevronRight className="size-3.5" />
           <button
             type="button"
             onClick={() => navigate("/all-tasks")}
@@ -206,7 +183,7 @@ const TaskDetailsPage = () => {
           >
             All tasks
           </button>
-          <LuChevronRight className="size-3.5" />
+          <ChevronRight className="size-3.5" />
           <span className="max-w-56 truncate font-medium text-foreground">
             {task.task_title}
           </span>
@@ -227,19 +204,19 @@ const TaskDetailsPage = () => {
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <LuSparkles className="size-16 text-emerald-500/40" />
+                  <Sparkles className="size-16 text-emerald-500/40" />
                 </div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               <div className="absolute right-4 top-4 flex gap-2">
                 <Badge className="rounded-full bg-amber-500/15 px-3 py-1 text-sm font-semibold text-amber-500 backdrop-blur">
-                  <LuCoins className="mr-1 size-4" />
+                  <Coins className="mr-1 size-4" />
                   {task.payable_amount}
                   <span className="font-normal opacity-80">coins</span>
                 </Badge>
                 {!deadline.className.includes("emerald") && (
                   <Badge className="rounded-full bg-rose-500/15 px-3 py-1 text-sm font-semibold text-rose-500 backdrop-blur">
-                    <LuClock className="mr-1 size-4" />
+                    <Clock className="mr-1 size-4" />
                     Ending soon
                   </Badge>
                 )}
@@ -258,7 +235,7 @@ const TaskDetailsPage = () => {
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                       <span className="truncate">{task.buyer_name}</span>
-                      <LuBadgeCheck className="size-4 shrink-0 text-emerald-500" />
+                      <BadgeCheck className="size-4 shrink-0 text-emerald-500" />
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Posted{" "}
@@ -276,7 +253,7 @@ const TaskDetailsPage = () => {
             <div className="mt-8 space-y-6">
               <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
-                  <LuListChecks className="size-5 text-emerald-500" />
+                  <ListChecks className="size-5 text-emerald-500" />
                   About this task
                 </h2>
                 <RichText
@@ -287,7 +264,7 @@ const TaskDetailsPage = () => {
 
               <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
-                  <LuZap className="size-5 text-emerald-500" />
+                  <Zap className="size-5 text-emerald-500" />
                   Submission requirements
                 </h2>
                 <RichText
@@ -298,24 +275,24 @@ const TaskDetailsPage = () => {
 
               <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
-                  <LuShieldCheck className="size-5 text-emerald-500" />
+                  <ShieldCheck className="size-5 text-emerald-500" />
                   How approval works
                 </h2>
                 <ul className="mt-4 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
                   <li className="flex items-start gap-2.5">
-                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                     Complete every requirement before submitting.
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                     Submissions are reviewed within 24–48 hours.
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                     Payment is released as soon as a submission is approved.
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                    <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                     Rejected submissions are not paid out.
                   </li>
                 </ul>
@@ -351,7 +328,7 @@ const TaskDetailsPage = () => {
                 <div>
                   <InfoRow
                     icon={
-                      <LuCalendar className="size-4 text-emerald-500" />
+                      <Calendar className="size-4 text-emerald-500" />
                     }
                     label="Deadline"
                   >
@@ -365,19 +342,19 @@ const TaskDetailsPage = () => {
                 </div>
 
                 <InfoRow
-                  icon={<LuUsers className="size-4 text-emerald-500" />}
+                  icon={<Users className="size-4 text-emerald-500" />}
                   label="Workers needed"
                 >
                   {task.required_workers} slots left
                 </InfoRow>
 
                 <InfoRow
-                  icon={<LuUser className="size-4 text-emerald-500" />}
+                  icon={<User className="size-4 text-emerald-500" />}
                   label="Posted by"
                 >
                   <span className="inline-flex items-center gap-1">
                     {task.buyer_name}
-                    <LuBadgeCheck className="size-4 text-emerald-500" />
+                    <BadgeCheck className="size-4 text-emerald-500" />
                   </span>
                 </InfoRow>
 
@@ -405,7 +382,7 @@ const TaskDetailsPage = () => {
                     onClick={handleApply}
                   >
                     {user ? "Apply for this task" : "Sign in to apply"}
-                    <LuArrowRight className="size-4" />
+                    <ArrowRight className="size-4" />
                   </Button>
                   <p className="mt-3 text-center text-xs text-muted-foreground">
                     {user
@@ -417,7 +394,7 @@ const TaskDetailsPage = () => {
             </Card>
 
             <div className="mt-6 flex items-center justify-center gap-2 rounded-xl border border-border/60 bg-card/40 px-4 py-3 text-center text-xs text-muted-foreground">
-              <LuShieldCheck className="size-4 shrink-0 text-emerald-500" />
+              <ShieldCheck className="size-4 shrink-0 text-emerald-500" />
               Payments are held securely until your work is approved.
             </div>
           </motion.aside>
@@ -441,7 +418,7 @@ const TaskDetailsPage = () => {
               onClick={() => navigate("/all-tasks")}
             >
               View all
-              <LuArrowRight className="size-3.5" />
+              <ArrowRight className="size-3.5" />
             </Button>
           </div>
 
@@ -481,13 +458,13 @@ const TaskDetailsPage = () => {
               Pay per worker
             </p>
             <p className="flex items-center gap-1.5 text-xl font-bold">
-              <LuCoins className="size-5 text-amber-500" />
+              <Coins className="size-5 text-amber-500" />
               {task.payable_amount}
             </p>
           </div>
           <Button className="rounded-full" onClick={handleApply}>
             {user ? "Apply now" : "Sign in to apply"}
-            <LuArrowRight className="size-4" />
+            <ArrowRight className="size-4" />
           </Button>
         </div>
       </div>

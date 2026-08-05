@@ -3,12 +3,12 @@ import { Link } from "react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  LuArrowRight,
-  LuCircleCheck,
-  LuClipboardList,
-  LuCoins,
-  LuUserCheck,
-} from "react-icons/lu";
+  ArrowRight,
+  CircleCheck,
+  ClipboardList,
+  Coins,
+  UserCheck,
+} from "lucide-react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import FadeContent from "@/components/effects/FadeContent";
 import { Button } from "@/components/ui/button";
@@ -18,21 +18,21 @@ gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
-    icon: <LuClipboardList className="size-6" />,
+    icon: <ClipboardList className="size-6" />,
     title: "Post or find a task",
     description:
       "Buyers list simple tasks with clear instructions and coin rewards. Workers browse and pick the work they want.",
     tag: "For everyone",
   },
   {
-    icon: <LuUserCheck className="size-6" />,
+    icon: <UserCheck className="size-6" />,
     title: "Complete the work",
     description:
       "Workers finish tasks and submit proof. Buyers review submissions and approve the quality with one click.",
     tag: "Verified review",
   },
   {
-    icon: <LuCoins className="size-6" />,
+    icon: <Coins className="size-6" />,
     title: "Get paid instantly",
     description:
       "Approved tasks credit coins to your wallet. Withdraw as real money whenever you hit the payout threshold.",
@@ -119,7 +119,7 @@ const HowItWorks = () => {
                           className="gap-2 rounded-full p-0 text-emerald-600 hover:bg-transparent hover:text-emerald-500 dark:text-emerald-400"
                         >
                           Create your account
-                          <LuArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                          <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                         </Button>
                       </Link>
                     )}
@@ -130,7 +130,7 @@ const HowItWorks = () => {
           </div>
 
           <p className="mt-10 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <LuCircleCheck className="size-4 text-emerald-500" />
+            <CircleCheck className="size-4 text-emerald-500" />
             20 coins = $1. Withdraw from 200 coins via secure methods.
           </p>
       </div>

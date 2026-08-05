@@ -1,4 +1,4 @@
-import { LuHandCoins } from "react-icons/lu";
+import { HandCoins } from "lucide-react";
 import { Link } from "react-router";
 
 const Logo = () => {
@@ -8,7 +8,7 @@ const Logo = () => {
 			className='flex items-center gap-1.5 sm:gap-2 hover:opacity-80 transition-opacity'
 		>
 			<span className='bg-gradient w-8 h-8 rounded-lg flex items-center justify-center text-white'>
-				<LuHandCoins />
+				<HandCoins className="size-5" />
 			</span>
 			<span className='text-lg sm:text-2xl font-bold text-gradient'>
 				MicroEarn

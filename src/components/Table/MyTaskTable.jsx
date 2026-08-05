@@ -12,12 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
-
-const formatDate = (date) => {
-  if (!date) return "—";
-  const d = new Date(date);
-  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString();
-};
+import { formatDate } from "@/lib/date";
 
 const MyTaskTable = ({ tasks = [], onEditClick, onDeleteClick }) => {
   return (
@@ -60,7 +55,7 @@ const MyTaskTable = ({ tasks = [], onEditClick, onDeleteClick }) => {
                         {task.task_title}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Posted {formatDate(task.createdAt)}
+                        Posted {formatDate(task.createdAt, { year: "numeric", month: "numeric", day: "numeric" })}
                       </p>
                     </div>
                   </div>
@@ -92,7 +87,7 @@ const MyTaskTable = ({ tasks = [], onEditClick, onDeleteClick }) => {
                 </TableCell>
 
                 <TableCell className="whitespace-nowrap text-sm text-muted-foreground tabular-nums">
-                  {formatDate(task.completion_deadline)}
+                  {formatDate(task.completion_deadline, { year: "numeric", month: "numeric", day: "numeric" })}
                 </TableCell>
 
                 <TableCell>

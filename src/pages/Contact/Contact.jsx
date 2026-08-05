@@ -5,18 +5,18 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Link } from "react-router";
 import {
-  LuArrowRight,
-  LuCircleCheck,
-  LuClock,
-  LuHandshake,
-  LuLifeBuoy,
-  LuMail,
-  LuMessageSquare,
-  LuSend,
-  LuShieldCheck,
-  LuSparkles,
-  LuZap,
-} from "react-icons/lu";
+  ArrowRight,
+  CircleCheck,
+  Clock,
+  Handshake,
+  LifeBuoy,
+  Mail,
+  MessageSquare,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 import contactImage from "../../assets/contact.svg";
 import CTA from "../../components/Home/CTA";
 import FadeContent from "@/components/effects/FadeContent";
@@ -36,21 +36,21 @@ import { Textarea } from "@/components/ui/textarea";
 
 const channels = [
   {
-    icon: <LuLifeBuoy className="size-5" />,
+    icon: <LifeBuoy className="size-5" />,
     title: "Support",
     description: "Having trouble with a task, payout, or your account?",
     email: "support@microearn.com",
     accent: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   },
   {
-    icon: <LuHandshake className="size-5" />,
+    icon: <Handshake className="size-5" />,
     title: "Partnerships",
     description: "Want to bring task providers or bulk buyers to MicroEarn?",
     email: "partners@microearn.com",
     accent: "bg-teal-500/10 text-teal-600 dark:text-teal-400",
   },
   {
-    icon: <LuMessageSquare className="size-5" />,
+    icon: <MessageSquare className="size-5" />,
     title: "Feedback",
     description: "Ideas for new features, tasks, or ways we can do better.",
     email: "feedback@microearn.com",
@@ -60,18 +60,18 @@ const channels = [
 
 const details = [
   {
-    icon: <LuMail className="size-5" />,
+    icon: <Mail className="size-5" />,
     label: "Email us",
     value: "support@microearn.com",
     href: "mailto:support@microearn.com",
   },
   {
-    icon: <LuClock className="size-5" />,
+    icon: <Clock className="size-5" />,
     label: "Response time",
     value: "Within 24–48 hours",
   },
   {
-    icon: <LuShieldCheck className="size-5" />,
+    icon: <ShieldCheck className="size-5" />,
     label: "Your data",
     value: "Protected & never shared",
   },
@@ -142,15 +142,15 @@ const Contact = () => {
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
-                <LuCircleCheck className="size-4 text-emerald-500" />
+                <CircleCheck className="size-4 text-emerald-500" />
                 Real humans reply
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <LuCircleCheck className="size-4 text-emerald-500" />
+                <CircleCheck className="size-4 text-emerald-500" />
                 24–48 hr response
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <LuCircleCheck className="size-4 text-emerald-500" />
+                <CircleCheck className="size-4 text-emerald-500" />
                 Free to ask anything
               </span>
             </div>
@@ -183,7 +183,7 @@ const Contact = () => {
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 transition-colors hover:text-emerald-500 dark:text-emerald-400"
                 >
                   {channel.email}
-                  <LuArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
               </Card>
             ))}
@@ -200,7 +200,7 @@ const Contact = () => {
             <div className="space-y-6">
               <div>
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
-                  <LuZap className="size-3.5" />
+                  <Zap className="size-3.5" />
                   Prefer a direct line?
                 </span>
                 <h2 className="mt-4 text-3xl font-bold tracking-tight text-balance md:text-4xl">
@@ -255,7 +255,7 @@ const Contact = () => {
               </div>
 
               <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/40 p-4 text-sm text-muted-foreground">
-                <LuSparkles className="size-5 shrink-0 text-emerald-500" />
+                <Sparkles className="size-5 shrink-0 text-emerald-500" />
                 <p>
                   Looking for quick answers? Check our{" "}
                   <Link
@@ -277,7 +277,7 @@ const Contact = () => {
 
                 <div className="relative flex items-center gap-3">
                   <div className="flex size-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
-                    <LuMessageSquare className="size-5" />
+                    <MessageSquare className="size-5" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold tracking-tight">
@@ -389,12 +389,12 @@ const Contact = () => {
                     size="lg"
                     className="w-full gap-2 rounded-full bg-white text-emerald-700 shadow-lg shadow-black/10 hover:bg-emerald-50"
                   >
-                    <LuSend className="size-4" />
+                    <Send className="size-4" />
                     Send Message
                   </Button>
 
                   <p className="flex items-center justify-center gap-1.5 text-center text-xs text-white/70">
-                    <LuShieldCheck className="size-4" />
+                    <ShieldCheck className="size-4" />
                     Your details stay private — we never share your data.
                   </p>
                 </form>

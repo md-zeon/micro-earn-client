@@ -28,18 +28,10 @@ import PageHeader from "../../../components/shared/PageHeader";
 import PageTitle from "../../../components/PageTitle";
 import StatusBadge from "../../../components/shared/StatusBadge";
 import DataTable from "../../../components/shared/DataTable";
-import ManageTasksSkeleton from "../../../components/ui/ManageTasksSkeleton";
+import ManageTableSkeleton from "../../../components/ui/ManageTableSkeleton";
 import useAdminTasks from "../../../hooks/useAdminTasks";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-
-const formatDate = (date) =>
-  date
-    ? new Date(date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "—";
+import { formatDate } from "../../../lib/date";
 
 const ACTION_COPY = {
   approve: {
@@ -114,7 +106,7 @@ const ManageTasks = () => {
     }
   };
 
-  if (isLoading) return <ManageTasksSkeleton />;
+  if (isLoading) return <ManageTableSkeleton />;
 
   const columns = [
     {

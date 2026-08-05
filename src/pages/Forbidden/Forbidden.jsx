@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import forbiddenImg from "../../assets/forbidden.svg";
 import PageTitle from "../../components/PageTitle";
-import { LuHouse } from "react-icons/lu";
+import { House } from "lucide-react";
 
 const Forbidden = () => {
 	return (
@@ -21,7 +21,7 @@ const Forbidden = () => {
 				to='/'
 				className='px-6 py-3 bg-gradient-error rounded-xl shadow duration-200 flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring'
 			>
-				<LuHouse className='w-5 h-5' /> Back to Home
+				<House className='w-5 h-5' /> Back to Home
 			</Link>
 		</div>
 	);

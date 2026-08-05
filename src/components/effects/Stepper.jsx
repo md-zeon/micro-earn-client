@@ -1,4 +1,4 @@
-import { LuCheck } from "react-icons/lu";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
@@ -65,7 +65,7 @@ const Stepper = ({ steps = [], currentStep = 1, onStepChange }) => {
                 )}
               >
                 {isCompleted ? (
-                  <LuCheck aria-hidden="true" className="size-5" />
+                  <Check aria-hidden="true" className="size-5" />
                 ) : (
                   stepNumber
                 )}

@@ -26,25 +26,17 @@ import {
 import PageHeader from "../../../components/shared/PageHeader";
 import PageTitle from "../../../components/PageTitle";
 import DataTable from "../../../components/shared/DataTable";
-import ManageUsersSkeleton from "../../../components/ui/ManageUsersSkeleton";
+import ManageTableSkeleton from "../../../components/ui/ManageTableSkeleton";
 import useAdminUsers from "../../../hooks/useAdminUsers";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
+import { formatDate } from "../../../lib/date";
 
 const ROLE_STYLES = {
   admin: "bg-violet-500/10 text-violet-600 ring-1 ring-violet-500/25 dark:text-violet-400",
   buyer: "bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/25 dark:text-sky-400",
   worker: "bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/25 dark:text-emerald-400",
 };
-
-const formatDate = (date) =>
-  date
-    ? new Date(date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "—";
 
 const ManageUsers = () => {
   const { users, isLoading, refetch } = useAdminUsers();
@@ -91,7 +83,7 @@ const ManageUsers = () => {
     }
   };
 
-  if (isLoading) return <ManageUsersSkeleton />;
+  if (isLoading) return <ManageTableSkeleton />;
 
   const isSelf = (user) =>
     user?.email?.toLowerCase() === currentUser?.email?.toLowerCase();

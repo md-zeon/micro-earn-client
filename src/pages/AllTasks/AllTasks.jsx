@@ -4,19 +4,19 @@ import { Link, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
-  LuArrowRight,
-  LuCalendar,
-  LuCoins,
-  LuInbox,
-  LuLoader,
-  LuSearch,
-  LuSlidersHorizontal,
-  LuSparkles,
-  LuUser,
-  LuUsers,
-  LuX,
-  LuZap,
-} from "react-icons/lu";
+  ArrowRight,
+  Calendar,
+  Coins,
+  Inbox,
+  Loader,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  User,
+  Users,
+  X,
+  Zap,
+} from "lucide-react";
 import Container from "../../components/Container";
 import CountUp from "@/components/effects/CountUp";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { stripHtml } from "@/lib/utils";
+import { getDeadlineInfo } from "@/lib/date";
 
 const SORT_OPTIONS = [
   { value: "highest-pay", label: "Highest pay" },
@@ -41,22 +42,6 @@ const SORT_OPTIONS = [
 ];
 
 const PAGE_SIZE = 9;
-
-const getDeadlineInfo = (deadline) => {
-  const due = new Date(deadline);
-  const days = Math.ceil((due - new Date()) / 86400000);
-  if (days <= 2) {
-    return {
-      days,
-      className: "text-rose-500",
-      endingSoon: days >= 0,
-    };
-  }
-  if (days <= 7) {
-    return { days, className: "text-amber-500", endingSoon: false };
-  }
-  return { days, className: "text-muted-foreground", endingSoon: false };
-};
 
 const TaskCard = ({ task }) => {
   const deadline = getDeadlineInfo(task.completion_deadline);
@@ -76,13 +61,13 @@ const TaskCard = ({ task }) => {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <LuSparkles className="size-10 text-emerald-500/40 transition-transform duration-500 group-hover:scale-110" />
+            <Sparkles className="size-10 text-emerald-500/40 transition-transform duration-500 group-hover:scale-110" />
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
         <Badge className="absolute right-3 top-3 rounded-full bg-amber-500/15 font-semibold text-amber-600 backdrop-blur dark:text-amber-400">
-          <LuCoins className="mr-1 size-3.5" />
+          <Coins className="mr-1 size-3.5" />
           {task.payable_amount}
         </Badge>
 
@@ -104,12 +89,12 @@ const TaskCard = ({ task }) => {
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
-            <LuUsers className="size-4 text-emerald-500" />
+            <Users className="size-4 text-emerald-500" />
             {task.required_workers} slots left
           </span>
           <span className={deadline.className}>
             <span className="inline-flex items-center gap-1.5">
-              <LuCalendar className="size-4" />
+              <Calendar className="size-4" />
               {new Date(task.completion_deadline).toLocaleDateString()}
               {deadline.days >= 0 && (
                 <span className="opacity-80">· {deadline.days}d left</span>
@@ -120,12 +105,12 @@ const TaskCard = ({ task }) => {
 
         <div className="mt-5 flex items-center justify-between gap-3 border-t border-border/60 pt-4">
           <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
-            <LuUser className="size-3.5 shrink-0 text-emerald-500" />
+            <User className="size-3.5 shrink-0 text-emerald-500" />
             <span className="truncate">{task.buyer_name}</span>
           </span>
           <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
             Details
-            <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
           </span>
         </div>
       </div>
@@ -307,17 +292,17 @@ const AllTasks = () => {
         >
           {[
             {
-              icon: <LuZap className="size-4 text-emerald-500" />,
+              icon: <Zap className="size-4 text-emerald-500" />,
               label: "Open tasks",
               value: stats.open,
             },
             {
-              icon: <LuUsers className="size-4 text-emerald-500" />,
+              icon: <Users className="size-4 text-emerald-500" />,
               label: "Worker slots",
               value: stats.openSlots,
             },
             {
-              icon: <LuCoins className="size-4 text-amber-500" />,
+              icon: <Coins className="size-4 text-amber-500" />,
               label: "Highest payout",
               value: stats.highestPay,
               suffix: " coins",
@@ -345,7 +330,7 @@ const AllTasks = () => {
           className="relative mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
         >
           <div className="relative flex-1">
-            <LuSearch className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={queryInput}
               onChange={(e) => setQueryInput(e.target.value)}
@@ -360,7 +345,7 @@ const AllTasks = () => {
                 className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 aria-label="Clear search"
               >
-                <LuX className="size-4" />
+                <X className="size-4" />
               </button>
             )}
           </div>
@@ -371,7 +356,7 @@ const AllTasks = () => {
               onValueChange={(value) => updateParams({ sort: value })}
             >
               <SelectTrigger className="w-full rounded-full">
-                <LuSlidersHorizontal className="size-4 text-muted-foreground" />
+                <SlidersHorizontal className="size-4 text-muted-foreground" />
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -436,7 +421,7 @@ const AllTasks = () => {
           ) : isError ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 px-6 py-20 text-center">
               <div className="flex size-16 items-center justify-center rounded-2xl bg-rose-500/10">
-                <LuInbox className="size-8 text-rose-500" />
+                <Inbox className="size-8 text-rose-500" />
               </div>
               <h3 className="mt-5 text-xl font-semibold">Couldn’t load tasks</h3>
               <p className="mt-2 max-w-sm text-sm text-muted-foreground">
@@ -448,14 +433,14 @@ const AllTasks = () => {
                 className="mt-6 rounded-full"
                 onClick={() => refetch()}
               >
-                <LuLoader className="size-4" />
+                <Loader className="size-4" />
                 Retry
               </Button>
             </div>
           ) : tasks.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 px-6 py-20 text-center">
               <div className="flex size-16 items-center justify-center rounded-2xl bg-emerald-500/10">
-                <LuInbox className="size-8 text-emerald-500" />
+                <Inbox className="size-8 text-emerald-500" />
               </div>
               <h3 className="mt-5 text-xl font-semibold">No tasks found</h3>
               <p className="mt-2 max-w-sm text-sm text-muted-foreground">
@@ -470,7 +455,7 @@ const AllTasks = () => {
                   onClick={clearFilters}
                 >
                   Clear filters
-                  <LuX className="size-4" />
+                  <X className="size-4" />
                 </Button>
               )}
             </div>

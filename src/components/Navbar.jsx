@@ -2,17 +2,17 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, NavLink } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  LuArrowRight,
-  LuExternalLink,
-  LuHouse,
-  LuInfo,
-  LuLayoutDashboard,
-  LuListTodo,
-  LuLogOut,
-  LuMail,
-  LuMenu,
-  LuX,
-} from "react-icons/lu";
+  ArrowRight,
+  ExternalLink,
+  House,
+  Info,
+  LayoutDashboard,
+  ListTodo,
+  LogOut,
+  Mail,
+  Menu,
+  X,
+} from "lucide-react";
 import Container from "./Container";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
@@ -36,33 +36,33 @@ const navItems = [
     to: "/",
     label: "Home",
     description: "Back to the MicroEarn homepage",
-    icon: <LuHouse className="size-5" />,
+    icon: <House className="size-5" />,
     end: true,
   },
   {
     to: "/all-tasks",
     label: "All Tasks",
     description: "Browse tasks and earn coins",
-    icon: <LuListTodo className="size-5" />,
+    icon: <ListTodo className="size-5" />,
   },
   {
     to: "/dashboard",
     label: "Dashboard",
     description: "Manage tasks, submissions, and payments",
-    icon: <LuLayoutDashboard className="size-5" />,
+    icon: <LayoutDashboard className="size-5" />,
     requiresAuth: true,
   },
   {
     to: "/about",
     label: "About Us",
     description: "Our mission, values, and journey",
-    icon: <LuInfo className="size-5" />,
+    icon: <Info className="size-5" />,
   },
   {
     to: "/contact",
     label: "Contact Us",
     description: "Support, partnerships, and feedback",
-    icon: <LuMail className="size-5" />,
+    icon: <Mail className="size-5" />,
   },
 ];
 
@@ -223,7 +223,7 @@ const Navbar = () => {
                         onClick={logOut}
                         className="cursor-pointer"
                       >
-                        <LuLogOut className="mr-2 h-4 w-4" />
+                        <LogOut className="mr-2 h-4 w-4" />
                         <span>Log out</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -260,7 +260,7 @@ const Navbar = () => {
                   size="sm"
                   className="hidden items-center gap-1.5 rounded-full xl:flex"
                 >
-                  <LuExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3 w-3" />
                   GitHub
                 </Button>
               </a>
@@ -272,7 +272,7 @@ const Navbar = () => {
                 aria-label="Open menu"
                 onClick={() => setMobileMenuOpen(true)}
               >
-                <LuMenu className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
                 <span className="text-xs font-medium">Menu</span>
               </Button>
             </div>
@@ -309,7 +309,7 @@ const Navbar = () => {
                     animate={{ rotate: 90 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <LuX className="h-6 w-6" />
+                    <X className="h-6 w-6" />
                   </motion.div>
                 </Button>
               </div>
@@ -367,7 +367,7 @@ const Navbar = () => {
                                 </span>
                               </div>
                             </span>
-                            <LuArrowRight
+                            <ArrowRight
                               className={`size-4 transition-all duration-200 ${
                                 isActive
                                   ? "translate-x-0 opacity-100"
@@ -415,7 +415,7 @@ const Navbar = () => {
                         onClick={handleLogout}
                         className="h-12 w-full justify-center rounded-2xl text-sm font-medium text-destructive hover:bg-destructive/10"
                       >
-                        <LuLogOut className="mr-2 h-4 w-4" />
+                        <LogOut className="mr-2 h-4 w-4" />
                         Log out
                       </Button>
                     </div>
@@ -454,7 +454,7 @@ const Navbar = () => {
                       size="sm"
                       className="h-11 w-full justify-center gap-2 rounded-2xl text-sm font-medium"
                     >
-                      <LuExternalLink className="h-4 w-4" />
+                      <ExternalLink className="h-4 w-4" />
                       Join As Developer
                     </Button>
                   </a>

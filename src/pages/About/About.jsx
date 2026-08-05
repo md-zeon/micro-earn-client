@@ -1,20 +1,20 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import {
-  LuArrowRight,
-  LuBadgeDollarSign,
-  LuBriefcase,
-  LuCheck,
-  LuClock,
-  LuCoins,
-  LuGlobe,
-  LuShieldCheck,
-  LuSparkles,
-  LuTarget,
-  LuUser,
-  LuUserCheck,
-  LuZap,
-} from "react-icons/lu";
+  ArrowRight,
+  BadgeDollarSign,
+  Briefcase,
+  Check,
+  Clock,
+  Coins,
+  Globe,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  User,
+  UserCheck,
+  Zap,
+} from "lucide-react";
 import aboutImg from "../../assets/about.svg";
 import CountUp from "@/components/effects/CountUp";
 import FadeContent from "@/components/effects/FadeContent";
@@ -25,28 +25,28 @@ import { Card } from "@/components/ui/card";
 
 const facts = [
   {
-    icon: <LuCoins className="size-5" />,
+    icon: <Coins className="size-5" />,
     value: 20,
     suffix: " coins",
     label: "= $1 real money",
     accent: "bg-amber-500/10 text-amber-500",
   },
   {
-    icon: <LuUserCheck className="size-5" />,
+    icon: <UserCheck className="size-5" />,
     value: 2,
     suffix: "",
     label: "roles — worker & buyer",
     accent: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   },
   {
-    icon: <LuClock className="size-5" />,
+    icon: <Clock className="size-5" />,
     value: 24,
     suffix: "–48 hrs",
     label: "max approval time",
     accent: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   },
   {
-    icon: <LuShieldCheck className="size-5" />,
+    icon: <ShieldCheck className="size-5" />,
     value: 100,
     suffix: "%",
     label: "Stripe-protected payments",
@@ -63,25 +63,25 @@ const beliefs = [
 
 const values = [
   {
-    icon: <LuBadgeDollarSign className="size-6" />,
+    icon: <BadgeDollarSign className="size-6" />,
     title: "Earn real rewards",
     description:
       "Complete tasks and earn coins. Withdraw your coins as real money — 20 coins = $1.",
   },
   {
-    icon: <LuUserCheck className="size-6" />,
+    icon: <UserCheck className="size-6" />,
     title: "Two clear roles",
     description:
       "Register as a Buyer to post tasks, or as a Worker to complete them and earn.",
   },
   {
-    icon: <LuShieldCheck className="size-6" />,
+    icon: <ShieldCheck className="size-6" />,
     title: "Secure & transparent",
     description:
       "All transactions are handled securely via Stripe. Role-based dashboards and submission validations ensure fairness.",
   },
   {
-    icon: <LuGlobe className="size-6" />,
+    icon: <Globe className="size-6" />,
     title: "Global access",
     description:
       "Work and earn from anywhere — built for a global workforce of freelancers and digital employers.",
@@ -125,7 +125,7 @@ const About = () => {
                     size="lg"
                     className="h-13 w-full gap-2 rounded-full sm:w-auto"
                   >
-                    <LuZap className="size-4" />
+                    <Zap className="size-4" />
                     Start earning as a worker
                   </Button>
                 </Link>
@@ -135,7 +135,7 @@ const About = () => {
                     variant="outline"
                     className="h-13 w-full gap-2 rounded-full sm:w-auto"
                   >
-                    <LuBriefcase className="size-4" />
+                    <Briefcase className="size-4" />
                     Post tasks as a buyer
                   </Button>
                 </Link>
@@ -143,15 +143,15 @@ const About = () => {
 
               <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
-                  <LuCheck className="size-4 text-emerald-500" />
+                  <Check className="size-4 text-emerald-500" />
                   No fees to join
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <LuCheck className="size-4 text-emerald-500" />
+                  <Check className="size-4 text-emerald-500" />
                   Withdraw from 200 coins
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <LuCheck className="size-4 text-emerald-500" />
+                  <Check className="size-4 text-emerald-500" />
                   Stripe protected
                 </span>
               </div>
@@ -178,7 +178,7 @@ const About = () => {
                 className="absolute -top-4 -right-2 md:-right-6"
               >
                 <Badge className="rounded-full bg-amber-500/15 px-3 py-1.5 text-sm font-semibold text-amber-600 backdrop-blur dark:text-amber-400">
-                  <LuCoins className="mr-1.5 size-4" />
+                  <Coins className="mr-1.5 size-4" />
                   20 coins = $1
                 </Badge>
               </motion.div>
@@ -194,7 +194,7 @@ const About = () => {
                 className="absolute -bottom-4 -left-2 md:-left-6"
               >
                 <Badge className="rounded-full bg-emerald-500/15 px-3 py-1.5 text-sm font-semibold text-emerald-600 backdrop-blur dark:text-emerald-400">
-                  <LuShieldCheck className="mr-1.5 size-4" />
+                  <ShieldCheck className="mr-1.5 size-4" />
                   Secure & verified
                 </Badge>
               </motion.div>
@@ -236,7 +236,7 @@ const About = () => {
           <FadeContent className="grid items-center gap-12 lg:grid-cols-2">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
-                <LuTarget className="size-3.5" />
+                <Target className="size-3.5" />
                 Our mission
               </span>
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-balance md:text-4xl">
@@ -259,7 +259,7 @@ const About = () => {
                 className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 transition-colors hover:text-emerald-500 dark:text-emerald-400"
               >
                 Explore live tasks
-                <LuArrowRight className="size-4" />
+                <ArrowRight className="size-4" />
               </Link>
             </div>
 
@@ -270,7 +270,7 @@ const About = () => {
 
                 <div className="relative flex items-center gap-3">
                   <div className="flex size-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
-                    <LuSparkles className="size-5" />
+                    <Sparkles className="size-5" />
                   </div>
                   <h3 className="text-xl font-semibold tracking-tight">
                     What we believe
@@ -284,7 +284,7 @@ const About = () => {
                       className="flex items-start gap-3 leading-relaxed text-white/85"
                     >
                       <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/15">
-                        <LuCheck className="size-3.5" />
+                        <Check className="size-3.5" />
                       </span>
                       {belief}
                     </li>
@@ -316,7 +316,7 @@ const About = () => {
           <FadeContent className="mt-14 grid gap-6 lg:grid-cols-2">
             <Card className="group flex h-full flex-col p-8 transition-colors duration-300 hover:border-emerald-500/40 md:p-10">
                 <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient text-white shadow-lg shadow-emerald-500/25">
-                  <LuUser className="size-6" />
+                  <User className="size-6" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold tracking-tight">
                   For workers
@@ -333,7 +333,7 @@ const About = () => {
                     "Work from anywhere in the world",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2.5">
-                      <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                      <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                       {item}
                     </li>
                   ))}
@@ -341,14 +341,14 @@ const About = () => {
                 <Link to="/all-tasks" className="mt-8">
                   <Button className="w-full rounded-full">
                     Browse tasks
-                    <LuArrowRight className="size-4" />
+                    <ArrowRight className="size-4" />
                   </Button>
                 </Link>
               </Card>
 
             <Card className="group flex h-full flex-col p-8 transition-colors duration-300 hover:border-emerald-500/40 md:p-10">
                 <div className="flex size-12 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                  <LuBriefcase className="size-6" />
+                  <Briefcase className="size-6" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold tracking-tight">
                   For buyers
@@ -365,7 +365,7 @@ const About = () => {
                     "Scale help up or down as your needs change",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2.5">
-                      <LuCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                      <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                       {item}
                     </li>
                   ))}
@@ -373,7 +373,7 @@ const About = () => {
                 <Link to="/register" className="mt-8">
                   <Button variant="outline" className="w-full rounded-full">
                     Post your first task
-                    <LuArrowRight className="size-4" />
+                    <ArrowRight className="size-4" />
                   </Button>
                 </Link>
               </Card>

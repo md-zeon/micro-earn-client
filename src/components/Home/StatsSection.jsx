@@ -1,4 +1,4 @@
-import { LuCircleCheck, LuListTodo, LuUsers, LuWallet } from "react-icons/lu";
+import { CircleCheck, ListTodo, Users, Wallet } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import FadeContent from "@/components/effects/FadeContent";
@@ -17,25 +17,25 @@ const StatsSection = () => {
 
   const statItems = [
     {
-      icon: <LuUsers className="size-6" />,
+      icon: <Users className="size-6" />,
       label: "Active workers",
       value: safeStats.totalWorkers,
       suffix: "+",
     },
     {
-      icon: <LuListTodo className="size-6" />,
+      icon: <ListTodo className="size-6" />,
       label: "Tasks completed",
       value: safeStats.totalTasks,
       suffix: "+",
     },
     {
-      icon: <LuWallet className="size-6" />,
+      icon: <Wallet className="size-6" />,
       label: "Coins earned",
       value: safeStats.totalCoins,
       suffix: "+",
     },
     {
-      icon: <LuCircleCheck className="size-6" />,
+      icon: <CircleCheck className="size-6" />,
       label: "Satisfied buyers",
       value: safeStats.totalBuyers,
       suffix: "+",

@@ -1,5 +1,5 @@
 import { cloneElement } from "react";
-import { LuArrowRight, LuCalendar, LuCoins, LuUser } from "react-icons/lu";
+import { ArrowRight, Calendar, Coins, User } from "lucide-react";
 import { useNavigate, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +35,7 @@ const FeaturedTasks = () => {
             onClick={() => navigate("/all-tasks")}
           >
             View all tasks
-            <LuArrowRight className="size-4" />
+            <ArrowRight className="size-4" />
           </Button>
         </div>
 
@@ -77,7 +77,7 @@ const FeaturedTasks = () => {
                       {task.task_title}
                     </h3>
                     <Badge className="shrink-0 rounded-full bg-amber-500/10 font-semibold text-amber-600 dark:text-amber-400">
-                      <LuCoins className="mr-1 size-3.5" />
+                      <Coins className="mr-1 size-3.5" />
                       {task.payable_amount}
                     </Badge>
                   </div>
@@ -88,11 +88,11 @@ const FeaturedTasks = () => {
 
                   <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">
-                      <LuUser className="size-4 text-emerald-500" />
+                      <User className="size-4 text-emerald-500" />
                       {task.required_workers} workers needed
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <LuCalendar className="size-4 text-emerald-500" />
+                      <Calendar className="size-4 text-emerald-500" />
                       {new Date(task.completion_deadline).toLocaleDateString()}
                     </span>
                   </div>
@@ -106,7 +106,7 @@ const FeaturedTasks = () => {
                     </span>
                     <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
                       See details
-                      <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                      <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
                     </span>
                   </div>
                 </Link>
@@ -135,7 +135,7 @@ const FeaturedTasks = () => {
             onClick={() => navigate("/all-tasks")}
           >
             View all tasks
-            <LuArrowRight className="size-4" />
+            <ArrowRight className="size-4" />
           </Button>
         </div>
       </div>
