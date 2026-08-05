@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import {
+  ClipboardCheck,
+  CheckCircle2,
+  XCircle,
+  Eye,
+  Loader2,
+  Inbox,
+  Link2,
+  FileQuestion,
+} from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useBuyerSubmissions from "../../../hooks/useBuyerSubmissions";
-import { toast } from "sonner";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
-import PageTitle from "../../../components/PageTitle";
+import PageHeader from "../../../components/shared/PageHeader";
+import StatsCard from "../../../components/shared/StatsCard";
+import EmptyState from "../../../components/shared/EmptyState";
+import StatusBadge from "../../../components/shared/StatusBadge";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -17,11 +33,33 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
+import PageTitle from "../../../components/PageTitle";
+
+const getInitials = (name = "") =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((n) => n[0]?.toUpperCase())
+    .join("") || "?";
+
+const formatDate = (date) => {
+  if (!date) return "—";
+  const d = new Date(date);
+  return Number.isNaN(d.getTime())
+    ? "—"
+    : d.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+};
 
 const TasksToReview = () => {
   const { submissions, isLoading, refetch } = useBuyerSubmissions();
@@ -29,103 +67,203 @@ const TasksToReview = () => {
   const axiosSecure = useAxiosSecure();
 
   const [selectedSubmission, setSelectedSubmission] = useState(null);
+  const [busyId, setBusyId] = useState(null);
 
-  const buyerSubmissions = submissions?.filter(
-    (s) => s.buyer_email === user?.email && s.status === "pending",
+  const pendingSubmissions = useMemo(
+    () =>
+      (submissions || []).filter(
+        (s) => s.buyer_email === user?.email && s.status === "pending",
+      ),
+    [submissions, user?.email],
   );
 
-  const handleApprove = async (submission) => {
+  const allSubmissions = useMemo(
+    () => (submissions || []).filter((s) => s.buyer_email === user?.email),
+    [submissions, user?.email],
+  );
+
+  const approvedCount = allSubmissions.filter(
+    (s) => s.status === "approved",
+  ).length;
+  const rejectedCount = allSubmissions.filter(
+    (s) => s.status === "rejected",
+  ).length;
+
+  const setSubmissionStatus = async (submission, status) => {
+    setBusyId(submission._id);
     try {
-      // Update Submission status
       await axiosSecure.patch("/submissions/status-update", {
         submissionId: submission._id,
-        status: "approved",
+        status,
       });
 
-      // Update worker coins
-      await axiosSecure.patch(`/user/update-coins/${submission.worker_email}`, {
-        coinsToUpdate: submission.payable_amount,
-        status: "increase",
-      });
+      if (status === "approved") {
+        await axiosSecure.patch(
+          `/user/update-coins/${submission.worker_email}`,
+          {
+            coinsToUpdate: submission.payable_amount,
+            status: "increase",
+          },
+        );
+        toast.success(
+          `Submission approved — ${submission.payable_amount} coins rewarded`,
+        );
+      } else {
+        await axiosSecure.patch(`/tasks/update-workers/${submission.task_id}`, {
+          status: "increase",
+        });
+        toast.success("Submission rejected");
+      }
+
+      if (selectedSubmission?._id === submission._id) {
+        setSelectedSubmission(null);
+      }
       refetch();
-      toast.success("Submission approved and coins rewarded!");
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to approve submission.");
+      console.error("Submission status update error:", error);
+      toast.error(
+        status === "approved"
+          ? "Failed to approve submission"
+          : "Failed to reject submission",
+      );
+    } finally {
+      setBusyId(null);
     }
   };
 
-  const handleReject = async (submission) => {
-    try {
-      // Update Submission status
-      await axiosSecure.patch("/submissions/status-update", {
-        submissionId: submission._id,
-        status: "rejected",
-      });
-
-      // update required workers by 1
-      await axiosSecure.patch(`/tasks/update-workers/${submission.task_id}`, {
-        status: "increase",
-      });
-      refetch();
-      toast.success("Submission rejected!");
-      setSelectedSubmission(null);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to reject submission.");
-    }
-  };
-
-  if (isLoading) return <DashboardSkeleton statsCount={0} showTable={true} />;
+  if (isLoading) return <DashboardSkeleton statsCount={3} showTable={true} />;
 
   return (
-    <div className="mt-12">
+    <div className="w-full space-y-8">
       <PageTitle
         title="Tasks to Review"
         description="Review and approve task submissions from workers."
       />
-      <h2 className="text-xl font-bold mb-4">Tasks To Review</h2>
-      {buyerSubmissions?.length === 0 ? (
-        <p>No submissions to review.</p>
+
+      <PageHeader
+        eyebrow="Review"
+        title="Tasks to Review"
+        description="Check submissions, then approve to pay workers or reject to re-open the slot."
+      />
+
+      {/* Stats */}
+      <section
+        aria-label="Submission statistics"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-3"
+      >
+        <StatsCard
+          label="Pending Reviews"
+          Icon={ClipboardCheck}
+          value={pendingSubmissions.length}
+          subtitle="Awaiting your decision"
+          color="text-amber-600 dark:text-amber-400"
+        />
+        <StatsCard
+          label="Approved"
+          Icon={CheckCircle2}
+          value={approvedCount}
+          subtitle="Workers paid"
+          color="text-emerald-600 dark:text-emerald-400"
+        />
+        <StatsCard
+          label="Rejected"
+          Icon={XCircle}
+          value={rejectedCount}
+          subtitle="Slots re-opened"
+          color="text-muted-foreground"
+        />
+      </section>
+
+      {/* Table / empty state */}
+      {pendingSubmissions.length === 0 ? (
+        <EmptyState
+          icon={<Inbox />}
+          title="No submissions to review"
+          description="When a worker submits proof of completion, it will appear here for you to approve."
+        />
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Worker</TableHead>
                 <TableHead>Task Title</TableHead>
-                <TableHead>Payable</TableHead>
+                <TableHead className="text-right">Payable</TableHead>
+                <TableHead>Submitted</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {buyerSubmissions?.map((s) => (
+              {pendingSubmissions.map((s) => (
                 <TableRow key={s._id}>
-                  <TableCell>{s.worker_name}</TableCell>
-                  <TableCell>{s.task_title}</TableCell>
-                  <TableCell>{s.payable_amount}</TableCell>
-                  <TableCell className="capitalize">{s.status}</TableCell>
+                  <TableCell className="min-w-52">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="size-9">
+                        <AvatarImage src={s.worker_photo} alt={s.worker_name} />
+                        <AvatarFallback className="text-xs">
+                          {getInitials(s.worker_name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">
+                          {s.worker_name}
+                        </p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {s.worker_email}
+                        </p>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="min-w-40">
+                    <p className="line-clamp-1 text-sm font-medium">
+                      {s.task_title}
+                    </p>
+                  </TableCell>
+
+                  <TableCell className="text-right font-medium tabular-nums">
+                    {s.payable_amount}{" "}
+                    <span className="text-xs text-muted-foreground">
+                      coins
+                    </span>
+                  </TableCell>
+
+                  <TableCell className="whitespace-nowrap text-sm text-muted-foreground tabular-nums">
+                    {formatDate(s.updatedAt)}
+                  </TableCell>
+
                   <TableCell>
-                    <div className="flex gap-2 items-center">
+                    <StatusBadge status={s.status} />
+                  </TableCell>
+
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-1.5">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setSelectedSubmission(s)}
                       >
-                        View
+                        <Eye className="size-3.5" data-icon="inline-start" />
+                        Review
                       </Button>
                       <Button
                         size="sm"
                         className="bg-gradient-success"
-                        onClick={() => handleApprove(s)}
+                        disabled={busyId === s._id}
+                        onClick={() => setSubmissionStatus(s, "approved")}
                       >
-                        Approve
+                        {busyId === s._id ? (
+                          <Loader2 className="size-3.5 animate-spin" />
+                        ) : (
+                          "Approve"
+                        )}
                       </Button>
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => handleReject(s)}
+                        disabled={busyId === s._id}
+                        onClick={() => setSubmissionStatus(s, "rejected")}
                       >
                         Reject
                       </Button>
@@ -138,62 +276,134 @@ const TasksToReview = () => {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Review dialog */}
       <Dialog
         open={!!selectedSubmission}
         onOpenChange={() => setSelectedSubmission(null)}
       >
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Submission Details</DialogTitle>
+            <DialogTitle>Submission Review</DialogTitle>
+            <DialogDescription>
+              Verify the work was completed before approving.
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-2 text-sm">
-            <p>
-              <strong>Worker:</strong> {selectedSubmission?.worker_name}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedSubmission?.worker_email}
-            </p>
-            <p>
-              <strong>Task:</strong> {selectedSubmission?.task_title}
-            </p>
-            <p>
-              <strong>Submission Text:</strong>
-            </p>
-            <p className="p-3 rounded bg-muted">
-              {selectedSubmission?.submission_details ||
-                "No text submission provided."}
-            </p>
-            {selectedSubmission?.proof_img && (
-              <div>
-                <p className="mt-4 mb-1">
-                  <strong>Proof Image:</strong>
-                </p>
-                <img
-                  src={selectedSubmission.proof_img}
-                  alt="Proof"
-                  className="rounded-lg border border-border shadow-md max-h-[400px] mx-auto"
-                />
+
+          {selectedSubmission && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-muted/50 p-3">
+                  <p className="text-xs text-muted-foreground">Worker</p>
+                  <p className="truncate text-sm font-medium">
+                    {selectedSubmission.worker_name}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {selectedSubmission.worker_email}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-muted/50 p-3">
+                  <p className="text-xs text-muted-foreground">Reward</p>
+                  <p className="text-sm font-medium tabular-nums">
+                    {selectedSubmission.payable_amount} coins
+                  </p>
+                  <p className="text-xs text-muted-foreground">on approval</p>
+                </div>
               </div>
-            )}
-          </div>
-          <DialogFooter className="gap-2">
+
+              <div>
+                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Task
+                </p>
+                <p className="text-sm font-medium">
+                  {selectedSubmission.task_title}
+                </p>
+              </div>
+
+              <Separator />
+
+              <div>
+                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Submission Notes
+                </p>
+                {selectedSubmission.submission_details ? (
+                  <p className="whitespace-pre-wrap rounded-lg bg-muted/50 p-3 text-sm leading-relaxed">
+                    {selectedSubmission.submission_details}
+                  </p>
+                ) : (
+                  <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <FileQuestion className="size-4" />
+                    No text submission provided.
+                  </p>
+                )}
+              </div>
+
+              {selectedSubmission.proof_img && (
+                <div>
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Proof Image
+                  </p>
+                  <a href={selectedSubmission.proof_img} target="_blank" rel="noreferrer">
+                    <img
+                      src={selectedSubmission.proof_img}
+                      alt="Worker submission proof"
+                      className="mx-auto max-h-80 rounded-lg border object-contain shadow-sm"
+                    />
+                  </a>
+                  <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Link2 className="size-3" />
+                    Click image to open full size
+                  </p>
+                </div>
+              )}
+
+              <Separator />
+
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <Badge variant="secondary" className="gap-1.5">
+                  <ClipboardCheck className="size-3.5" />
+                  Status: {selectedSubmission.status}
+                </Badge>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:justify-between">
             <Button
-              variant="destructive"
-              onClick={() => {
-                handleReject(selectedSubmission);
-              }}
+              variant="outline"
+              onClick={() => setSelectedSubmission(null)}
             >
-              Reject
+              Close
             </Button>
-            <Button
-              className="bg-gradient-success"
-              onClick={() => {
-                handleApprove(selectedSubmission);
-              }}
-            >
-              Approve
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="destructive"
+                disabled={busyId === selectedSubmission?._id}
+                onClick={() =>
+                  selectedSubmission &&
+                  setSubmissionStatus(selectedSubmission, "rejected")
+                }
+              >
+                {busyId === selectedSubmission?._id ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  "Reject"
+                )}
+              </Button>
+              <Button
+                className="bg-gradient-success"
+                disabled={busyId === selectedSubmission?._id}
+                onClick={() =>
+                  selectedSubmission &&
+                  setSubmissionStatus(selectedSubmission, "approved")
+                }
+              >
+                {busyId === selectedSubmission?._id ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  "Approve & Pay"
+                )}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

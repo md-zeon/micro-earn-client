@@ -1,18 +1,29 @@
-import {
-	LuCoins,
-	LuCreditCard,
-	LuFileCheck2,
-	LuFileClock,
-	LuListChecks,
-} from "react-icons/lu";
+import { Link } from "react-router";
+import { Wallet, ListChecks, FileClock, HandCoins, ArrowRight } from "lucide-react";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
+import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import StatsCard from "../../../components/shared/StatsCard";
 import useAuth from "../../../hooks/useAuth";
-import { Link } from "react-router";
 import PageTitle from "../../../components/PageTitle";
 import WorkerOverview from "../../../components/Dashboard/WorkerOverview";
-import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+} from "../../../components/ui/card";
+import {
+	Table,
+	TableHeader,
+	TableBody,
+	TableRow,
+	TableHead,
+	TableCell,
+} from "../../../components/ui/table";
+import { Badge } from "../../../components/ui/badge";
+import { Button } from "../../../components/ui/button";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
@@ -22,12 +33,11 @@ const WorkerDashboard = ({ greeting }) => {
 	if (isLoading)
 		return (
 			<DashboardSkeleton
-				statsCount={3}
+				statsCount={4}
 				showTable={true}
 			/>
 		);
 
-	// Calculate Stats
 	const totalSubmissions = submissions?.length ?? 0;
 	const pendingSubmissions =
 		submissions?.filter((s) => s?.status === "pending")?.length ?? 0;
@@ -40,102 +50,123 @@ const WorkerDashboard = ({ greeting }) => {
 		submissions?.filter((s) => s?.status === "approved") ?? [];
 
 	return (
-		<div className='space-y-8'>
+		<div className="space-y-8">
 			<PageTitle
-				title='Worker Dashboard'
-				description='Track your tasks, earnings, and submissions on MicroEarn.'
+				title="Worker Dashboard"
+				description="Track your tasks, earnings, and submissions on MicroEarn."
 			/>
-			<div className='px-4'>
-				<div className='flex items-center justify-between flex-wrap'>
-					<div>
-						<h1 className='text-3xl font-bold tracking-tight mb-2'>
-							{greeting}, {user?.displayName || "Worker"}!
-						</h1>
-						<p>Here's your task overview.</p>
-					</div>
-					<Link
-						to='/dashboard/withdrawals'
-						className='btn bg-gradient hidden sm:inline-flex'>
-						<LuCreditCard className='w-4 h-4 mr-2' />
-						Withdraw Money
-					</Link>
+
+			<div className="flex flex-wrap items-center justify-between gap-4">
+				<div>
+					<h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+						{greeting}, {user?.displayName || "Worker"}!
+					</h1>
+					<p className="mt-1 text-sm text-muted-foreground">
+						Here&apos;s your task overview for today.
+					</p>
 				</div>
+				<Button
+					className="bg-gradient"
+					render={<Link to="/dashboard/withdrawals" />}
+				>
+					<Wallet />
+					Withdraw Money
+					<ArrowRight />
+				</Button>
 			</div>
 
-			{/* Stats */}
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 				<StatsCard
-					label='Total Submissions'
+					label="Total Submissions"
 					value={totalSubmissions}
-					color='text-accent'
-					Icon={LuListChecks}
-					subtitle='Tasks you have submitted'
+					tone="primary"
+					Icon={ListChecks}
+					subtitle="Tasks you have submitted"
 				/>
 				<StatsCard
-					label='Pending Submissions'
+					label="Pending Submissions"
 					value={pendingSubmissions}
-					color='text-warning'
-					Icon={LuFileClock}
-					subtitle='Tasks that are still being reviewed'
+					tone="warning"
+					Icon={FileClock}
+					subtitle="Tasks still being reviewed"
 				/>
 				<StatsCard
-					label='Total Earnings'
+					label="Total Earnings"
 					value={totalEarnings}
-					suffix='Micro Coins'
-					color='text-success'
-					Icon={LuCoins}
-					subtitle='Money earned for completed tasks'
+					suffix="Micro Coins"
+					tone="success"
+					Icon={HandCoins}
+					subtitle="Earned from approved tasks"
 				/>
 				<StatsCard
-					label='Available Coins'
+					label="Available Coins"
 					value={microCoins}
-					suffix='Micro Coins'
-					color='text-info'
-					Icon={LuCoins}
-					subtitle='Coins available to spend'
+					suffix="Micro Coins"
+					tone="info"
+					Icon={Wallet}
+					subtitle="Coins available to withdraw"
 				/>
 			</div>
 
-			{/* Dashboard Overview */}
 			<WorkerOverview />
 
-			{/* Approved Submissions Table */}
-			<div className='overflow-x-auto bg-base-200 rounded-lg shadow-md p-4'>
-				<h2 className='text-xl font-semibold mb-3 flex items-center gap-2'>
-					<LuFileCheck2 className='text-success' /> Approved Submissions
-				</h2>
-
-				{(approvedSubmissions?.length ?? 0) === 0 ? (
-					<p className='text-sm text-gray-400'>No approved submissions yet.</p>
-				) : (
-					<table className='table'>
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>Task Title</th>
-								<th>Payable Amount</th>
-								<th>Buyer Name</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							{approvedSubmissions?.map((submission, idx) => (
-								<tr key={submission?._id}>
-									<td>{idx + 1}</td>
-									<td>{submission?.task_title}</td>
-									<td>${submission?.payable_amount}</td>
-									<td>{submission?.buyer_name}</td>
-									<td>
-										<span className='badge bg-gradient-success capitalize'>
-											{submission?.status}
-										</span>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				)}
-			</div>
+			<Card>
+				<CardHeader>
+					<CardTitle className="flex items-center gap-2">
+						Approved Submissions
+					</CardTitle>
+					<CardDescription>
+						Your most recently approved task submissions.
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{approvedSubmissions?.length === 0 ? (
+						<div className="py-10 text-center">
+							<p className="text-sm text-muted-foreground">
+								No approved submissions yet.
+							</p>
+							<Button
+								variant="outline"
+								className="mt-4"
+								render={<Link to="/dashboard/tasks-list" />}
+							>
+								Browse Tasks
+							</Button>
+						</div>
+					) : (
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>#</TableHead>
+									<TableHead>Task Title</TableHead>
+									<TableHead>Payable Amount</TableHead>
+									<TableHead>Buyer Name</TableHead>
+									<TableHead>Status</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{approvedSubmissions?.map((submission, idx) => (
+									<TableRow key={submission?._id}>
+										<TableCell>{idx + 1}</TableCell>
+										<TableCell className="font-medium">
+											{submission?.task_title}
+										</TableCell>
+										<TableCell>
+											{submission?.payable_amount} coins
+										</TableCell>
+										<TableCell>{submission?.buyer_name}</TableCell>
+										<TableCell>
+											<Badge variant="default" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+												Approved
+											</Badge>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					)}
+				</CardContent>
+			</Card>
 		</div>
 	);
 };

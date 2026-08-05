@@ -1,65 +1,54 @@
+import { Skeleton } from "./skeleton";
+
 const MySubmissionsSkeleton = () => {
 	const rows = 5;
 
 	return (
-		<div className='px-4 py-6 max-w-7xl mx-auto'>
-			<div className='h-8 w-64 mx-auto bg-base-200 rounded mb-6 animate-pulse'></div>
+		<div className="space-y-6">
+			<div className="space-y-2">
+				<Skeleton className="h-8 w-48" />
+				<Skeleton className="h-4 w-64" />
+			</div>
 
-			{/* Filter Buttons Skeleton */}
-			<div className='flex flex-wrap justify-center sm:justify-start gap-2 mb-6'>
+			<div className="flex flex-wrap gap-2">
 				{Array(4)
 					.fill(0)
 					.map((_, i) => (
-						<div
+						<Skeleton
 							key={i}
-							className='h-8 w-20 bg-base-200 rounded animate-pulse'
-						></div>
+							className="h-7 w-20"
+						/>
 					))}
 			</div>
 
-			{/* Table Skeleton */}
-			<div className='overflow-x-auto shadow rounded-lg'>
-				<table className='table w-full'>
-					<thead>
-						<tr className='text-sm text-base-300'>
-							<th>#</th>
-							<th>Task Title</th>
-							<th>Submitted</th>
-							<th>Payment</th>
-							<th>Status</th>
-							<th>Details</th>
-						</tr>
-					</thead>
-					<tbody>
-						{Array(rows)
-							.fill(0)
-							.map((_, index) => (
-								<tr
-									key={index}
-									className='animate-pulse'
-								>
-									<td>
-										<div className='h-4 w-6 bg-base-100 rounded'></div>
-									</td>
-									<td>
-										<div className='h-4 w-32 bg-base-200 rounded'></div>
-									</td>
-									<td>
-										<div className='h-4 w-24 bg-base-100 rounded'></div>
-									</td>
-									<td>
-										<div className='h-4 w-20 bg-base-200 rounded'></div>
-									</td>
-									<td>
-										<div className='h-4 w-20 bg-base-200 rounded'></div>
-									</td>
-									<td>
-										<div className='h-4 w-6 bg-base-200 rounded'></div>
-									</td>
-								</tr>
-							))}
-					</tbody>
-				</table>
+			<div className="overflow-x-auto rounded-xl border bg-card p-4">
+				<div className="flex gap-4 border-b pb-3">
+					{Array(6)
+						.fill(0)
+						.map((_, i) => (
+							<Skeleton
+								key={i}
+								className="h-6 flex-1"
+							/>
+						))}
+				</div>
+				{Array(rows)
+					.fill(0)
+					.map((_, index) => (
+						<div
+							key={index}
+							className="flex gap-4"
+						>
+							{Array(6)
+								.fill(0)
+								.map((__, idx) => (
+									<Skeleton
+										key={idx}
+										className="h-6 flex-1"
+									/>
+								))}
+						</div>
+					))}
 			</div>
 		</div>
 	);

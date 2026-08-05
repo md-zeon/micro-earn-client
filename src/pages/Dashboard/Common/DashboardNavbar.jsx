@@ -2,36 +2,46 @@ import useAuth from "../../../hooks/useAuth";
 import Logo from "../../../components/Logo";
 import AvailableCoins from "../../../components/AvailableCoins";
 import ThemeController from "../../../components/ThemeController";
-import { LuMenu, LuX } from "react-icons/lu";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import NotificationPopup from "./NotificationPopup";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut, UserRound, ExternalLink } from "lucide-react";
 
-const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
-  const { user, loading } = useAuth();
+const DashboardNavbar = ({ currentTitle }) => {
+  const { user, loading, logOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logOut();
+    navigate("/");
+  };
+
   return (
     <>
-      <div className="flex items-center">
-        <Button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          variant="ghost"
-          size="icon"
-          className="lg:hidden"
-          aria-label="Toggle Sidebar"
-        >
-          {isSidebarOpen ? (
-            <LuX className="w-5 h-5" />
-          ) : (
-            <LuMenu className="w-5 h-5" />
-          )}
-        </Button>
-        <Logo />
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <SidebarTrigger />
+        <div className="hidden md:flex">
+          <Logo />
+        </div>
+        <div className="hidden lg:flex flex-col leading-tight">
+          <span className="text-sm font-semibold text-muted-foreground">
+            {currentTitle}
+          </span>
+        </div>
       </div>
 
-      <div className="flex items-center space-x-2 sm:space-x-4">
-        {/* Available Coins */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <span className="hidden md:block">
           {loading ? (
             <Skeleton className="h-6 w-24 rounded" />
@@ -42,49 +52,65 @@ const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
 
         <ThemeController />
 
-        {/* User info */}
-        {loading ? (
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-10 w-10 rounded-full" />
-            <div className="hidden sm:flex flex-col gap-1">
-              <Skeleton className="h-4 w-24 rounded" />
-              <Skeleton className="h-3 w-16 rounded" />
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center sm:space-x-2">
-            <Link to="/dashboard/profile">
-              <Avatar className="sm:w-10 sm:h-10 w-8 h-8">
-                <AvatarImage
-                  src={
-                    user?.photoURL ||
-                    "https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
-                  }
-                  alt={user?.displayName}
-                />
-                <AvatarFallback>
-                  {user?.displayName?.charAt(0)?.toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
-            <div className="hidden sm:flex flex-col leading-tight">
-              <span className="font-semibold">
-                {user?.displayName || "User Name"}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {role
-                  ? role.charAt(0).toUpperCase() + role.slice(1)
-                  : "No Role"}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Notification Icon */}
         {loading ? (
           <Skeleton className="h-8 w-8 rounded-full" />
         ) : (
           <NotificationPopup />
+        )}
+
+        {loading ? (
+          <Skeleton className="h-8 w-8 rounded-full" />
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button variant="ghost" size="icon" className="rounded-full" />
+              }
+            >
+              <Avatar className="size-8">
+                <AvatarImage src={user?.photoURL} alt={user?.displayName} />
+                <AvatarFallback>
+                  {user?.displayName?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>
+                <div className="flex flex-col">
+                  <span className="font-medium text-foreground">
+                    {user?.displayName || "User Name"}
+                  </span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {user?.email}
+                  </span>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                render={<Link to="/dashboard/profile" />}
+                className="cursor-pointer"
+              >
+                <UserRound />
+                My Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                render={<Link to="/" />}
+                className="cursor-pointer"
+              >
+                <ExternalLink />
+                View Website
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={handleLogout}
+                className="cursor-pointer"
+              >
+                <LogOut />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </>

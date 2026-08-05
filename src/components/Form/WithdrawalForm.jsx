@@ -11,25 +11,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const MIN_COINS = 200;
+
 const WithdrawalForm = ({
   coinToWithdraw,
   setCoinToWithdraw,
   onSubmit,
   loading,
+  maxCoins = 0,
 }) => {
   const [paymentSystem, setPaymentSystem] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
+  const amount = Number(coinToWithdraw) || 0;
+  const belowMinimum = amount > 0 && amount < MIN_COINS;
+  const exceedsBalance = amount > maxCoins;
+  const invalid = belowMinimum || exceedsBalance;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ coinToWithdraw, paymentSystem, accountNumber });
+    onSubmit({ coinToWithdraw: amount, paymentSystem, accountNumber });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label>Payment System</Label>
-        <Select value={paymentSystem} onValueChange={setPaymentSystem}>
+        <Select
+          value={paymentSystem}
+          onValueChange={(v) => {
+            setPaymentSystem(v);
+            setAccountNumber("");
+          }}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select payment system" />
           </SelectTrigger>
@@ -59,27 +72,33 @@ const WithdrawalForm = ({
           value={coinToWithdraw}
           onChange={(e) => setCoinToWithdraw(e.target.value)}
           placeholder="Enter amount"
-          min="200"
+          min={MIN_COINS}
+          max={maxCoins}
           required
         />
-        {coinToWithdraw < 200 && (
+        {belowMinimum ? (
           <div className="flex items-center gap-2">
-            <p className="text-sm text-muted-foreground">
-              Minimum 200 coins required
-            </p>
             <Badge variant="destructive" className="bg-gradient-error">
-              Minimum 200 coins required
+              Minimum {MIN_COINS} coins required
             </Badge>
           </div>
-        )}
+        ) : exceedsBalance ? (
+          <div className="flex items-center gap-2">
+            <Badge variant="destructive" className="bg-gradient-error">
+              You only have {maxCoins} coins
+            </Badge>
+          </div>
+        ) : amount > 0 ? (
+          <p className="text-sm text-muted-foreground">
+            You will receive ${(amount / 20).toFixed(2)}
+          </p>
+        ) : null}
       </div>
 
       <Button
         type="submit"
         className="w-full bg-gradient"
-        disabled={
-          loading || !coinToWithdraw || !paymentSystem || !accountNumber
-        }
+        disabled={loading || !paymentSystem || !accountNumber || amount <= 0 || invalid}
       >
         {loading ? "Processing..." : "Submit Withdrawal Request"}
       </Button>
