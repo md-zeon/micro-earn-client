@@ -20,59 +20,17 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useChartTheme } from "@/hooks/useChartTheme";
+import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import useBuyerTasks from "@/hooks/useBuyerTasks";
 import useBuyerTaskStats from "@/hooks/useBuyerTaskStats";
 import useBuyerPaymentStats from "@/hooks/useBuyerPaymentStats";
-import EmptyState from "@/components/shared/EmptyState";
+import ChartTooltip from "@/components/Dashboard/ChartTooltip";
+import { ChartEmpty, ChartLoading } from "@/components/Dashboard/ChartStates";
 import { PieChart as PieChartIcon, TrendingUp } from "lucide-react";
-
-const ChartTooltip = ({ active, payload, label, chart }) => {
-  if (!active || !payload?.length) return null;
-
-  return (
-    <div
-      className="rounded-lg border px-3 py-2 text-sm shadow-md"
-      style={{
-        background: chart.tooltipBg,
-        borderColor: chart.tooltipBorder,
-        color: chart.tooltipText,
-      }}
-    >
-      {label && <p className="mb-1 font-medium">{label}</p>}
-      {payload.map((entry, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <span
-            className="size-2 rounded-full"
-            style={{ background: entry.color || entry.payload?.fill }}
-          />
-          <span className="capitalize opacity-70">{entry.name}:</span>
-          <span className="font-semibold tabular-nums">
-            {typeof entry.value === "number" ? entry.value.toLocaleString() : entry.value}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const ChartLoading = () => (
-  <div className="flex h-72 items-center justify-center">
-    <Skeleton className="size-8 rounded-full" />
-  </div>
-);
-
-const ChartEmpty = ({ message }) => (
-  <div className="flex h-72 items-center justify-center px-6">
-    <EmptyState
-      title="No data yet"
-      description={message}
-      className="w-full border-0 py-8"
-    />
-  </div>
-);
 
 const BuyerOverview = () => {
   const chart = useChartTheme();
+  const reducedMotion = usePrefersReducedMotion();
   const { tasks, isTasksLoading } = useBuyerTasks();
   const { taskStats, isLoading: taskLoading } = useBuyerTaskStats();
   const { paymentStats, isLoading: paymentLoading } = useBuyerPaymentStats();
@@ -128,6 +86,7 @@ const BuyerOverview = () => {
                       dataKey="value"
                       nameKey="name"
                       strokeWidth={2}
+                      isAnimationActive={!reducedMotion}
                     >
                       {pieData.map((_, index) => (
                         <Cell
@@ -225,6 +184,7 @@ const BuyerOverview = () => {
                       dot={{ r: 3, fill: chart.colors[0] }}
                       activeDot={{ r: 5 }}
                       className="drop-shadow-sm"
+                      isAnimationActive={!reducedMotion}
                     />
                   </LineChart>
                 </ResponsiveContainer>

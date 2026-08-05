@@ -26,12 +26,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import StatsCard from "../../../components/shared/StatsCard";
+import DataFreshness from "../../../components/shared/DataFreshness";
 import PageHeader from "../../../components/shared/PageHeader";
 import PageTitle from "../../../components/PageTitle";
 import AdminOverview from "../../../components/Dashboard/AdminOverview";
 import WithDrawRequestTable from "../../../components/Table/WithDrawRequestTable";
 import useAdminStats from "../../../hooks/useAdminStats";
+import useAdminCharts from "../../../hooks/useAdminCharts";
 import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
+import computeTrend from "../../../lib/trend";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
@@ -39,6 +42,7 @@ import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 const AdminDashboard = ({ greeting }) => {
   const { user } = useAuth();
   const { adminStats: stats, isLoading: isStatsLoading } = useAdminStats();
+  const { revenueData } = useAdminCharts();
   const {
     pendingRequests,
     isWithdrawLoading,
@@ -47,6 +51,8 @@ const AdminDashboard = ({ greeting }) => {
   const axiosSecure = useAxiosSecure();
   const [selectedWithdraw, setSelectedWithdraw] = useState(null);
   const [isApproving, setIsApproving] = useState(false);
+
+  const revenueTrend = computeTrend(revenueData, "revenue");
 
   const isLoading = isStatsLoading || isWithdrawLoading;
 
@@ -102,6 +108,7 @@ const AdminDashboard = ({ greeting }) => {
             <p className="max-w-lg text-sm text-emerald-50/90">
               Here is what&apos;s happening on MicroEarn today.
             </p>
+            <DataFreshness className="mt-2 text-emerald-50/80" />
             <div className="flex flex-wrap gap-2 pt-2">
               <Badge
                 variant="secondary"
@@ -165,6 +172,8 @@ const AdminDashboard = ({ greeting }) => {
             maximumFractionDigits: 2,
           })}`}
           subtitle="Payments processed"
+          trend={revenueTrend ? `${revenueTrend.pct}%` : undefined}
+          trendUp={revenueTrend?.up}
         />
       </section>
 

@@ -1,10 +1,11 @@
 import { Link } from "react-router";
-import { Plus, ListTodo, CircleDashed, Inbox, Coins, ArrowRight } from "lucide-react";
+import { Plus, ListTodo, CircleDashed, Inbox, Coins, ArrowRight, CheckCircle2, BadgeDollarSign } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import useBuyerTasks from "../../../hooks/useBuyerTasks";
 import useBuyerSubmissions from "../../../hooks/useBuyerSubmissions";
 import StatsCard from "../../../components/shared/StatsCard";
+import DataFreshness from "../../../components/shared/DataFreshness";
 import StatusBadge from "../../../components/shared/StatusBadge";
 import EmptyState from "../../../components/shared/EmptyState";
 import PageHeader from "../../../components/shared/PageHeader";
@@ -27,7 +28,20 @@ const BuyerDashboard = ({ greeting }) => {
 
   const pendingSubmissions =
     submissions?.filter((s) => s.status === "pending") || [];
+  const approvedSubmissions =
+    submissions?.filter((s) => s.status === "approved") || [];
   const recentToReview = pendingSubmissions.slice(0, 5);
+
+  const completionRate =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const spentOnApproved = approvedSubmissions.reduce(
+    (sum, s) => sum + (s.payable_amount ?? 0),
+    0,
+  );
+  const costPerApproved =
+    approvedSubmissions.length > 0
+      ? Math.round(spentOnApproved / approvedSubmissions.length)
+      : 0;
 
   const loading = authLoading || coinsLoading || isTasksLoading;
 
@@ -56,6 +70,7 @@ const BuyerDashboard = ({ greeting }) => {
               </Button>
             }
           />
+          <DataFreshness className="mt-1" />
 
           {/* Metric cards */}
           <section aria-label="Key metrics" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -87,6 +102,28 @@ const BuyerDashboard = ({ greeting }) => {
               suffix="coins"
               subtitle="Ready to spend on tasks"
               color="text-sky-600 dark:text-sky-400"
+            />
+          </section>
+
+          {/* Insights */}
+          <section
+            aria-label="Insights"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+          >
+            <StatsCard
+              label="Task Completion Rate"
+              Icon={CheckCircle2}
+              value={`${completionRate}%`}
+              tone="success"
+              subtitle={`${completedTasks} of ${totalTasks} tasks completed`}
+            />
+            <StatsCard
+              label="Cost per Approved Submission"
+              Icon={BadgeDollarSign}
+              value={costPerApproved}
+              suffix="coins"
+              tone="violet"
+              subtitle="Average spend per approved worker submission"
             />
           </section>
 

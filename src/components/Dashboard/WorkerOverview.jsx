@@ -12,6 +12,8 @@ import {
 } from "recharts";
 import useWorkerSubmissions from "../../hooks/useWorkerSubmissions";
 import useWorkerStats from "../../hooks/useWorkerStats";
+import { useChartTheme } from "../../hooks/useChartTheme";
+import usePrefersReducedMotion from "../../hooks/usePrefersReducedMotion";
 import {
 	Card,
 	CardHeader,
@@ -20,16 +22,14 @@ import {
 	CardContent,
 } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
-
-const CHART_COLORS = {
-	approved: "#10b981",
-	pending: "#f59e0b",
-	rejected: "#ef4444",
-};
+import ChartTooltip from "./ChartTooltip";
+import { ChartEmpty, ChartLoading } from "./ChartStates";
 
 const WorkerOverview = () => {
 	const { submissions } = useWorkerSubmissions();
 	const { earningsData, submissionStats, isLoading } = useWorkerStats();
+	const chart = useChartTheme();
+	const reducedMotion = usePrefersReducedMotion();
 
 	const pending = submissions?.filter((s) => s.status === "pending").length ?? 0;
 	const approved = submissions?.filter((s) => s.status === "approved").length ?? 0;
@@ -46,6 +46,14 @@ const WorkerOverview = () => {
 		.map((d) => `${d.name}: ${d.value ?? 0}`)
 		.join(", ");
 
+	const completionRate = total > 0 ? Math.round((approved / total) * 100) : 0;
+	const hasEarnings = earningsData.some((d) => Number(d.earnings) > 0);
+	const bestMonth = hasEarnings
+		? earningsData.reduce((max, d) =>
+				Number(d.earnings) > Number(max.earnings) ? d : max,
+			)
+		: null;
+
 	return (
 		<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<Card>
@@ -57,7 +65,9 @@ const WorkerOverview = () => {
 				</CardHeader>
 				<CardContent>
 					{isLoading ? (
-						<Skeleton className="h-72 w-full" />
+						<ChartLoading />
+					) : total === 0 ? (
+						<ChartEmpty message="Submit tasks to see your status breakdown here." />
 					) : (
 						<>
 							<div
@@ -83,21 +93,19 @@ const WorkerOverview = () => {
 													? `${name}: ${(percent * 100).toFixed(0)}%`
 													: ""
 											}
-											isAnimationActive={true}
+											isAnimationActive={!reducedMotion}
 										>
-											{pieData.map((entry) => (
+											{pieData.map((entry, index) => (
 												<Cell
 													key={entry.name}
-													fill={CHART_COLORS[entry.name?.toLowerCase()] ?? "#94a3b8"}
+													fill={
+														chart.colors[index % chart.colors.length] ??
+														"hsl(var(--muted-foreground))"
+													}
 												/>
 											))}
 										</Pie>
-										<Tooltip
-											contentStyle={{
-												borderRadius: "0.75rem",
-												fontSize: "0.875rem",
-											}}
-										/>
+										<Tooltip content={<ChartTooltip chart={chart} />} />
 									</PieChart>
 								</ResponsiveContainer>
 							</div>
@@ -132,7 +140,9 @@ const WorkerOverview = () => {
 				</CardHeader>
 				<CardContent>
 					{isLoading ? (
-						<Skeleton className="h-72 w-full" />
+						<ChartLoading />
+					) : !hasEarnings ? (
+						<ChartEmpty message="Approved submissions will appear here as earnings." />
 					) : (
 						<>
 							<div
@@ -147,36 +157,31 @@ const WorkerOverview = () => {
 									<LineChart data={earningsData}>
 										<CartesianGrid
 											strokeDasharray="3 3"
-											className="stroke-border"
+											stroke={chart.grid}
+											vertical={false}
 										/>
 										<XAxis
 											dataKey="name"
-											tick={{ fontSize: 12 }}
+											tick={{ fontSize: 12, fill: chart.axis }}
 											tickLine={false}
 											axisLine={false}
 											stroke="currentColor"
-											className="text-muted-foreground"
 										/>
 										<YAxis
-											tick={{ fontSize: 12 }}
+											tick={{ fontSize: 12, fill: chart.axis }}
 											tickLine={false}
 											axisLine={false}
 											stroke="currentColor"
-											className="text-muted-foreground"
 										/>
-										<Tooltip
-											contentStyle={{
-												borderRadius: "0.75rem",
-												fontSize: "0.875rem",
-											}}
-										/>
+										<Tooltip content={<ChartTooltip chart={chart} />} />
 										<Line
 											type="monotone"
 											dataKey="earnings"
-											stroke="#10b981"
+											stroke={chart.colors[0]}
 											strokeWidth={3}
-											dot={{ r: 4 }}
+											dot={{ r: 4, fill: chart.colors[0] }}
 											activeDot={{ r: 6 }}
+											isAnimationActive={!reducedMotion}
 										/>
 									</LineChart>
 								</ResponsiveContainer>
@@ -199,6 +204,63 @@ const WorkerOverview = () => {
 								</tbody>
 							</table>
 						</>
+					)}
+				</CardContent>
+			</Card>
+
+			<Card className="lg:col-span-2">
+				<CardHeader>
+					<CardTitle>Completion Rate</CardTitle>
+					<CardDescription>
+						How many of your submissions get approved.
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{isLoading ? (
+						<ChartLoading />
+					) : total === 0 ? (
+						<ChartEmpty message="Submit tasks to start tracking your completion rate." />
+					) : (
+						<div className="flex flex-col items-center justify-center gap-8 sm:flex-row">
+							<div
+								className="relative flex size-40 items-center justify-center rounded-full"
+								style={{
+									background: `conic-gradient(${chart.colors[0]} ${completionRate * 3.6}deg, ${chart.grid} 0deg)`,
+								}}
+								role="img"
+								aria-label={`Completion rate ${completionRate}%`}
+							>
+								<div className="flex size-28 flex-col items-center justify-center rounded-full bg-card shadow-inner">
+									<span className="text-3xl font-bold tracking-tight tabular-nums">
+										{completionRate}%
+									</span>
+									<span className="text-xs text-muted-foreground">
+										approved
+									</span>
+								</div>
+							</div>
+							<div className="text-center sm:text-left">
+								<p className="text-sm text-muted-foreground">
+									<strong className="font-semibold text-foreground">
+										{approved}
+									</strong>{" "}
+									of{" "}
+									<strong className="font-semibold text-foreground">
+										{total}
+									</strong>{" "}
+									submissions approved
+								</p>
+								{bestMonth && (
+									<p className="mt-2 text-sm text-muted-foreground">
+										Best month:{" "}
+										<strong className="font-semibold text-foreground">
+											{bestMonth.name}
+										</strong>{" "}
+										({bestMonth.earnings} coins)
+									</p>
+								)}
+							</div>
+						</div>
 					)}
 				</CardContent>
 			</Card>

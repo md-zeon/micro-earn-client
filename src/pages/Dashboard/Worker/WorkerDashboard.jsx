@@ -1,8 +1,11 @@
 import { Link } from "react-router";
 import { Wallet, ListChecks, FileClock, HandCoins, ArrowRight } from "lucide-react";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
+import useWorkerStats from "../../../hooks/useWorkerStats";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
+import computeTrend from "../../../lib/trend";
 import StatsCard from "../../../components/shared/StatsCard";
+import DataFreshness from "../../../components/shared/DataFreshness";
 import useAuth from "../../../hooks/useAuth";
 import PageTitle from "../../../components/PageTitle";
 import WorkerOverview from "../../../components/Dashboard/WorkerOverview";
@@ -27,8 +30,11 @@ import { Button } from "../../../components/ui/button";
 
 const WorkerDashboard = ({ greeting }) => {
 	const { submissions, isLoading } = useWorkerSubmissions();
+	const { earningsData } = useWorkerStats();
 	const { user } = useAuth();
 	const { microCoins } = useAvailableCoins();
+
+	const earningsTrend = computeTrend(earningsData, "earnings");
 
 	if (isLoading)
 		return (
@@ -64,6 +70,7 @@ const WorkerDashboard = ({ greeting }) => {
 					<p className="mt-1 text-sm text-muted-foreground">
 						Here&apos;s your task overview for today.
 					</p>
+					<DataFreshness className="mt-2" />
 				</div>
 				<Button
 					className="bg-gradient"
@@ -97,6 +104,8 @@ const WorkerDashboard = ({ greeting }) => {
 					tone="success"
 					Icon={HandCoins}
 					subtitle="Earned from approved tasks"
+					trend={earningsTrend ? `${earningsTrend.pct}%` : undefined}
+					trendUp={earningsTrend?.up}
 				/>
 				<StatsCard
 					label="Available Coins"
