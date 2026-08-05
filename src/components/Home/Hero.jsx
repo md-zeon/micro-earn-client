@@ -4,12 +4,11 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LuArrowRight, LuCoins, LuPlay, LuSparkles } from "react-icons/lu";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import SplitText from "@/components/effects/SplitText";
 import { Avatar, AvatarFallback, AvatarImage, AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const headlineWords = ["Small", "tasks.", "Real", "earnings."];
 
 const stats = [
   { value: 10000, suffix: "+", label: "Active earners" },
@@ -35,12 +34,7 @@ const Hero = () => {
       // Intro timeline
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
       tl.from(".hero-badge", { opacity: 0, y: 24, duration: 0.6 })
-        .from(
-          ".hero-word",
-          { opacity: 0, y: 60, duration: 0.9, stagger: 0.12 },
-          "-=0.3",
-        )
-        .from(".hero-sub", { opacity: 0, y: 28, duration: 0.7 }, "-=0.5")
+        .from(".hero-sub", { opacity: 0, y: 28, duration: 0.7 }, "-=0.3")
         .from(".hero-cta", { opacity: 0, y: 24, duration: 0.6, stagger: 0.15 }, "-=0.5")
         .from(".hero-trust", { opacity: 0, y: 20, duration: 0.6 }, "-=0.35")
         .from(".hero-stat", {
@@ -112,17 +106,14 @@ const Hero = () => {
 
         {/* Headline */}
         <h1 className="mt-8 text-5xl font-extrabold leading-[1.05] tracking-tight text-balance md:text-7xl lg:text-8xl">
-          {headlineWords.map((word, i) => (
-            <span key={i} className="inline-block overflow-hidden pb-1 align-bottom">
-              <span
-                className={`hero-word inline-block ${
-                  i === 1 || i === 3 ? "text-gradient" : ""
-                }`}
-              >
-                {word}
-              </span>
-            </span>
-          ))}
+          <SplitText
+            segments={[
+              { text: "Small" },
+              { text: "tasks.", className: "text-gradient" },
+              { text: "Real" },
+              { text: "earnings.", className: "text-gradient" },
+            ]}
+          />
         </h1>
 
         <p className="hero-sub mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">

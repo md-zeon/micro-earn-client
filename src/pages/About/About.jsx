@@ -16,18 +16,12 @@ import {
   LuZap,
 } from "react-icons/lu";
 import aboutImg from "../../assets/about.svg";
-import CountUp from "../../components/shared/CountUp";
+import CountUp from "@/components/effects/CountUp";
+import FadeContent from "@/components/effects/FadeContent";
 import CTA from "../../components/Home/CTA";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-
-const reveal = (delay = 0) => ({
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
-  transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
-});
 
 const facts = [
   {
@@ -212,25 +206,26 @@ const About = () => {
       {/* Key facts */}
       <section className="relative py-12 md:py-16">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {facts.map((fact, i) => (
-              <motion.div key={fact.label} {...reveal(i * 0.08)}>
-                <Card className="flex h-full flex-col items-center justify-center p-6 text-center transition-colors duration-300 hover:border-emerald-500/40">
-                  <div
-                    className={`flex size-10 items-center justify-center rounded-xl ${fact.accent}`}
-                  >
-                    {fact.icon}
-                  </div>
-                  <div className="mt-4 text-3xl font-bold tracking-tight tabular-nums">
-                    <CountUp value={fact.value} suffix={fact.suffix} />
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {fact.label}
-                  </p>
-                </Card>
-              </motion.div>
+          <FadeContent className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {facts.map((fact) => (
+              <Card
+                key={fact.label}
+                className="flex h-full flex-col items-center justify-center p-6 text-center transition-colors duration-300 hover:border-emerald-500/40"
+              >
+                <div
+                  className={`flex size-10 items-center justify-center rounded-xl ${fact.accent}`}
+                >
+                  {fact.icon}
+                </div>
+                <div className="mt-4 text-3xl font-bold tracking-tight tabular-nums">
+                  <CountUp value={fact.value} suffix={fact.suffix} />
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {fact.label}
+                </p>
+              </Card>
             ))}
-          </div>
+          </FadeContent>
         </div>
       </section>
 
@@ -238,8 +233,8 @@ const About = () => {
       <section className="relative overflow-hidden py-16 md:py-24">
         <div className="absolute top-1/4 -left-24 size-72 rounded-full bg-emerald-500/5 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-4">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <motion.div {...reveal()}>
+          <FadeContent className="grid items-center gap-12 lg:grid-cols-2">
+            <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
                 <LuTarget className="size-3.5" />
                 Our mission
@@ -266,9 +261,9 @@ const About = () => {
                 Explore live tasks
                 <LuArrowRight className="size-4" />
               </Link>
-            </motion.div>
+            </div>
 
-            <motion.div {...reveal(0.12)}>
+            <div>
               <Card className="relative overflow-hidden bg-gradient p-8 text-white shadow-2xl shadow-emerald-500/30 md:p-10">
                 <div className="grid-pattern absolute inset-0 opacity-40" />
                 <div className="absolute -top-16 -right-16 size-56 rounded-full bg-white/10 blur-3xl" />
@@ -296,15 +291,15 @@ const About = () => {
                   ))}
                 </ul>
               </Card>
-            </motion.div>
-          </div>
+            </div>
+          </FadeContent>
         </div>
       </section>
 
       {/* Who it's for */}
       <section className="relative py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4">
-          <motion.div {...reveal()} className="mx-auto max-w-2xl text-center">
+          <FadeContent className="mx-auto max-w-2xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Two sides, one platform
@@ -316,11 +311,10 @@ const About = () => {
               Whether you're looking to earn in your spare time or get tasks
               done fast, MicroEarn gives both sides the tools to succeed.
             </p>
-          </motion.div>
+          </FadeContent>
 
-          <div className="mt-14 grid gap-6 lg:grid-cols-2">
-            <motion.div {...reveal(0.05)}>
-              <Card className="group flex h-full flex-col p-8 transition-colors duration-300 hover:border-emerald-500/40 md:p-10">
+          <FadeContent className="mt-14 grid gap-6 lg:grid-cols-2">
+            <Card className="group flex h-full flex-col p-8 transition-colors duration-300 hover:border-emerald-500/40 md:p-10">
                 <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient text-white shadow-lg shadow-emerald-500/25">
                   <LuUser className="size-6" />
                 </div>
@@ -351,10 +345,8 @@ const About = () => {
                   </Button>
                 </Link>
               </Card>
-            </motion.div>
 
-            <motion.div {...reveal(0.15)}>
-              <Card className="group flex h-full flex-col p-8 transition-colors duration-300 hover:border-emerald-500/40 md:p-10">
+            <Card className="group flex h-full flex-col p-8 transition-colors duration-300 hover:border-emerald-500/40 md:p-10">
                 <div className="flex size-12 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                   <LuBriefcase className="size-6" />
                 </div>
@@ -385,8 +377,7 @@ const About = () => {
                   </Button>
                 </Link>
               </Card>
-            </motion.div>
-          </div>
+          </FadeContent>
         </div>
       </section>
 
@@ -394,7 +385,7 @@ const About = () => {
       <section className="relative overflow-hidden py-16 md:py-24">
         <div className="absolute -bottom-20 -right-20 size-80 rounded-full bg-teal-500/5 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-4">
-          <motion.div {...reveal()} className="mx-auto max-w-2xl text-center">
+          <FadeContent className="mx-auto max-w-2xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               What we stand for
@@ -405,25 +396,26 @@ const About = () => {
             <p className="mt-4 text-base leading-relaxed text-muted-foreground md:text-lg">
               Four principles guide how we build, review, and pay.
             </p>
-          </motion.div>
+          </FadeContent>
 
-          <div className="mt-14 grid gap-5 sm:grid-cols-2">
-            {values.map((value, i) => (
-              <motion.div key={value.title} {...reveal(i * 0.08)}>
-                <Card className="group h-full p-7 transition-colors duration-300 hover:border-emerald-500/40">
-                  <div className="flex size-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 transition-colors duration-300 group-hover:bg-gradient group-hover:text-white dark:text-emerald-400">
-                    {value.icon}
-                  </div>
-                  <h3 className="mt-5 text-lg font-semibold tracking-tight">
-                    {value.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {value.description}
-                  </p>
-                </Card>
-              </motion.div>
+          <FadeContent className="mt-14 grid gap-5 sm:grid-cols-2">
+            {values.map((value) => (
+              <Card
+                key={value.title}
+                className="group h-full p-7 transition-colors duration-300 hover:border-emerald-500/40"
+              >
+                <div className="flex size-12 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 transition-colors duration-300 group-hover:bg-gradient group-hover:text-white dark:text-emerald-400">
+                  {value.icon}
+                </div>
+                <h3 className="mt-5 text-lg font-semibold tracking-tight">
+                  {value.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {value.description}
+                </p>
+              </Card>
             ))}
-          </div>
+          </FadeContent>
         </div>
       </section>
 

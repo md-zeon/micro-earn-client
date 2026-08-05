@@ -2,6 +2,7 @@ import { Coins, Check, Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import SpotlightCard from "@/components/effects/SpotlightCard";
 import { cn } from "@/lib/utils";
 
 const CoinPackage = ({
@@ -16,10 +17,10 @@ const CoinPackage = ({
   const isSelected = selectedPackage?.id === pkg.id;
   const isProcessing = processing && isSelected;
 
-  return (
+  const content = (
     <Card
       className={cn(
-        "relative flex flex-col overflow-visible p-6 transition-all duration-200 hover:shadow-lg",
+        "relative flex h-full flex-col overflow-visible p-6 transition-all duration-200 hover:shadow-lg",
         isSelected && "border-primary shadow-lg shadow-primary/10",
       )}
     >
@@ -83,6 +84,14 @@ const CoinPackage = ({
         )}
       </Button>
     </Card>
+  );
+
+  return pkg.popular ? (
+    <SpotlightCard className="h-full rounded-xl" spotlightClassName="rounded-xl">
+      {content}
+    </SpotlightCard>
+  ) : (
+    content
   );
 };
 

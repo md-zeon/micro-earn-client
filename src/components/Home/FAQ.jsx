@@ -1,4 +1,3 @@
-import { motion } from "motion/react";
 import { Link } from "react-router";
 import {
   Accordion,
@@ -7,6 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import FadeContent from "@/components/effects/FadeContent";
 import { LuMessageCircle, LuRocket } from "react-icons/lu";
 import SectionHeading from "./SectionHeading";
 
@@ -55,13 +55,7 @@ const FAQ = () => {
           description="Quick answers to the things people ask most about MicroEarn."
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-12 rounded-3xl border border-border/70 bg-card/50 p-4 backdrop-blur-sm md:p-6"
-        >
+        <FadeContent className="mt-12 rounded-3xl border border-border/70 bg-card/50 p-4 backdrop-blur-sm md:p-6">
           <Accordion type="single" collapsible defaultValue="item-0">
             {faqs.map(({ question, answer }, index) => (
               <AccordionItem
@@ -78,15 +72,9 @@ const FAQ = () => {
               </AccordionItem>
             ))}
           </Accordion>
-        </motion.div>
+        </FadeContent>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-10 flex flex-col items-center justify-center gap-4 text-center sm:flex-row"
-        >
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 text-center sm:flex-row">
           <p className="text-sm text-muted-foreground">
             Still have questions? We're happy to help.
           </p>
@@ -103,7 +91,7 @@ const FAQ = () => {
             <LuRocket className="size-4" />
             Get started
           </Button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

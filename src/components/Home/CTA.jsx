@@ -1,22 +1,22 @@
 import { Link } from "react-router";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
+import FadeContent from "@/components/effects/FadeContent";
+import SpotlightCard from "@/components/effects/SpotlightCard";
 import { LuArrowRight, LuBriefcase, LuRocket } from "react-icons/lu";
 
 const CTA = () => {
   return (
     <section className="relative overflow-hidden py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[2rem] bg-gradient px-8 py-16 text-center text-white shadow-2xl shadow-emerald-500/30 md:px-16 md:py-20"
-        >
-          <div className="grid-pattern absolute inset-0 opacity-40" />
-          <div className="absolute -top-20 -left-20 size-64 rounded-full bg-white/10 blur-3xl" />
-          <div className="absolute -right-20 -bottom-20 size-64 rounded-full bg-teal-300/20 blur-3xl" />
+        <FadeContent>
+          <SpotlightCard
+            spotlightColor="rgba(255, 255, 255, 0.22)"
+            className="relative overflow-hidden rounded-[2rem] bg-gradient px-8 py-16 text-center text-white shadow-2xl shadow-emerald-500/30 md:px-16 md:py-20"
+          >
+            <div className="grid-pattern absolute inset-0 opacity-40" />
+            <div className="absolute -top-20 -left-20 size-64 rounded-full bg-white/10 blur-3xl" />
+            <div className="absolute -right-20 -bottom-20 size-64 rounded-full bg-teal-300/20 blur-3xl" />
           <motion.div
             animate={{ y: [0, -12, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -69,7 +69,8 @@ const CTA = () => {
               No fees to join · Cancel anytime · Withdraw from 200 coins
             </p>
           </div>
-        </motion.div>
+          </SpotlightCard>
+        </FadeContent>
       </div>
     </section>
   );

@@ -18,7 +18,7 @@ import {
   LuZap,
 } from "react-icons/lu";
 import Container from "../../components/Container";
-import CountUp from "../../components/shared/CountUp";
+import CountUp from "@/components/effects/CountUp";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

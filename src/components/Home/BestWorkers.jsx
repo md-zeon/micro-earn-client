@@ -1,8 +1,8 @@
-import { motion } from "motion/react";
 import { LuCoins, LuMedal, LuStar } from "react-icons/lu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import FadeContent from "@/components/effects/FadeContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import SectionHeading from "./SectionHeading";
 import useBestWorkers from "@/hooks/useBestWorkers";
@@ -38,22 +38,13 @@ const BestWorkers = () => {
             No top workers yet — be the first!
           </div>
         ) : (
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <FadeContent className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {workers.map((worker, i) => (
-              <motion.div
+              <Card
                 key={worker._id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{
-                  duration: 0.55,
-                  delay: (i % 3) * 0.1,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                whileHover={{ y: -6 }}
+                className="group relative flex h-full flex-col items-center overflow-hidden p-7 text-center transition-colors duration-300 hover:border-emerald-500/40"
               >
-                <Card className="group relative flex h-full flex-col items-center overflow-hidden p-7 text-center transition-colors duration-300 hover:border-emerald-500/40">
-                  {i === 0 && (
+                {i === 0 && (
                     <Badge className="absolute top-4 right-4 gap-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
                       <LuMedal className="size-3" />
                       #1
@@ -90,9 +81,8 @@ const BestWorkers = () => {
                     {worker.microCoins?.toLocaleString() || 0} coins earned
                   </Badge>
                 </Card>
-              </motion.div>
             ))}
-          </div>
+          </FadeContent>
         )}
       </div>
     </section>

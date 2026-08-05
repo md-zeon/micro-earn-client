@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import FadeContent from "@/components/effects/FadeContent";
 import { cn } from "@/lib/utils";
 
 const SectionHeading = ({
@@ -9,11 +9,7 @@ const SectionHeading = ({
   className,
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    <FadeContent
       className={cn(
         "max-w-2xl",
         align === "center" && "mx-auto text-center",
@@ -34,7 +30,7 @@ const SectionHeading = ({
           {description}
         </p>
       )}
-    </motion.div>
+    </FadeContent>
   );
 };
 

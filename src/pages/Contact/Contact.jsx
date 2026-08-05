@@ -16,6 +16,7 @@ import {
 } from "react-icons/lu";
 import contactImage from "../../assets/contact.svg";
 import CTA from "../../components/Home/CTA";
+import FadeContent from "@/components/effects/FadeContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,13 +30,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
-const reveal = (delay = 0) => ({
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
-  transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
-});
 
 const channels = [
   {
@@ -134,32 +128,33 @@ const Contact = () => {
       {/* Channels */}
       <section className="relative pb-16 md:pb-20">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {channels.map((channel, i) => (
-              <motion.div key={channel.title} {...reveal(i * 0.08)}>
-                <Card className="group flex h-full flex-col p-7 transition-colors duration-300 hover:border-emerald-500/40">
-                  <div
-                    className={`flex size-11 items-center justify-center rounded-xl ${channel.accent}`}
-                  >
-                    {channel.icon}
-                  </div>
-                  <h3 className="mt-5 text-lg font-semibold tracking-tight">
-                    {channel.title}
-                  </h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-                    {channel.description}
-                  </p>
-                  <a
-                    href={`mailto:${channel.email}`}
-                    className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 transition-colors hover:text-emerald-500 dark:text-emerald-400"
-                  >
-                    {channel.email}
-                    <LuArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </a>
-                </Card>
-              </motion.div>
+          <FadeContent className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {channels.map((channel) => (
+              <Card
+                key={channel.title}
+                className="group flex h-full flex-col p-7 transition-colors duration-300 hover:border-emerald-500/40"
+              >
+                <div
+                  className={`flex size-11 items-center justify-center rounded-xl ${channel.accent}`}
+                >
+                  {channel.icon}
+                </div>
+                <h3 className="mt-5 text-lg font-semibold tracking-tight">
+                  {channel.title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {channel.description}
+                </p>
+                <a
+                  href={`mailto:${channel.email}`}
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 transition-colors hover:text-emerald-500 dark:text-emerald-400"
+                >
+                  {channel.email}
+                  <LuArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </a>
+              </Card>
             ))}
-          </div>
+          </FadeContent>
         </div>
       </section>
 
@@ -167,9 +162,9 @@ const Contact = () => {
       <section className="relative overflow-hidden py-16 md:py-24">
         <div className="absolute top-1/4 -left-24 size-72 rounded-full bg-emerald-500/5 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-4">
-          <div className="grid items-start gap-12 lg:grid-cols-[1fr_1.15fr]">
+          <FadeContent className="grid items-start gap-12 lg:grid-cols-[1fr_1.15fr]">
             {/* Info column */}
-            <motion.div {...reveal()} className="space-y-6">
+            <div className="space-y-6">
               <div>
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
                   <LuZap className="size-3.5" />
@@ -239,10 +234,10 @@ const Contact = () => {
                   first — most questions are answered there.
                 </p>
               </div>
-            </motion.div>
+            </div>
 
             {/* Form column */}
-            <motion.div {...reveal(0.1)}>
+            <div>
               <Card className="relative overflow-hidden bg-gradient p-8 text-white shadow-2xl shadow-emerald-500/30 md:p-10">
                 <div className="grid-pattern absolute inset-0 opacity-40" />
                 <div className="absolute -top-16 -right-16 size-56 rounded-full bg-white/10 blur-3xl" />
@@ -343,8 +338,8 @@ const Contact = () => {
                   </p>
                 </form>
               </Card>
-            </motion.div>
-          </div>
+            </div>
+          </FadeContent>
         </div>
       </section>
 

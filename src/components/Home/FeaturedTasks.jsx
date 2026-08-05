@@ -1,9 +1,11 @@
-import { motion } from "motion/react";
+import { cloneElement } from "react";
 import { LuArrowRight, LuCalendar, LuCoins, LuUser } from "react-icons/lu";
 import { useNavigate, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import FadeContent from "@/components/effects/FadeContent";
+import SpotlightCard from "@/components/effects/SpotlightCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import SectionHeading from "./SectionHeading";
 import useFeaturedTasks from "@/hooks/useFeaturedTasks";
@@ -62,20 +64,9 @@ const FeaturedTasks = () => {
             No featured tasks available right now — check back soon.
           </div>
         ) : (
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {tasks.map((task, i) => (
-              <motion.div
-                key={task._id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{
-                  duration: 0.55,
-                  delay: (i % 3) * 0.1,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                whileHover={{ y: -8 }}
-              >
+          <FadeContent className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {tasks.map((task, i) => {
+              const card = (
                 <Link
                   to={`/task-details/${task._id}`}
                   className="group flex h-full flex-col gap-4 overflow-hidden rounded-xl bg-card p-6 text-sm text-card-foreground ring-1 ring-foreground/10 transition-colors duration-300 hover:ring-emerald-500/40"
@@ -118,9 +109,21 @@ const FeaturedTasks = () => {
                     </span>
                   </div>
                 </Link>
-              </motion.div>
-            ))}
-          </div>
+              );
+
+              return i === 0 ? (
+                <SpotlightCard
+                  key={task._id}
+                  className="overflow-hidden rounded-xl"
+                  spotlightColor="rgba(16, 185, 129, 0.22)"
+                >
+                  {card}
+                </SpotlightCard>
+              ) : (
+                cloneElement(card, { key: task._id })
+              );
+            })}
+          </FadeContent>
         )}
 
         <div className="mt-12 text-center sm:hidden">

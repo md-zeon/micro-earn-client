@@ -1,8 +1,8 @@
-import { motion } from "motion/react";
 import { LuCircleCheck, LuListTodo, LuUsers, LuWallet } from "react-icons/lu";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import CountUp from "../shared/CountUp";
+import FadeContent from "@/components/effects/FadeContent";
+import CountUp from "@/components/effects/CountUp";
 import SectionHeading from "./SectionHeading";
 import usePlatformStats from "@/hooks/usePlatformStats";
 
@@ -51,43 +51,33 @@ const StatsSection = () => {
           description="Join thousands of people already earning and getting work done on MicroEarn."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {statItems.map((item, index) => (
-            <motion.div
+        <FadeContent className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {statItems.map((item) => (
+            <Card
               key={item.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{
-                duration: 0.55,
-                delay: index * 0.1,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              whileHover={{ y: -6 }}
+              className="group relative overflow-hidden p-6 transition-colors duration-300 hover:border-emerald-500/40"
             >
-              <Card className="group relative overflow-hidden p-6 transition-colors duration-300 hover:border-emerald-500/40">
-                <div className="absolute -top-10 -right-10 size-28 rounded-full bg-emerald-500/10 blur-2xl transition-all duration-500 group-hover:bg-emerald-500/20" />
-                <div className="relative">
-                  <div className="flex size-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                    {item.icon}
-                  </div>
-                  <div className="mt-5 text-3xl font-bold tracking-tight md:text-4xl">
-                    {isLoading ? (
-                      <Skeleton className="h-9 w-20" />
-                    ) : (
-                      <span className="text-gradient">
-                        <CountUp value={item.value} suffix={item.suffix} />
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1.5 text-sm font-medium text-muted-foreground">
-                    {item.label}
-                  </p>
+              <div className="absolute -top-10 -right-10 size-28 rounded-full bg-emerald-500/10 blur-2xl transition-all duration-500 group-hover:bg-emerald-500/20" />
+              <div className="relative">
+                <div className="flex size-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  {item.icon}
                 </div>
-              </Card>
-            </motion.div>
+                <div className="mt-5 text-3xl font-bold tracking-tight md:text-4xl">
+                  {isLoading ? (
+                    <Skeleton className="h-9 w-20" />
+                  ) : (
+                    <span className="text-gradient">
+                      <CountUp value={item.value} suffix={item.suffix} />
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1.5 text-sm font-medium text-muted-foreground">
+                  {item.label}
+                </p>
+              </div>
+            </Card>
           ))}
-        </div>
+        </FadeContent>
       </div>
     </section>
   );

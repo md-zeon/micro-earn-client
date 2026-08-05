@@ -19,6 +19,7 @@ import {
 } from "react-icons/lu";
 import Container from "../../components/Container";
 import useAuth from "../../hooks/useAuth";
+import FadeContent from "@/components/effects/FadeContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -440,7 +441,7 @@ const TaskDetailsPage = () => {
             </Button>
           </div>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <FadeContent className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {relatedLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <Card key={i} className="overflow-hidden p-0">
@@ -457,27 +458,15 @@ const TaskDetailsPage = () => {
                 </Card>
               ))
             ) : related.length > 0 ? (
-              related.map((item, i) => (
-                <motion.div
-                  key={item._id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{
-                    duration: 0.5,
-                    delay: i * 0.08,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <RelatedTaskCard task={item} />
-                </motion.div>
+              related.map((item) => (
+                <RelatedTaskCard key={item._id} task={item} />
               ))
             ) : (
               <p className="col-span-full text-center text-sm text-muted-foreground">
                 No similar tasks right now — check the full board.
               </p>
             )}
-          </div>
+          </FadeContent>
         </section>
       </div>
 

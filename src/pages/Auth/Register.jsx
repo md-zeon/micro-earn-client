@@ -22,7 +22,7 @@ import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 import { useForm } from "react-hook-form";
 import GoogleSignIn from "./GoogleSignIn";
 import PageTitle from "../../components/PageTitle";
-import StepIndicator from "../../components/Form/StepIndicator";
+import Stepper from "../../components/effects/Stepper";
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -83,7 +83,14 @@ const Register = () => {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
           <CardDescription>Join MicroEarn and start earning</CardDescription>
-          <StepIndicator step={step} totalSteps={2} />
+          <Stepper
+            steps={[
+              { id: 1, label: "Account Info" },
+              { id: 2, label: "Password & Security" },
+            ]}
+            currentStep={step}
+            onStepChange={setStep}
+          />
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

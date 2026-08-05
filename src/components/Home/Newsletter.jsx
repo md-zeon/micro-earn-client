@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { motion } from "motion/react";
+import FadeContent from "@/components/effects/FadeContent";
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
@@ -23,13 +23,7 @@ const Newsletter = () => {
   return (
     <section className="relative overflow-hidden pb-24">
       <div className="mx-auto max-w-4xl px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/50 p-8 backdrop-blur-sm md:p-12"
-        >
+        <FadeContent className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/50 p-8 backdrop-blur-sm md:p-12">
           <div className="absolute -top-16 -right-16 size-48 rounded-full bg-emerald-500/10 blur-3xl" />
 
           <div className="relative flex flex-col items-center text-center">
@@ -78,7 +72,7 @@ const Newsletter = () => {
               We respect your privacy. Unsubscribe anytime.
             </p>
           </div>
-        </motion.div>
+        </FadeContent>
       </div>
     </section>
   );

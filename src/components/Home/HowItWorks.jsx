@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion } from "motion/react";
 import {
   LuArrowRight,
   LuCircleCheck,
@@ -11,6 +10,7 @@ import {
   LuUserCheck,
 } from "react-icons/lu";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import FadeContent from "@/components/effects/FadeContent";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "./SectionHeading";
 
@@ -82,75 +82,57 @@ const HowItWorks = () => {
           description="A simple, transparent flow designed so anyone can start earning in minutes — no skills required."
         />
 
-        <div className="relative mt-16">
-          {/* Connector line */}
-          <div
-            ref={lineRef}
-            className="absolute top-7 left-0 hidden h-px w-full origin-left bg-gradient-to-r from-emerald-500/20 via-emerald-500/60 to-emerald-500/20 lg:block"
-          />
+          <div className="relative mt-16">
+            {/* Connector line */}
+            <div
+              ref={lineRef}
+              className="absolute top-7 left-0 hidden h-px w-full origin-left bg-gradient-to-r from-emerald-500/20 via-emerald-500/60 to-emerald-500/20 lg:block"
+            />
 
-          <div className="grid gap-6 lg:grid-cols-3">
-            {steps.map((step, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.15,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                whileHover={{ y: -6 }}
-                className="relative"
-              >
-                <div className="group relative flex h-full flex-col rounded-3xl border border-border/70 bg-card/70 p-7 backdrop-blur-sm transition-colors duration-300 hover:border-emerald-500/40">
-                  <div className="flex items-center justify-between">
-                    <div className="relative flex size-14 items-center justify-center rounded-2xl bg-gradient text-white shadow-lg shadow-emerald-500/25">
-                      {step.icon}
-                      <span className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-card bg-background text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                        {index + 1}
+            <FadeContent className="grid gap-6 lg:grid-cols-3">
+              {steps.map((step, index) => (
+                <div key={index} className="relative">
+                  <div className="group relative flex h-full flex-col rounded-3xl border border-border/70 bg-card/70 p-7 backdrop-blur-sm transition-colors duration-300 hover:border-emerald-500/40">
+                    <div className="flex items-center justify-between">
+                      <div className="relative flex size-14 items-center justify-center rounded-2xl bg-gradient text-white shadow-lg shadow-emerald-500/25">
+                        {step.icon}
+                        <span className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-card bg-background text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                          {index + 1}
+                        </span>
+                      </div>
+                      <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                        {step.tag}
                       </span>
                     </div>
-                    <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                      {step.tag}
-                    </span>
+
+                    <h3 className="mt-6 text-xl font-semibold tracking-tight">
+                      {step.title}
+                    </h3>
+                    <p className="mt-3 flex-1 leading-relaxed text-muted-foreground">
+                      {step.description}
+                    </p>
+
+                    {index === steps.length - 1 && (
+                      <Link to="/register" className="mt-6 inline-flex">
+                        <Button
+                          variant="ghost"
+                          className="gap-2 rounded-full p-0 text-emerald-600 hover:bg-transparent hover:text-emerald-500 dark:text-emerald-400"
+                        >
+                          Create your account
+                          <LuArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      </Link>
+                    )}
                   </div>
-
-                  <h3 className="mt-6 text-xl font-semibold tracking-tight">
-                    {step.title}
-                  </h3>
-                  <p className="mt-3 flex-1 leading-relaxed text-muted-foreground">
-                    {step.description}
-                  </p>
-
-                  {index === steps.length - 1 && (
-                    <Link to="/register" className="mt-6 inline-flex">
-                      <Button
-                        variant="ghost"
-                        className="gap-2 rounded-full p-0 text-emerald-600 hover:bg-transparent hover:text-emerald-500 dark:text-emerald-400"
-                      >
-                        Create your account
-                        <LuArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                    </Link>
-                  )}
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </FadeContent>
           </div>
-        </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-10 flex items-center justify-center gap-2 text-sm text-muted-foreground"
-        >
-          <LuCircleCheck className="size-4 text-emerald-500" />
-          20 coins = $1. Withdraw from 200 coins via secure methods.
-        </motion.p>
+          <p className="mt-10 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <LuCircleCheck className="size-4 text-emerald-500" />
+            20 coins = $1. Withdraw from 200 coins via secure methods.
+          </p>
       </div>
     </section>
   );
