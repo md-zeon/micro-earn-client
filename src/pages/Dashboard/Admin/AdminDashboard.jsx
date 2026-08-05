@@ -94,25 +94,25 @@ const AdminDashboard = ({ greeting }) => {
       {/* Greeting hero */}
       <section
         aria-label="Admin overview"
-        className="relative overflow-hidden rounded-xl bg-linear-to-br from-emerald-600 via-teal-600 to-teal-700 p-6 text-white shadow-lg shadow-emerald-600/20 sm:p-8"
+        className="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-gradient-soft p-6 text-foreground shadow-lg shadow-emerald-500/10 sm:p-8"
       >
-        <div className="grid-pattern absolute inset-0 opacity-40" aria-hidden="true" />
+        <div className="grid-pattern absolute inset-0 opacity-30" aria-hidden="true" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-medium text-emerald-100/90 uppercase tracking-wider">
+            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
               {today}
             </p>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {greeting}, {user?.displayName?.split(" ")[0] || "Admin"}!
             </h1>
-            <p className="max-w-lg text-sm text-emerald-50/90">
+            <p className="max-w-lg text-sm text-muted-foreground">
               Here is what&apos;s happening on MicroEarn today.
             </p>
-            <DataFreshness className="mt-2 text-emerald-50/80" />
+            <DataFreshness className="mt-2 text-muted-foreground" />
             <div className="flex flex-wrap gap-2 pt-2">
               <Badge
                 variant="secondary"
-                className="bg-white/15 text-white ring-1 ring-white/20 backdrop-blur"
+                className="bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 dark:text-emerald-400"
               >
                 <ShieldCheck className="size-3" aria-hidden="true" />
                 Admin Panel
@@ -120,7 +120,7 @@ const AdminDashboard = ({ greeting }) => {
               {pendingCount > 0 && (
                 <Badge
                   variant="secondary"
-                  className="bg-white/15 text-white ring-1 ring-white/20 backdrop-blur"
+                  className="bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 dark:text-emerald-400"
                 >
                   <Wallet className="size-3" aria-hidden="true" />
                   {pendingCount} pending withdrawal{pendingCount === 1 ? "" : "s"}
@@ -131,7 +131,7 @@ const AdminDashboard = ({ greeting }) => {
           <Link to="/dashboard/profile">
             <Button
               variant="secondary"
-              className="w-full bg-white/95 text-emerald-700 hover:bg-white md:w-auto"
+              className="w-full bg-gradient text-white md:w-auto"
             >
               <UserRound aria-hidden="true" />
               View Profile

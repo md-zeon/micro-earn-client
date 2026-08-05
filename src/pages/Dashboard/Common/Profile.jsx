@@ -270,7 +270,7 @@ const Profile = () => {
       <Card className="overflow-hidden py-0">
         <div
           aria-hidden="true"
-          className="h-28 bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 sm:h-32 dark:from-emerald-600 dark:via-teal-600 dark:to-sky-600"
+          className="h-28 bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-sky-500/15 sm:h-32 dark:from-emerald-500/25 dark:via-teal-500/25 dark:to-sky-500/25"
         />
         <div className="px-5 pb-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
