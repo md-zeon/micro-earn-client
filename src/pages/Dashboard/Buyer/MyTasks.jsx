@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Search, Plus, ListTodo, CircleDashed, CheckCircle2, Coins, Inbox } from "lucide-react";
 import { toast } from "sonner";
 import useBuyerTasks from "../../../hooks/useBuyerTasks";
@@ -10,7 +10,6 @@ import MyTaskTable from "../../../components/Table/MyTaskTable";
 import StatsCard from "../../../components/shared/StatsCard";
 import EmptyState from "../../../components/shared/EmptyState";
 import PageHeader from "../../../components/shared/PageHeader";
-import UpdateTaskModal from "../../../components/Modals/UpdateTaskModal";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +33,7 @@ const STATUS_FILTERS = [
 ];
 
 const MyTasks = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { tasks, isTasksLoading, refetch } = useBuyerTasks();
   const { refetch: refetchCoins } = useAvailableCoins();
@@ -41,10 +41,7 @@ const MyTasks = () => {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
 
   const filteredTasks = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -93,25 +90,7 @@ const MyTasks = () => {
   };
 
   const handleEditClick = (task) => {
-    setSelectedTask(task);
-    setIsModalOpen(true);
-  };
-
-  const handleUpdateSubmit = async (data) => {
-    if (!selectedTask) return;
-    setSubmitting(true);
-    try {
-      await axiosSecure.patch(`/tasks/${selectedTask._id}`, data);
-      refetch();
-      setIsModalOpen(false);
-      setSelectedTask(null);
-      toast.success("Task has been updated successfully");
-    } catch (err) {
-      console.error("Update Task Error:", err);
-      toast.error("Failed to update task. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    navigate(`/dashboard/edit-task/${task._id}`);
   };
 
   if (isTasksLoading) {
@@ -223,18 +202,6 @@ const MyTasks = () => {
           onDeleteClick={handleDelete}
         />
       )}
-
-      {/* Update modal */}
-      <UpdateTaskModal
-        key={`${selectedTask?._id ?? "closed"}-${isModalOpen}`}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedTask(null);
-        }}
-        onSubmit={handleUpdateSubmit}
-        submitting={submitting}
-      />
 
       {/* Delete confirmation */}
       <AlertDialog

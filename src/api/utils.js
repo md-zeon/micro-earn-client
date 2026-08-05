@@ -2,7 +2,7 @@ import axios from "axios";
 
 // upload image to imgbb and return image url
 
-export const imageUpload = async (imageData) => {
+const uploadToImgbb = async (imageData) => {
 	const imageFormData = new FormData();
 	imageFormData.append("image", imageData);
 	// Upload image to imgbb
@@ -11,8 +11,34 @@ export const imageUpload = async (imageData) => {
 		imageFormData,
 	);
 	// console.log(data);
-	const imageUrl = data?.data?.display_url;
-	return imageUrl;
+	return data?.data?.display_url;
+};
+
+// upload image to cloudinary and return image url
+
+const uploadToCloudinary = async (imageData) => {
+	const imageFormData = new FormData();
+	imageFormData.append("file", imageData);
+	imageFormData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+	const { data } = await axios.post(
+		`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+		imageFormData,
+	);
+	return data?.secure_url;
+};
+
+// upload image to cloudinary, falling back to imgbb if cloudinary is down
+
+export const imageUpload = async (imageData) => {
+	try {
+		return await uploadToCloudinary(imageData);
+	} catch (cloudinaryError) {
+		console.error(
+			"Cloudinary upload failed, falling back to imgbb:",
+			cloudinaryError?.message,
+		);
+		return await uploadToImgbb(imageData);
+	}
 };
 
 // Save or Update user in DB

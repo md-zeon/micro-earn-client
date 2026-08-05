@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Container from "../../components/Container";
 import useAuth from "../../hooks/useAuth";
+import useRole from "../../hooks/useRole";
 import FadeContent from "@/components/effects/FadeContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -97,6 +98,8 @@ const TaskDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { role, isRoleLoading } = useRole();
+  const isWorker = role === "worker";
 
   const { data: related = [], isLoading: relatedLoading } = useQuery({
     queryKey: ["related-tasks", id],
@@ -151,10 +154,24 @@ const TaskDetailsPage = () => {
   const filled = Math.max(0, totalWorkers - task.required_workers);
   const filledPct =
     totalWorkers > 0 ? Math.min(100, Math.round((filled / totalWorkers) * 100)) : 0;
-  const handleApply = () =>
-    user
-      ? navigate(`/dashboard/task-details/${task._id}`)
-      : navigate("/login");
+  const applyAction = () => {
+    if (!user) {
+      return {
+        label: "Sign in to apply",
+        caption: "Create a free account to start earning today.",
+        onClick: () => navigate("/login"),
+      };
+    }
+    if (isRoleLoading) return null;
+    if (!isWorker) return null;
+    return {
+      label: "Apply for this task",
+      caption: "You'll continue on your dashboard to submit.",
+      onClick: () => navigate(`/dashboard/task-details/${task._id}`),
+    };
+  };
+
+  const apply = applyAction();
 
   return (
     <Container>
@@ -376,19 +393,25 @@ const TaskDetailsPage = () => {
                 </div>
 
                 <div className="border-t border-border/60 pt-5">
-                  <Button
-                    size="lg"
-                    className="w-full rounded-full text-base"
-                    onClick={handleApply}
-                  >
-                    {user ? "Apply for this task" : "Sign in to apply"}
-                    <ArrowRight className="size-4" />
-                  </Button>
-                  <p className="mt-3 text-center text-xs text-muted-foreground">
-                    {user
-                      ? "You'll continue on your dashboard to submit."
-                      : "Create a free account to start earning today."}
-                  </p>
+                  {apply ? (
+                    <>
+                      <Button
+                        size="lg"
+                        className="w-full rounded-full text-base"
+                        onClick={apply.onClick}
+                      >
+                        {apply.label}
+                        <ArrowRight className="size-4" />
+                      </Button>
+                      <p className="mt-3 text-center text-xs text-muted-foreground">
+                        {apply.caption}
+                      </p>
+                    </>
+                  ) : user && !isRoleLoading ? (
+                    <p className="rounded-xl bg-muted/50 px-4 py-3 text-center text-xs text-muted-foreground">
+                      Only worker accounts can apply for this task.
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </Card>
@@ -462,10 +485,14 @@ const TaskDetailsPage = () => {
               {task.payable_amount}
             </p>
           </div>
-          <Button className="rounded-full" onClick={handleApply}>
-            {user ? "Apply now" : "Sign in to apply"}
-            <ArrowRight className="size-4" />
-          </Button>
+          {apply ? (
+            <Button className="rounded-full" onClick={apply.onClick}>
+              {user ? "Apply now" : "Sign in to apply"}
+              <ArrowRight className="size-4" />
+            </Button>
+          ) : user && !isRoleLoading ? (
+            <p className="text-xs text-muted-foreground">Workers only</p>
+          ) : null}
         </div>
       </div>
     </Container>

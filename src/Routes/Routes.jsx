@@ -7,6 +7,7 @@ import Register from "../pages/Auth/Register";
 import PrivateRoute from "../Routes/PrivateRoute";
 import Dashboard from "../pages/Dashboard/Common/DashBoard";
 import AddTask from "../pages/Dashboard/Buyer/AddTask";
+import EditTask from "../pages/Dashboard/Buyer/EditTask";
 import BuyerRoute from "./BuyerRoute";
 import MyTasks from "../pages/Dashboard/Buyer/MyTasks";
 import PurchaseCoin from "../pages/Dashboard/Buyer/PurchaseCoin";
@@ -127,6 +128,16 @@ const router = createBrowserRouter([
 					<PrivateRoute>
 						<BuyerRoute>
 							<MyTasks />
+						</BuyerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "edit-task/:id",
+				element: (
+					<PrivateRoute>
+						<BuyerRoute>
+							<EditTask />
 						</BuyerRoute>
 					</PrivateRoute>
 				),
