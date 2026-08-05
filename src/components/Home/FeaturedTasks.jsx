@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import GlassCard from "../ui/GlassCard";
-import { LuCoins, LuCalendar, LuUser } from "react-icons/lu";
+import { LuArrowRight, LuCalendar, LuCoins, LuUser } from "react-icons/lu";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import SectionHeading from "./SectionHeading";
 
 const FeaturedTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -32,110 +32,134 @@ const FeaturedTasks = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gradient">
-            Featured Tasks
-          </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-            Discover the most popular tasks available right now. Start earning
-            coins today!
-          </p>
+    <section className="relative overflow-hidden py-20 md:py-28">
+      <div className="absolute top-1/4 -left-24 size-72 rounded-full bg-emerald-500/5 blur-3xl" />
+
+      <div className="relative mx-auto max-w-6xl px-4">
+        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-end">
+          <SectionHeading
+            align="left"
+            eyebrow="Popular right now"
+            title="Featured tasks"
+            description="High-paying, verified tasks available this week. Start earning coins today."
+            className="mx-0 text-center sm:text-left"
+          />
+          <Button
+            variant="outline"
+            size="lg"
+            className="hidden shrink-0 gap-2 rounded-full sm:inline-flex"
+            onClick={() => navigate("/all-tasks")}
+          >
+            View all tasks
+            <LuArrowRight className="size-4" />
+          </Button>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array(6)
-              .fill(0)
-              .map((_, i) => (
-                <Card
-                  key={i}
-                  className="p-6 h-[320px] flex flex-col justify-between"
-                >
-                  <div className="flex-1 space-y-3">
-                    <div className="flex justify-between items-start">
-                      <Skeleton className="h-6 w-2/3" />
-                      <Skeleton className="h-6 w-16 rounded-full" />
-                    </div>
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-3/4" />
-                    <div className="flex gap-4 mt-4">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center mt-4">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-8 w-20 rounded-full" />
-                  </div>
-                </Card>
-              ))}
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="p-6">
+                <div className="flex items-start justify-between">
+                  <Skeleton className="h-6 w-2/3" />
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                </div>
+                <Skeleton className="mt-4 h-4 w-full" />
+                <Skeleton className="mt-2 h-4 w-3/4" />
+                <div className="mt-6 flex gap-4">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+                <div className="mt-6 flex items-center justify-between border-t border-border/60 pt-4">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-8 w-24 rounded-full" />
+                </div>
+              </Card>
+            ))}
           </div>
         ) : tasks.length === 0 ? (
-          <div className="text-center">
-            <p className="mt-4 text-sm opacity-60">
-              No featured tasks available
-            </p>
+          <div className="mt-14 text-center text-muted-foreground">
+            No featured tasks available right now — check back soon.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {tasks.map((task, i) => (
               <motion.div
                 key={task._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: 0.55,
+                  delay: (i % 3) * 0.1,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                whileHover={{ y: -8 }}
               >
-                <GlassCard className="p-6 h-full rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <div className="flex flex-col h-full">
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-lg font-semibold line-clamp-1">
-                          {task.task_title}
-                        </h3>
-                        <Badge className="bg-gradient">
-                          <LuCoins className="inline mr-1 h-3 w-3" />
-                          {task.payable_amount}
-                        </Badge>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                        {task.task_detail}
-                      </p>
-
-                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center">
-                          <LuUser className="mr-1 h-4 w-4" />
-                          {task.required_workers} workers
-                        </span>
-                        <span className="flex items-center">
-                          <LuCalendar className="mr-1 h-4 w-4" />
-                          {new Date(
-                            task.completion_deadline,
-                          ).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center mt-4 pt-4 border-t">
-                      <span className="text-xs text-muted-foreground">
-                        Posted by: {task.buyer_name}
-                      </span>
-                      <Button
-                        size="sm"
-                        className="bg-gradient"
-                        onClick={() => navigate(`/task-details/${task._id}`)}
-                      >
-                        See More
-                      </Button>
-                    </div>
+                <Card
+                  className="group flex h-full cursor-pointer flex-col p-6 transition-colors duration-300 hover:border-emerald-500/40"
+                  onClick={() => navigate(`/task-details/${task._id}`)}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="line-clamp-2 text-lg font-semibold tracking-tight">
+                      {task.task_title}
+                    </h3>
+                    <Badge className="shrink-0 rounded-full bg-amber-500/10 font-semibold text-amber-600 dark:text-amber-400">
+                      <LuCoins className="mr-1 size-3.5" />
+                      {task.payable_amount}
+                    </Badge>
                   </div>
-                </GlassCard>
+
+                  <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                    {task.task_detail}
+                  </p>
+
+                  <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5">
+                      <LuUser className="size-4 text-emerald-500" />
+                      {task.required_workers} workers needed
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <LuCalendar className="size-4 text-emerald-500" />
+                      {new Date(task.completion_deadline).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-border/60 pt-4">
+                    <span className="text-xs text-muted-foreground">
+                      Posted by{" "}
+                      <span className="font-semibold text-foreground">
+                        {task.buyer_name}
+                      </span>
+                    </span>
+                    <Button
+                      size="sm"
+                      className="rounded-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/task-details/${task._id}`);
+                      }}
+                    >
+                      See details
+                      <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </Button>
+                  </div>
+                </Card>
               </motion.div>
             ))}
           </div>
         )}
+
+        <div className="mt-12 text-center sm:hidden">
+          <Button
+            variant="outline"
+            size="lg"
+            className="rounded-full"
+            onClick={() => navigate("/all-tasks")}
+          >
+            View all tasks
+            <LuArrowRight className="size-4" />
+          </Button>
+        </div>
       </div>
     </section>
   );

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { LuUsers, LuCoins, LuListTodo, LuCheck } from "react-icons/lu";
-import GlassCard from "../ui/GlassCard";
-import Counter from "../shared/Counter";
+import { LuCircleCheck, LuListTodo, LuUsers, LuWallet } from "react-icons/lu";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import CountUp from "../shared/CountUp";
+import SectionHeading from "./SectionHeading";
 
 const StatsSection = () => {
   const [stats, setStats] = useState({
@@ -33,63 +35,74 @@ const StatsSection = () => {
 
   const statItems = [
     {
-      icon: <LuUsers className="text-3xl text-primary" />,
-      label: "Active Workers",
+      icon: <LuUsers className="size-6" />,
+      label: "Active workers",
       value: stats.totalWorkers,
       suffix: "+",
     },
     {
-      icon: <LuListTodo className="text-3xl text-primary" />,
-      label: "Tasks Completed",
+      icon: <LuListTodo className="size-6" />,
+      label: "Tasks completed",
       value: stats.totalTasks,
       suffix: "+",
     },
     {
-      icon: <LuCoins className="text-3xl text-primary" />,
-      label: "Coins Earned",
+      icon: <LuWallet className="size-6" />,
+      label: "Coins earned",
       value: stats.totalCoins,
       suffix: "+",
     },
     {
-      icon: <LuCheck className="text-3xl text-primary" />,
-      label: "Satisfied Buyers",
+      icon: <LuCircleCheck className="size-6" />,
+      label: "Satisfied buyers",
       value: stats.totalBuyers,
       suffix: "+",
     },
   ];
 
   return (
-    <section className="py-16 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gradient">
-            Our Community in Numbers
-          </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of users who are already earning and getting work
-            done on MicroEarn.
-          </p>
-        </div>
+    <section className="relative py-20 md:py-28">
+      <div className="mx-auto max-w-6xl px-4">
+        <SectionHeading
+          eyebrow="Platform statistics"
+          title="Our community in numbers"
+          description="Join thousands of people already earning and getting work done on MicroEarn."
+        />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {statItems.map((item, index) => (
             <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              key={item.label}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{
+                duration: 0.55,
+                delay: index * 0.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              whileHover={{ y: -6 }}
             >
-              <GlassCard className="p-6 rounded-2xl shadow-lg text-center bg-card">
-                <div className="flex justify-center mb-3">{item.icon}</div>
-                <h3 className="text-2xl font-bold mb-1">
-                  {loading ? (
-                    <div className="skeleton h-6 w-16 mx-auto rounded" />
-                  ) : (
-                    <Counter value={item.value} suffix={item.suffix} />
-                  )}
-                </h3>
-                <p className="text-sm text-muted-foreground">{item.label}</p>
-              </GlassCard>
+              <Card className="group relative overflow-hidden p-6 transition-colors duration-300 hover:border-emerald-500/40">
+                <div className="absolute -top-10 -right-10 size-28 rounded-full bg-emerald-500/10 blur-2xl transition-all duration-500 group-hover:bg-emerald-500/20" />
+                <div className="relative">
+                  <div className="flex size-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    {item.icon}
+                  </div>
+                  <div className="mt-5 text-3xl font-bold tracking-tight md:text-4xl">
+                    {loading ? (
+                      <Skeleton className="h-9 w-20" />
+                    ) : (
+                      <span className="text-gradient">
+                        <CountUp value={item.value} suffix={item.suffix} />
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1.5 text-sm font-medium text-muted-foreground">
+                    {item.label}
+                  </p>
+                </div>
+              </Card>
             </motion.div>
           ))}
         </div>

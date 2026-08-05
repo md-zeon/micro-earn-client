@@ -4,13 +4,12 @@ import { useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import {
-  LuChevronLeft,
-  LuChevronRight,
-  LuUsersRound,
-  LuQuote,
-} from "react-icons/lu";
+import { LuChevronLeft, LuChevronRight, LuQuote, LuStar } from "react-icons/lu";
 import { motion } from "motion/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import SectionHeading from "./SectionHeading";
 
 const testimonials = [
   {
@@ -20,6 +19,7 @@ const testimonials = [
     title: "Top Worker",
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
+    rating: 5,
   },
   {
     quote:
@@ -28,6 +28,7 @@ const testimonials = [
     title: "Frequent Buyer",
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
+    rating: 5,
   },
   {
     quote:
@@ -36,6 +37,7 @@ const testimonials = [
     title: "Platform Admin",
     image:
       "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
+    rating: 4,
   },
   {
     quote:
@@ -44,6 +46,7 @@ const testimonials = [
     title: "Top Earner",
     image:
       "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
+    rating: 5,
   },
   {
     quote:
@@ -51,6 +54,7 @@ const testimonials = [
     name: "Saad Hossain",
     title: "Task Creator",
     image: "https://img.daisyui.com/images/profile/demo/anakeen@192.webp",
+    rating: 4,
   },
   {
     quote:
@@ -59,6 +63,7 @@ const testimonials = [
     title: "Verified Worker",
     image:
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
+    rating: 5,
   },
 ];
 
@@ -67,94 +72,120 @@ function TestimonialSlider() {
   const swiperRef = useRef(null);
 
   return (
-    <div className="py-16 px-4 bg-muted/30">
-      <div className="max-w-4xl mx-auto text-center pb-16 space-y-3">
-        <div className="grid place-items-center">
-          <span className="text-4xl bg-gradient p-2 rounded-full flex items-center justify-center text-white">
-            <LuUsersRound />
-          </span>
+    <section className="relative overflow-hidden py-20 md:py-28">
+      <div className="absolute top-1/3 -right-24 size-72 rounded-full bg-emerald-500/5 blur-3xl" />
+
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionHeading
+          eyebrow="Community voices"
+          title="Loved by workers & buyers"
+          description="MicroEarn empowers people through fast, fair, and flexible task-based income opportunities."
+        />
+
+        <Swiper
+          modules={[Autoplay, Keyboard, Navigation, Pagination]}
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+          slidesPerView={1}
+          spaceBetween={24}
+          pagination={{ clickable: true }}
+          loop={true}
+          centeredSlides={true}
+          keyboard={{ enabled: true }}
+          autoplay={{
+            delay: 4000,
+            disableOnInteraction: false,
+          }}
+          breakpoints={{
+            640: { slidesPerView: 1.5, centeredSlides: true },
+            768: { slidesPerView: 2, centeredSlides: true },
+            1024: { slidesPerView: 2.5, centeredSlides: true },
+          }}
+          className="my-swiper mt-14"
+        >
+          {testimonials.map((item, index) => {
+            const isActive = activeIndex === index;
+            return (
+              <SwiperSlide key={index} className="pb-16 pt-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Card
+                    className={`flex h-full flex-col justify-between p-8 transition-all duration-500 ${
+                      isActive
+                        ? "border-emerald-500/40 bg-emerald-500/5 shadow-xl shadow-emerald-500/10"
+                        : "border-border/60 bg-card/50"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex gap-1 text-amber-400">
+                          {Array.from({ length: item.rating }).map((_, i) => (
+                            <LuStar key={i} className="size-4 fill-current" />
+                          ))}
+                        </div>
+                        <LuQuote
+                          className={`size-8 ${
+                            isActive
+                              ? "text-emerald-500/40"
+                              : "text-muted"
+                          }`}
+                        />
+                      </div>
+
+                      <p className="mt-5 text-sm leading-relaxed text-muted-foreground md:text-base">
+                        “{item.quote}”
+                      </p>
+                    </div>
+
+                    <div className="mt-6 flex items-center gap-3 border-t border-border/60 pt-5">
+                      <Avatar size="lg">
+                        <AvatarImage src={item.image} alt={item.name} />
+                        <AvatarFallback className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                          {item.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="text-base font-semibold tracking-tight">
+                          {item.name}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {item.title}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+
+        <div className="mt-2 flex items-center justify-center gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+            onClick={() => swiperRef.current?.slidePrev()}
+            aria-label="Previous testimonial"
+          >
+            <LuChevronLeft className="size-5" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+            onClick={() => swiperRef.current?.slideNext()}
+            aria-label="Next testimonial"
+          >
+            <LuChevronRight className="size-5" />
+          </Button>
         </div>
-        <h2 className="text-2xl md:text-3xl font-bold text-gradient">
-          What users are saying
-        </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          MicroEarn empowers workers and buyers through fast, fair, and flexible
-          task-based income opportunities.
-        </p>
       </div>
-
-      <Swiper
-        modules={[Autoplay, Keyboard, Navigation, Pagination]}
-        onSwiper={(swiper) => (swiperRef.current = swiper)}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-        slidesPerView={1}
-        spaceBetween={20}
-        pagination={{ clickable: true }}
-        loop={true}
-        centeredSlides={true}
-        keyboard={{ enabled: true }}
-        autoplay={{
-          delay: 3500,
-          reverseDirection: true,
-          disableOnInteraction: false,
-        }}
-        breakpoints={{
-          768: { slidesPerView: 2, centeredSlides: true },
-          1024: { slidesPerView: 3, centeredSlides: true },
-        }}
-        className="my-swiper"
-      >
-        {testimonials.map((item, index) => (
-          <SwiperSlide key={index} className="pt-10">
-            <div
-              className={`rounded-xl p-6 h-full flex flex-col justify-between transition-all duration-300 ${
-                activeIndex === index
-                  ? "bg-gradient shadow-xl opacity-100 md:-translate-y-10"
-                  : "bg-card/60 opacity-40"
-              }`}
-            >
-              <div>
-                <div className="text-4xl text-primary mb-4">
-                  <LuQuote />
-                </div>
-                <p className="text-foreground text-sm mb-6 leading-relaxed">
-                  {item.quote}
-                </p>
-              </div>
-              <div className="flex items-center gap-3 border-t pt-4">
-                <div className="w-10 h-10 rounded-full overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="text-foreground">
-                  <h4 className="text-base font-semibold">{item.name}</h4>
-                  <p className="text-sm">{item.title}</p>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      <div className="w-fit mx-auto flex justify-center items-center gap-4 mt-8">
-        <button
-          onClick={() => swiperRef.current?.slidePrev()}
-          className="bg-card shadow-md rounded-full w-10 h-10 flex items-center justify-center hover:bg-muted cursor-pointer transition"
-        >
-          <LuChevronLeft className="w-5 h-5 text-primary" />
-        </button>
-
-        <button
-          onClick={() => swiperRef.current?.slideNext()}
-          className="bg-card shadow-md rounded-full w-10 h-10 flex items-center justify-center hover:bg-muted cursor-pointer transition"
-        >
-          <LuChevronRight className="w-5 h-5 text-primary" />
-        </button>
-      </div>
-    </div>
+    </section>
   );
 }
 

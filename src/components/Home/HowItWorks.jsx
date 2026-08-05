@@ -1,79 +1,152 @@
+import { useEffect, useRef } from "react";
+import { Link } from "react-router";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "motion/react";
-import HowItWorksIllustration from "../../assets/how-it-works.svg";
-import { LuClipboardList, LuCoins, LuUsers } from "react-icons/lu";
+import {
+  LuArrowRight,
+  LuCircleCheck,
+  LuClipboardList,
+  LuCoins,
+  LuUserCheck,
+} from "react-icons/lu";
+import { Button } from "@/components/ui/button";
+import SectionHeading from "./SectionHeading";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
-    icon: <LuClipboardList className="text-3xl text-primary shrink-0" />,
-    title: "Post a Task",
+    icon: <LuClipboardList className="size-6" />,
+    title: "Post or find a task",
     description:
-      "Buyers create task listings with clear instructions and coin rewards.",
+      "Buyers list simple tasks with clear instructions and coin rewards. Workers browse and pick the work they want.",
+    tag: "For everyone",
   },
   {
-    icon: <LuUsers className="text-3xl text-primary shrink-0" />,
-    title: "Complete the Work",
+    icon: <LuUserCheck className="size-6" />,
+    title: "Complete the work",
     description:
-      "Workers browse available tasks, do the work, and submit proof as required.",
+      "Workers finish tasks and submit proof. Buyers review submissions and approve the quality with one click.",
+    tag: "Verified review",
   },
   {
-    icon: <LuCoins className="text-3xl text-primary shrink-0" />,
-    title: "Earn Coins",
+    icon: <LuCoins className="size-6" />,
+    title: "Get paid instantly",
     description:
-      "Once approved, workers earn coins that can be withdrawn or reinvested.",
+      "Approved tasks credit coins to your wallet. Withdraw as real money whenever you hit the payout threshold.",
+    tag: "Fast payouts",
   },
 ];
 
 const HowItWorks = () => {
-  return (
-    <section className="py-20 px-4 md:px-10 bg-background">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-        {/* Left: Steps */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gradient">
-            How MicroEarn Works
-          </h2>
-          <p className="text-muted-foreground mb-10 max-w-lg">
-            MicroEarn is simple and flexible. Here's how you can start earning
-            or hiring today.
-          </p>
+  const sectionRef = useRef(null);
+  const lineRef = useRef(null);
 
-          <div className="space-y-8">
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        lineRef.current,
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: lineRef.current,
+            start: "top 80%",
+            end: "bottom 60%",
+            scrub: true,
+          },
+        },
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden py-20 md:py-28"
+    >
+      <div className="absolute -top-24 left-1/2 h-72 w-[80%] -translate-x-1/2 rounded-full bg-emerald-500/5 blur-3xl" />
+
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionHeading
+          eyebrow="How it works"
+          title="Three steps to your first payout"
+          description="A simple, transparent flow designed so anyone can start earning in minutes — no skills required."
+        />
+
+        <div className="relative mt-16">
+          {/* Connector line */}
+          <div
+            ref={lineRef}
+            className="absolute top-7 left-0 hidden h-px w-full origin-left bg-gradient-to-r from-emerald-500/20 via-emerald-500/60 to-emerald-500/20 lg:block"
+          />
+
+          <div className="grid gap-6 lg:grid-cols-3">
             {steps.map((step, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                className="flex items-start gap-4"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.15,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                whileHover={{ y: -6 }}
+                className="relative"
               >
-                <div className="p-3 bg-muted rounded-xl">{step.icon}</div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground">
+                <div className="group relative flex h-full flex-col rounded-3xl border border-border/70 bg-card/70 p-7 backdrop-blur-sm transition-colors duration-300 hover:border-emerald-500/40">
+                  <div className="flex items-center justify-between">
+                    <div className="relative flex size-14 items-center justify-center rounded-2xl bg-gradient text-white shadow-lg shadow-emerald-500/25">
+                      {step.icon}
+                      <span className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-card bg-background text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                        {index + 1}
+                      </span>
+                    </div>
+                    <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                      {step.tag}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-6 text-xl font-semibold tracking-tight">
+                    {step.title}
+                  </h3>
+                  <p className="mt-3 flex-1 leading-relaxed text-muted-foreground">
                     {step.description}
                   </p>
+
+                  {index === steps.length - 1 && (
+                    <Link to="/register" className="mt-6 inline-flex">
+                      <Button
+                        variant="ghost"
+                        className="gap-2 rounded-full p-0 text-emerald-600 hover:bg-transparent hover:text-emerald-500 dark:text-emerald-400"
+                      >
+                        Create your account
+                        <LuArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Right: Illustration */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-10 flex items-center justify-center gap-2 text-sm text-muted-foreground"
         >
-          <img
-            src={HowItWorksIllustration}
-            alt="How it works illustration"
-            className="w-full max-w-md mx-auto"
-          />
-        </motion.div>
+          <LuCircleCheck className="size-4 text-emerald-500" />
+          20 coins = $1. Withdraw from 200 coins via secure methods.
+        </motion.p>
       </div>
     </section>
   );
