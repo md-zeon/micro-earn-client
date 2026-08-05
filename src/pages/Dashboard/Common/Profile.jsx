@@ -1,224 +1,394 @@
-import { useState, useEffect } from "react";
-import {
-	LuMail,
-	LuCalendarDays,
-	LuShield,
-	LuUser,
-	LuCoins,
-	LuPen,
-} from "react-icons/lu";
-import useAuth from "../../../hooks/useAuth";
-import useRole from "../../../hooks/useRole";
-import useAvailableCoins from "../../../hooks/useAvailableCoins";
-import PageTitle from "../../../components/PageTitle";
-import { imageUpload } from "../../../api/utils";
-import ProfileSkeleton from "../../../components/ui/ProfileSkeleton";
+import { useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  BadgeCheck,
+  CalendarDays,
+  Camera,
+  CircleDollarSign,
+  ClipboardCheck,
+  ClipboardList,
+  Clock,
+  Coins,
+  CreditCard,
+  Mail,
+  PencilLine,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import PageHeader from "../../../components/shared/PageHeader";
+import StatsCard from "../../../components/shared/StatsCard";
+import ProfileSkeleton from "../../../components/ui/ProfileSkeleton";
+import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { imageUpload } from "../../../api/utils";
+
+const ROLE_BADGE = {
+  admin: "bg-violet-500/10 text-violet-600 ring-1 ring-violet-500/25 dark:text-violet-400",
+  buyer: "bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/25 dark:text-sky-400",
+  worker:
+    "bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/25 dark:text-emerald-400",
+};
+
+const EMPTY_STATS = {};
+
+const formatDate = (value) => {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const getInitials = (name) =>
+  (name || "U")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0].toUpperCase())
+    .join("");
+
+const InfoItem = ({ icon: Icon, label, value }) => (
+  <div className="flex items-start gap-3">
+    <span
+      aria-hidden="true"
+      className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground [&>svg]:size-4"
+    >
+      <Icon />
+    </span>
+    <div className="min-w-0">
+      <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        {label}
+      </dt>
+      <dd className="mt-0.5 truncate font-medium">{value}</dd>
+    </div>
+  </div>
+);
 
 const Profile = () => {
-	const { user, updateUserProfile, refreshUser, loading } = useAuth();
-	const { role, isLoading: roleLoading } = useRole();
-	const { microCoins: coins, isMicroCoinsLoading } = useAvailableCoins();
-	const axiosSecure = useAxiosSecure();
+  const { user, updateUserProfile, refreshUser, loading } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const fileInputRef = useRef(null);
 
-	const createdAt = user?.metadata?.creationTime || "2024-01-01";
-	const memberSince = new Date(createdAt).toISOString().split("T")[0];
+  const [editOpen, setEditOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [photoFile, setPhotoFile] = useState(null);
+  const [preview, setPreview] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-	const [isEditing, setIsEditing] = useState(false);
-	const [name, setName] = useState(user?.displayName || "");
-	const [photoURL, setPhotoURL] = useState(user?.photoURL || "");
-	const [photoFile, setPhotoFile] = useState(null);
-	const [preview, setPreview] = useState(photoURL);
-	const [originalName, setOriginalName] = useState(name);
-	const [originalPhotoURL, setOriginalPhotoURL] = useState(photoURL);
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ["profile", user?.email],
+    enabled: !loading && !!user?.email,
+    queryFn: async () => {
+      const { data } = await axiosSecure.get("/user/me");
+      return data;
+    },
+  });
 
-	useEffect(() => {
-		setName(user?.displayName || "");
-		setPhotoURL(user?.photoURL || "");
-		setPreview(user?.photoURL || "");
-		setOriginalName(user?.displayName || "");
-		setOriginalPhotoURL(user?.photoURL || "");
-	}, [user]);
+  const dbUser = profile?.user;
+  const stats = profile?.stats ?? EMPTY_STATS;
+  const role = dbUser?.role;
 
-	useEffect(() => {
-		if (!photoFile) return;
-		const objectUrl = URL.createObjectURL(photoFile);
-		setPreview(objectUrl);
-		return () => URL.revokeObjectURL(objectUrl);
-	}, [photoFile]);
+  const displayName = dbUser?.name || user?.displayName || "Unnamed User";
+  const email = dbUser?.email || user?.email || "";
+  const photoURL = dbUser?.photoURL || user?.photoURL || "";
+  const memberSince = formatDate(dbUser?.createdAt || user?.metadata?.creationTime);
+  const lastLogin = formatDate(dbUser?.lastLoggedInAt);
+  const initials = getInitials(displayName);
 
-	if (loading || roleLoading || isMicroCoinsLoading) return <ProfileSkeleton />;
+  const statCards = useMemo(() => {
+    const cards = [
+      {
+        label: "Available Coins",
+        value: dbUser?.microCoins ?? 0,
+        suffix: "coins",
+        Icon: Coins,
+        tone: "emerald",
+        subtitle:
+          role === "worker"
+            ? "Ready to spend or withdraw"
+            : role === "buyer"
+              ? "Balance for posting tasks"
+              : "Platform balance",
+      },
+    ];
 
-	const handleSave = async () => {
-		try {
-			let updatedPhotoURL = photoURL;
+    if (role === "worker") {
+      cards.push(
+        {
+          label: "Tasks Completed",
+          value: stats.completedTasks ?? 0,
+          Icon: ClipboardCheck,
+          tone: "sky",
+          subtitle: "Approved submissions",
+        },
+        {
+          label: "Total Earned",
+          value: stats.totalEarned ?? 0,
+          suffix: "coins",
+          Icon: CircleDollarSign,
+          tone: "violet",
+          subtitle: "Across all approved tasks",
+        },
+        {
+          label: "Pending Review",
+          value: stats.pendingSubmissions ?? 0,
+          Icon: Clock,
+          tone: "amber",
+          subtitle: "Awaiting buyer approval",
+        },
+      );
+    } else if (role === "buyer") {
+      cards.push(
+        {
+          label: "Tasks Posted",
+          value: stats.postedTasks ?? 0,
+          Icon: ClipboardList,
+          tone: "sky",
+          subtitle: "All-time listings",
+        },
+        {
+          label: "Total Spent",
+          value: stats.totalSpent ?? 0,
+          suffix: "coins",
+          Icon: CreditCard,
+          tone: "violet",
+          subtitle: "Committed to task rewards",
+        },
+        {
+          label: "Submissions Received",
+          value: stats.receivedSubmissions ?? 0,
+          Icon: Users,
+          tone: "amber",
+          subtitle: "From workers",
+        },
+      );
+    }
 
-			if (photoFile) {
-				updatedPhotoURL = await imageUpload(photoFile);
-			}
+    return cards;
+  }, [dbUser, role, stats]);
 
-			await updateUserProfile(name, updatedPhotoURL);
-			await axiosSecure.patch("/user/update-profile", {
-				name,
-				photoURL: updatedPhotoURL,
-			});
-			await refreshUser();
-			setOriginalName(name);
-			setOriginalPhotoURL(updatedPhotoURL);
-			setPreview(updatedPhotoURL);
-			setPhotoFile(null);
-			setPhotoURL(updatedPhotoURL);
-			setIsEditing(false);
-		} catch (error) {
-			console.error("Failed to update profile:", error);
-			toast.error("Failed to update profile. Please try again.");
-		}
-	};
+  if (loading || profileLoading) return <ProfileSkeleton />;
 
-	const handleCancel = () => {
-		setName(originalName);
-		setPhotoURL(originalPhotoURL);
-		setPreview(originalPhotoURL);
-		setPhotoFile(null);
-		setIsEditing(false);
-	};
+  const openEdit = () => {
+    setName(displayName);
+    setPreview(photoURL);
+    setPhotoFile(null);
+    setEditOpen(true);
+  };
 
-	return (
-		<div className='max-w-3xl mx-auto sm:p-4 md:p-6'>
-			<PageTitle
-				title='My Profile'
-				description='View and update your account information and preferences.'
-			/>
-			<div className='flex items-center justify-between mb-4'>
-				<h2 className='text-2xl font-bold'>My Profile</h2>
-				{!isEditing && (
-					<button
-						className='btn btn-sm btn-outline bg-base-300 text-base-content flex items-center gap-1'
-						onClick={() => setIsEditing(true)}>
-						<LuPen /> Edit Profile
-					</button>
-				)}
-			</div>
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoFile(file);
+    setPreview(URL.createObjectURL(file));
+  };
 
-			<div className='card bg-base-100 border shadow-sm'>
-				<div className='card-body'>
-					<h3 className='text-lg font-semibold mb-4'>Profile Information</h3>
+  const closeEdit = () => {
+    setEditOpen(false);
+    setPhotoFile(null);
+  };
 
-					<div className='flex flex-col md:flex-row gap-6 md:items-center'>
-						<img
-							src={preview}
-							alt='User Avatar'
-							referrerPolicy='no-referrer'
-							className='w-24 h-24 rounded-full mx-auto sm:mx-0 border'
-						/>
+  const handleSave = async () => {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      toast.error("Name cannot be empty.");
+      return;
+    }
 
-						<div className='flex flex-col gap-2'>
-							{isEditing ? (
-								<>
-									<input
-										type='text'
-										className='input input-bordered w-full'
-										value={name}
-										onChange={(e) => setName(e.target.value)}
-										placeholder='Enter your name'
-									/>
+    setIsSaving(true);
+    try {
+      let updatedPhotoURL = photoURL;
+      if (photoFile) {
+        updatedPhotoURL = await imageUpload(photoFile);
+      }
 
-									<input
-										type='text'
-										className='input input-bordered w-full'
-										value={photoURL}
-										placeholder='Enter photo URL'
-										onChange={(e) => {
-											setPhotoURL(e.target.value);
-											setPhotoFile(null);
-											setPreview(e.target.value);
-										}}
-									/>
+      await updateUserProfile(trimmed, updatedPhotoURL);
+      await axiosSecure.patch("/user/update-profile", {
+        name: trimmed,
+        photoURL: updatedPhotoURL,
+      });
+      await refreshUser();
 
-									<input
-										type='file'
-										accept='image/*'
-										className='file-input file-input-bordered input-accent w-full'
-										onChange={(e) => {
-											const file = e.target.files?.[0];
-											if (file) {
-												setPhotoFile(file);
-												setPhotoURL("");
-											}
-										}}
-									/>
+      toast.success("Profile updated successfully");
+      setEditOpen(false);
+      setPhotoFile(null);
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      toast.error("Failed to update profile. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-									<div className='flex gap-2 mt-2'>
-										<button
-											className='btn btn-sm bg-gradient'
-											onClick={handleSave}>
-											Save
-										</button>
-										<button
-											className='btn btn-sm bg-gradient-error'
-											onClick={handleCancel}>
-											Cancel
-										</button>
-									</div>
-								</>
-							) : (
-								<>
-									<h2 className='text-2xl font-bold flex items-center justify-center sm:justify-start gap-2'>
-										{name || "Unnamed User"}
-									</h2>
-									<div className='flex items-center justify-center sm:justify-start gap-2 mt-2'>
-										<span className='badge badge-soft capitalize badge-accent'>
-											{role}
-										</span>
-										<span className='flex items-center gap-1 text-sm text-gradient'>
-											<LuCoins className='text-blue-500' /> {coins} coins
-										</span>
-									</div>
-								</>
-							)}
-						</div>
-					</div>
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Account"
+        title="My Profile"
+        description="View your account details, activity summary and preferences."
+        actions={
+          <Button variant="outline" size="sm" onClick={openEdit}>
+            <PencilLine /> Edit Profile
+          </Button>
+        }
+      />
 
-					<hr className='my-6' />
+      {/* Hero */}
+      <Card className="overflow-hidden py-0">
+        <div
+          aria-hidden="true"
+          className="h-28 bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 sm:h-32 dark:from-emerald-600 dark:via-teal-600 dark:to-sky-600"
+        />
+        <div className="px-5 pb-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+              <Avatar className="-mt-10 size-20 ring-4 ring-background sm:-mt-12 sm:size-24">
+                <AvatarImage src={photoURL} alt={displayName} />
+                <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 pt-1 sm:pb-1">
+                <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
+                  {displayName}
+                </h2>
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                  {role && (
+                    <Badge
+                      variant="outline"
+                      className={`gap-1 capitalize ${ROLE_BADGE[role] ?? ""}`}
+                    >
+                      <ShieldCheck className="size-3" aria-hidden="true" />
+                      {role}
+                    </Badge>
+                  )}
+                  <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Mail className="size-3.5" aria-hidden="true" />
+                    {email}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
 
-					<div className='grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-base-content'>
-						<div className='flex items-start gap-3'>
-							<LuMail className='text-xl mt-0.5' />
-							<div>
-								<p>Email</p>
-								<p className='font-medium'>{user?.email}</p>
-							</div>
-						</div>
+      {/* Role-based stats */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {statCards.map((card) => (
+          <StatsCard key={card.label} {...card} />
+        ))}
+      </div>
 
-						<div className='flex items-start gap-3'>
-							<LuCalendarDays className='text-xl mt-0.5' />
-							<div>
-								<p>Member Since</p>
-								<p className='font-medium'>{memberSince}</p>
-							</div>
-						</div>
+      {/* Account info */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Account Information</CardTitle>
+          <CardDescription>
+            Details tied to your MicroEarn account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <dl className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+            <InfoItem icon={Mail} label="Email" value={email} />
+            <InfoItem icon={CalendarDays} label="Member Since" value={memberSince} />
+            <InfoItem icon={Clock} label="Last Logged In" value={lastLogin} />
+            <InfoItem
+              icon={ShieldCheck}
+              label="Account Type"
+              value={role ? role.charAt(0).toUpperCase() + role.slice(1) : "—"}
+            />
+            <InfoItem
+              icon={BadgeCheck}
+              label="Account Status"
+              value="Active"
+            />
+          </dl>
+        </CardContent>
+      </Card>
 
-						<div className='flex items-start gap-3'>
-							<LuShield className='text-xl mt-0.5' />
-							<div>
-								<p>Account Type</p>
-								<p className='font-medium capitalize'>{role}</p>
-							</div>
-						</div>
+      {/* Edit profile dialog */}
+      <Dialog open={editOpen} onOpenChange={(open) => (open ? setEditOpen(true) : closeEdit())}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogDescription>
+              Update your display name and profile photo.
+            </DialogDescription>
+          </DialogHeader>
 
-						<div className='flex items-start gap-3'>
-							<LuUser className='text-xl mt-0.5' />
-							<div>
-								<p>Status</p>
-								<p className='font-medium text-green-600'>Active</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+          <div className="flex items-center gap-4">
+            <Avatar className="size-16">
+              <AvatarImage src={preview} alt="Profile preview" />
+              <AvatarFallback className="text-xl">{initials}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Camera /> Change photo
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-2">
+            <Label htmlFor="profile-name">Display name</Label>
+            <Input
+              id="profile-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+            />
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={closeEdit} disabled={isSaving}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving}>
+              {isSaving ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 };
 
 export default Profile;
