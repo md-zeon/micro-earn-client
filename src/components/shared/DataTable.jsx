@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -67,15 +67,20 @@ const DataTable = ({
   isLoading = false,
   className,
   onRowClick,
-  renderRowActions,
 }) => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState(statusFilter?.defaultValue ?? "all");
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
+  const handleSearch = (value) => {
+    setSearch(value);
     setPage(1);
-  }, [search, status, data?.length]);
+  };
+
+  const handleStatus = (value) => {
+    setStatus(value);
+    setPage(1);
+  };
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -121,7 +126,7 @@ const DataTable = ({
               <Input
                 type="search"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => handleSearch(e.target.value)}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder}
                 className="h-8 pl-9"
@@ -132,7 +137,7 @@ const DataTable = ({
           )}
 
           {statusFilter && (
-            <Select value={status} onValueChange={setStatus}>
+            <Select value={status} onValueChange={handleStatus}>
               <SelectTrigger
                 className="h-8 w-full sm:w-44"
                 aria-label={statusFilter.label}

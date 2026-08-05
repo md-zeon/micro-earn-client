@@ -41,7 +41,6 @@ const AdminDashboard = ({ greeting }) => {
   const { adminStats: stats, isLoading: isStatsLoading } = useAdminStats();
   const {
     pendingRequests,
-    approvedRequests,
     isWithdrawLoading,
     refetch,
   } = useWithdrawRequests();
