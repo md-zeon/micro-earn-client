@@ -97,11 +97,12 @@ const WorkerProfile = () => {
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           This profile may have been removed or the link is incorrect.
         </p>
-        <Button asChild className="mt-6">
-          <Link to="/all-tasks">
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            Browse tasks
-          </Link>
+        <Button
+          className="mt-6"
+          render={<Link to="/all-tasks" />}
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          Browse tasks
         </Button>
       </Container>
     );

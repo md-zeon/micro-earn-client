@@ -56,7 +56,7 @@ const FAQ = () => {
         />
 
         <FadeContent className="mt-12 rounded-3xl border border-border/70 bg-card/50 p-4 backdrop-blur-sm md:p-6">
-          <Accordion type="single" collapsible defaultValue="item-0">
+          <Accordion defaultValue={["item-0"]}>
             {faqs.map(({ question, answer }, index) => (
               <AccordionItem
                 key={index}

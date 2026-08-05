@@ -173,29 +173,32 @@ const Navbar = () => {
                   <AvailableCoins />
                   <ThemeController />
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="relative h-10 w-10 rounded-full"
-                      >
-                        <Button
-                          variant="ghost"
-                          className="h-10 w-10 rounded-full p-0"
+                    <DropdownMenuTrigger
+                      nativeButton={false}
+                      render={
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="relative h-10 w-10 rounded-full"
                         >
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage
-                              src={user?.photoURL || ""}
-                              alt={user?.displayName || "User"}
-                            />
-                            <AvatarFallback className="bg-muted">
-                              {user?.displayName?.charAt(0)?.toUpperCase() ||
-                                "U"}
-                            </AvatarFallback>
-                          </Avatar>
-                        </Button>
-                      </motion.div>
-                    </DropdownMenuTrigger>
+                          <Button
+                            variant="ghost"
+                            className="h-10 w-10 rounded-full p-0"
+                          >
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage
+                                src={user?.photoURL || ""}
+                                alt={user?.displayName || "User"}
+                              />
+                              <AvatarFallback className="bg-muted">
+                                {user?.displayName?.charAt(0)?.toUpperCase() ||
+                                  "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                          </Button>
+                        </motion.div>
+                      }
+                    />
                     <DropdownMenuContent
                       className="w-56"
                       align="end"
@@ -255,22 +258,6 @@ const Navbar = () => {
                   </div>
                 </>
               )}
-
-              <a
-                href="https://github.com/md-zeon/micro-earn-client"
-                target="_blank"
-                rel="noreferrer"
-                className="hidden xl:inline-flex"
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="hidden items-center gap-1.5 rounded-full xl:flex"
-                >
-                  <ExternalLink className="h-3 w-3" />
-                  GitHub
-                </Button>
-              </a>
 
               {/* Mobile menu trigger */}
               <Button
@@ -449,22 +436,6 @@ const Navbar = () => {
                       </Link>
                     </div>
                   )}
-
-                  <a
-                    href="https://github.com/md-zeon/micro-earn-client"
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-11 w-full justify-center gap-2 rounded-2xl text-sm font-medium"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      Join As Developer
-                    </Button>
-                  </a>
                 </motion.div>
               </Container>
             </div>
