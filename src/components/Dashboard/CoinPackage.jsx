@@ -1,7 +1,8 @@
-import { Badge } from "@/components/ui/badge";
+import { Coins, Check, Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { LuCoins } from "react-icons/lu";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const CoinPackage = ({
   pkg,
@@ -10,53 +11,78 @@ const CoinPackage = ({
   setSelectedPackage,
   setIsModalOpen,
 }) => {
+  const totalCoins = pkg.coins + (pkg.bonus || 0);
+  const valuePerDollar = (totalCoins / pkg.price).toFixed(1);
+  const isSelected = selectedPackage?.id === pkg.id;
+  const isProcessing = processing && isSelected;
+
   return (
-    <div
-      className={`relative rounded-lg border p-6 transition-all duration-200 hover:shadow-lg bg-card
-        ${
-          selectedPackage?.id === pkg.id
-            ? "border-primary ring-2 ring-primary"
-            : "border-border"
-        }
-        ${processing && selectedPackage?.id === pkg.id ? "opacity-75" : ""}`}
+    <Card
+      className={cn(
+        "relative flex flex-col overflow-visible p-6 transition-all duration-200 hover:shadow-lg",
+        isSelected && "border-primary shadow-lg shadow-primary/10",
+      )}
     >
       {pkg.popular && (
-        <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-gradient text-white">
+        <Badge
+          className="absolute -top-2.5 left-1/2 -translate-x-1/2 gap-1 bg-gradient text-white shadow-md"
+        >
+          <Star className="size-3 fill-current" aria-hidden="true" />
           Most Popular
         </Badge>
       )}
 
-      <div className="text-center space-y-3">
-        <h3 className="text-xl font-semibold">{pkg.coins} Micro Coins</h3>
-        <p className="text-3xl font-bold text-blue-400">${pkg.price}</p>
-        {pkg.bonus && (
-          <Badge variant="secondary" className="bg-gradient-success text-white">
-            Bonus: {pkg.bonus} coins
-          </Badge>
-        )}
+      <div className="flex flex-1 flex-col items-center gap-2 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+          <Coins className="size-6" aria-hidden="true" />
+        </div>
+        <div className="mt-1">
+          <h3 className="text-xl font-semibold tabular-nums">
+            {totalCoins} coins
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            {pkg.bonus ? (
+              <>
+                {pkg.coins} +{" "}
+                <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                  {pkg.bonus} bonus
+                </span>
+              </>
+            ) : (
+              "No bonus included"
+            )}
+          </p>
+        </div>
+
+        <p className="text-3xl font-bold tabular-nums text-primary">
+          ${pkg.price}
+        </p>
+
+        <Badge variant="secondary" className="gap-1 tabular-nums">
+          <Check className="size-3 text-emerald-500" aria-hidden="true" />
+          {valuePerDollar} coins / $
+        </Badge>
       </div>
 
       <Button
-        className="w-full mt-4 bg-gradient hover:opacity-80"
+        className="mt-5 w-full bg-gradient shadow-lg shadow-emerald-500/20"
         onClick={() => {
           setSelectedPackage(pkg);
           setIsModalOpen(true);
         }}
         disabled={processing}
+        aria-label={`Buy ${totalCoins} coins for $${pkg.price}`}
       >
-        {processing && selectedPackage?.id === pkg.id ? (
-          <span className="flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" />
+        {isProcessing ? (
+          <>
+            <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
             Processing...
-          </span>
+          </>
         ) : (
-          <span className="flex items-center gap-2">
-            <LuCoins className="h-4 w-4" />
-            Buy Now
-          </span>
+          "Buy Now"
         )}
       </Button>
-    </div>
+    </Card>
   );
 };
 
