@@ -15,15 +15,21 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
   const [processing, setProcessing] = useState(false);
 
   const totalPrice = pkg?.price;
+  const totalCoins = (pkg?.coins || 0) + (pkg?.bonus || 0);
 
   useEffect(() => {
     if (totalPrice) {
       axiosSecure
-        .post("/payments/create-payment-intent", { amount: totalPrice })
+        .post("/payments/create-payment-intent", {
+          amount: totalPrice,
+          buyer_email: user?.email,
+          buyer_name: user?.displayName,
+          coins: totalCoins,
+        })
         .then((res) => setClientSecret(res?.data?.clientSecret))
         .catch(() => toast.error("Failed to initialize payment."));
     }
-  }, [axiosSecure, totalPrice]);
+  }, [axiosSecure, totalPrice, user?.email, user?.displayName, totalCoins]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

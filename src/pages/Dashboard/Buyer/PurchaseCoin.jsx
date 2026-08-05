@@ -1,20 +1,20 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Coins, Sparkles, ArrowRight } from "lucide-react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
-import { loadStripe } from "@stripe/stripe-js";
 import useAuth from "../../../hooks/useAuth";
 import CoinPackage from "../../../components/Dashboard/CoinPackage";
 import PaymentInformation from "../../../components/Dashboard/PaymentInformation";
-import PurchaseModal from "../../../components/Modals/PurchaseModal";
 import PageHeader from "../../../components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import PurchaseCoinSkeleton from "../../../components/ui/PurchaseCoinSkeleton";
 import PageTitle from "../../../components/PageTitle";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+const PurchaseModal = lazy(() =>
+  import("../../../components/Modals/PurchaseModal"),
+);
 
 const coinPackages = [
   { id: "starter", coins: 100, price: 10 },
@@ -50,11 +50,6 @@ const PurchaseCoin = () => {
         payment_date: new Date().toISOString(),
         payment_method: "stripe",
         status: "completed",
-      });
-
-      await axiosSecure.patch(`/user/update-coins/${user?.email}`, {
-        coinsToUpdate: totalCoins,
-        status: "increase",
       });
 
       refetchCoins();
@@ -142,17 +137,19 @@ const PurchaseCoin = () => {
 
       <PaymentInformation />
 
-      <PurchaseModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedPackage(null);
-        }}
-        package={selectedPackage}
-        onPurchase={handlePurchase}
-        processing={processing}
-        stripePromise={stripePromise}
-      />
+      {isModalOpen && selectedPackage && (
+        <Suspense fallback={null}>
+          <PurchaseModal
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+              setSelectedPackage(null);
+            }}
+            package={selectedPackage}
+            onPurchase={handlePurchase}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

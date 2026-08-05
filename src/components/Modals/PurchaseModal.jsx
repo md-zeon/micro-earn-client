@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Coins, CreditCard, User, PackageCheck } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../Form/CheckoutForm";
@@ -11,14 +12,15 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 
-const PurchaseModal = ({
-  isOpen,
-  onClose,
-  package: pkg,
-  onPurchase,
-  stripePromise,
-}) => {
+const loadStripeLazy = () =>
+  import("@stripe/stripe-js").then(({ loadStripe }) =>
+    loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY),
+  );
+
+const PurchaseModal = ({ isOpen, onClose, package: pkg, onPurchase }) => {
   const { user } = useAuth();
+  const [stripePromise] = useState(() => loadStripeLazy());
+
   if (!isOpen || !pkg) return null;
 
   const totalCoins = pkg.coins + (pkg.bonus || 0);

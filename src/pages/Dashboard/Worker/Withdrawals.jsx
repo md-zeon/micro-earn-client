@@ -41,11 +41,6 @@ const Withdrawals = () => {
 				status: "pending",
 			});
 
-			await axiosSecure.patch(`/user/update-coins/${user?.email}`, {
-				coinsToUpdate: payload.coinToWithdraw,
-				status: "decrease",
-			});
-
 			toast.success("Withdrawal request submitted!");
 			setCoinToWithdraw(0);
 			refetchWithdrawals();

@@ -97,23 +97,11 @@ const TasksToReview = () => {
         status,
       });
 
-      if (status === "approved") {
-        await axiosSecure.patch(
-          `/user/update-coins/${submission.worker_email}`,
-          {
-            coinsToUpdate: submission.payable_amount,
-            status: "increase",
-          },
-        );
-        toast.success(
-          `Submission approved — ${submission.payable_amount} coins rewarded`,
-        );
-      } else {
-        await axiosSecure.patch(`/tasks/update-workers/${submission.task_id}`, {
-          status: "increase",
-        });
-        toast.success("Submission rejected");
-      }
+      toast.success(
+        status === "approved"
+          ? `Submission approved — ${submission.payable_amount} coins rewarded`
+          : "Submission rejected",
+      );
 
       if (selectedSubmission?._id === submission._id) {
         setSelectedSubmission(null);

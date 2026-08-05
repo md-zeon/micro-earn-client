@@ -77,9 +77,6 @@ const TaskDetails = () => {
 
     try {
       await axiosSecure.post("/submissions", submission);
-      await axiosSecure.patch(`/update-workers/${task?._id}`, {
-        status: "decrease",
-      });
       toast.success("Submission successful!");
       navigate("/dashboard/my-submissions");
     } catch (err) {
