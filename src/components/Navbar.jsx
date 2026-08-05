@@ -12,6 +12,10 @@ import {
   LogOut,
   Mail,
   Menu,
+  Plus,
+  UserRound,
+  Users,
+  Wallet,
   X,
 } from "lucide-react";
 import Container from "./Container";
@@ -53,13 +57,6 @@ const navItems = [
     icon: <Coins className="size-5" />,
   },
   {
-    to: "/dashboard",
-    label: "Dashboard",
-    description: "Manage tasks, submissions, and payments",
-    icon: <LayoutDashboard className="size-5" />,
-    requiresAuth: true,
-  },
-  {
     to: "/about",
     label: "About Us",
     description: "Our mission, values, and journey",
@@ -77,6 +74,25 @@ const desktopLinkClass = ({ isActive }) =>
   `relative px-3.5 py-2 text-sm font-medium transition-all duration-300 ${
     isActive ? "text-gradient" : "text-foreground/70 hover:text-gradient"
   }`;
+
+const roleMenuItems = {
+  worker: [
+    { to: "/dashboard/tasks-list", label: "Browse Tasks", icon: ListTodo },
+    { to: "/dashboard/withdrawals", label: "Withdrawals", icon: Wallet },
+  ],
+  buyer: [
+    { to: "/dashboard/add-task", label: "Post a Task", icon: Plus },
+    { to: "/dashboard/purchase-coin", label: "Purchase Coins", icon: Coins },
+  ],
+  admin: [
+    { to: "/dashboard/manage-users", label: "Manage Users", icon: Users },
+    {
+      to: "/dashboard/withdraw-requests",
+      label: "Withdraw Requests",
+      icon: Wallet,
+    },
+  ],
+};
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -110,9 +126,7 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   }, [logOut]);
 
-  const visibleNavItems = navItems.filter(
-    (item) => !item.requiresAuth || user,
-  );
+  const visibleNavItems = navItems.filter((item) => !item.requiresAuth || user);
 
   return (
     <>
@@ -175,11 +189,12 @@ const Navbar = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       nativeButton={false}
+                      aria-label="Open user menu"
                       render={
                         <motion.div
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="relative h-10 w-10 rounded-full"
+                          className="relative h-10 w-10 rounded-full ring-1 ring-transparent transition-shadow hover:ring-emerald-500/50"
                         >
                           <Button
                             variant="ghost"
@@ -199,42 +214,77 @@ const Navbar = () => {
                         </motion.div>
                       }
                     />
-                    <DropdownMenuContent
-                      className="w-56"
-                      align="end"
-                      forceMount
-                    >
-                      <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">
-                            {user?.displayName || "User"}
-                          </p>
-                          <p className="text-xs leading-none text-muted-foreground">
-                            {user?.email}
-                          </p>
+                    <DropdownMenuContent className="w-60" align="end">
+                      <DropdownMenuLabel>
+                        <div className="flex items-center gap-3 p-1">
+                          <Avatar className="size-9">
+                            <AvatarImage
+                              src={user?.photoURL || ""}
+                              alt={user?.displayName || "User"}
+                            />
+                            <AvatarFallback className="bg-muted">
+                              {user?.displayName?.charAt(0)?.toUpperCase() ||
+                                "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <p className="truncate text-sm font-semibold leading-none text-foreground">
+                              {user?.displayName || "User"}
+                            </p>
+                            <p className="truncate text-xs leading-none text-muted-foreground">
+                              {user?.email}
+                            </p>
+                            {isRoleLoading ? (
+                              <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+                            ) : (
+                              <Badge
+                                variant="secondary"
+                                className="capitalize text-emerald-700 dark:text-emerald-400"
+                              >
+                                {role}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="flex justify-between">
-                        <span>Role</span>
-                        {isRoleLoading ? (
-                          <div className="h-4 w-16 animate-pulse rounded bg-muted" />
-                        ) : (
-                          <Badge
-                            variant="secondary"
-                            className="bg-gradient text-white capitalize"
-                          >
-                            {role}
-                          </Badge>
-                        )}
+                      <DropdownMenuItem
+                        render={<Link to="/dashboard/profile" />}
+                        className="cursor-pointer"
+                      >
+                        <UserRound />
+                        My Profile
                       </DropdownMenuItem>
+                      <DropdownMenuItem
+                        render={<Link to="/dashboard" />}
+                        className="cursor-pointer"
+                      >
+                        <LayoutDashboard />
+                        Dashboard
+                      </DropdownMenuItem>
+                      {role && roleMenuItems[role] && (
+                        <>
+                          <DropdownMenuSeparator />
+                          {roleMenuItems[role].map((item) => (
+                            <DropdownMenuItem
+                              key={item.to}
+                              render={<Link to={item.to} />}
+                              className="cursor-pointer"
+                            >
+                              <item.icon />
+                              {item.label}
+                            </DropdownMenuItem>
+                          ))}
+                        </>
+                      )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
+                        variant="destructive"
                         onClick={logOut}
                         className="cursor-pointer"
                       >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
+                        <LogOut />
+                        Log out
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

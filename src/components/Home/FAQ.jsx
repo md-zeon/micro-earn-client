@@ -61,12 +61,12 @@ const FAQ = () => {
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="border-b-border/60 px-2 py-1 last:border-b-0"
+                className="rounded-xl border-b-border/60 transition-colors duration-300 data-open:bg-primary/[0.04] last:border-b-0"
               >
-                <AccordionTrigger className="py-4 text-base font-semibold hover:no-underline">
+                <AccordionTrigger className="gap-4 px-3 py-5 text-base font-semibold hover:bg-muted/30">
                   {question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
+                <AccordionContent className="px-3 pb-4 leading-relaxed text-muted-foreground">
                   {answer}
                 </AccordionContent>
               </AccordionItem>
