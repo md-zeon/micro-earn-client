@@ -55,7 +55,7 @@ const PaymentInformation = () => {
         <div className="rounded-lg bg-muted/50 p-4">
           <p className="mb-2 text-sm font-semibold">How it works:</p>
           <ol className="space-y-1.5">
-            {STEPS.map((step, i) => (
+            {STEPS.map((step) => (
               <li key={step} className="flex items-start gap-2 text-sm text-muted-foreground">
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
                   <Check className="size-3 text-primary" aria-hidden="true" />
