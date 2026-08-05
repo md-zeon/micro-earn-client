@@ -108,39 +108,64 @@ const BuyerOverview = () => {
           ) : !hasPieData ? (
             <ChartEmpty message="Create your first task to see the breakdown here." />
           ) : (
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={95}
-                    paddingAngle={3}
-                    dataKey="value"
-                    nameKey="name"
-                    strokeWidth={2}
-                  >
-                    {pieData.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={chart.colors[index % chart.colors.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<ChartTooltip chart={chart} />} />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    wrapperStyle={{
-                      fontSize: 12,
-                      color: chart.axis,
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <>
+              <div
+                className="h-72"
+                role="img"
+                aria-label={`Task distribution chart. ${pieData
+                  .map((d) => `${d.name}: ${d.value ?? 0}`)
+                  .join(", ")}.`}
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={95}
+                      paddingAngle={3}
+                      dataKey="value"
+                      nameKey="name"
+                      strokeWidth={2}
+                    >
+                      {pieData.map((_, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={chart.colors[index % chart.colors.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip chart={chart} />} />
+                    <Legend
+                      iconType="circle"
+                      iconSize={8}
+                      wrapperStyle={{
+                        fontSize: 12,
+                        color: chart.axis,
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <table className="sr-only">
+                <caption>Task distribution</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Status</th>
+                    <th scope="col">Count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pieData.map((entry) => (
+                    <tr key={entry.name}>
+                      <td>{entry.name}</td>
+                      <td>{entry.value ?? 0}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </CardContent>
       </Card>
@@ -162,43 +187,66 @@ const BuyerOverview = () => {
           ) : !paymentStats.length ? (
             <ChartEmpty message="Purchase coins to start tracking your spending." />
           ) : (
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={paymentStats}
-                  margin={{ top: 8, right: 12, bottom: 0, left: -18 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke={chart.grid}
-                    vertical={false}
-                  />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fontSize: 12, fill: chart.axis }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 12, fill: chart.axis }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={(v) => `$${v}`}
-                  />
-                  <Tooltip content={<ChartTooltip chart={chart} />} />
-                  <Line
-                    type="monotone"
-                    dataKey="payments"
-                    name="Spend"
-                    stroke={chart.colors[0]}
-                    strokeWidth={2.5}
-                    dot={{ r: 3, fill: chart.colors[0] }}
-                    activeDot={{ r: 5 }}
-                    className="drop-shadow-sm"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            <>
+              <div
+                className="h-72"
+                role="img"
+                aria-label="Payments over time chart showing your monthly coin purchase spend."
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={paymentStats}
+                    margin={{ top: 8, right: 12, bottom: 0, left: -18 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={chart.grid}
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="name"
+                      tick={{ fontSize: 12, fill: chart.axis }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: chart.axis }}
+                      axisLine={false}
+                      tickLine={false}
+                      tickFormatter={(v) => `$${v}`}
+                    />
+                    <Tooltip content={<ChartTooltip chart={chart} />} />
+                    <Line
+                      type="monotone"
+                      dataKey="payments"
+                      name="Spend"
+                      stroke={chart.colors[0]}
+                      strokeWidth={2.5}
+                      dot={{ r: 3, fill: chart.colors[0] }}
+                      activeDot={{ r: 5 }}
+                      className="drop-shadow-sm"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <table className="sr-only">
+                <caption>Payments over time</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Month</th>
+                    <th scope="col">Spend</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paymentStats.map((entry) => (
+                    <tr key={entry.name}>
+                      <td>{entry.name}</td>
+                      <td>${entry.payments}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </CardContent>
       </Card>

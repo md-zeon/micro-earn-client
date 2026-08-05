@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -20,6 +21,10 @@ const ReviewSubmissionModal = ({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Submission Details</DialogTitle>
+          <DialogDescription>
+            Review this submission and approve or reject it. Approval credits
+            the worker's coins immediately.
+          </DialogDescription>
         </DialogHeader>
         <div className="py-4 space-y-3">
           <div>

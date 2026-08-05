@@ -36,4 +36,10 @@ export default defineConfig([
       'react/jsx-uses-vars': 'error',
     },
   },
+  {
+    files: ['src/components/ui/**/*.{js,jsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

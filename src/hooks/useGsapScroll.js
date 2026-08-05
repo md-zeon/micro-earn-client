@@ -1,13 +1,17 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import usePrefersReducedMotion from "./usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const useGsapScroll = (selector, animation = {}) => {
   const ref = useRef(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const elements = ref.current?.querySelectorAll
       ? ref.current.querySelectorAll(selector)
       : ref.current;
@@ -36,7 +40,7 @@ const useGsapScroll = (selector, animation = {}) => {
     }, ref);
 
     return () => ctx.revert();
-  }, [selector, animation]);
+  }, [selector, animation, prefersReducedMotion]);
 
   return ref;
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { LuArrowRight, LuCalendar, LuCoins, LuUser } from "react-icons/lu";
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -95,9 +95,9 @@ const FeaturedTasks = () => {
                 }}
                 whileHover={{ y: -8 }}
               >
-                <Card
-                  className="group flex h-full cursor-pointer flex-col p-6 transition-colors duration-300 hover:border-emerald-500/40"
-                  onClick={() => navigate(`/task-details/${task._id}`)}
+                <Link
+                  to={`/task-details/${task._id}`}
+                  className="group flex h-full flex-col gap-4 overflow-hidden rounded-xl bg-card p-6 text-sm text-card-foreground ring-1 ring-foreground/10 transition-colors duration-300 hover:ring-emerald-500/40"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="line-clamp-2 text-lg font-semibold tracking-tight">
@@ -109,11 +109,11 @@ const FeaturedTasks = () => {
                     </Badge>
                   </div>
 
-                  <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
                     {task.task_detail}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">
                       <LuUser className="size-4 text-emerald-500" />
                       {task.required_workers} workers needed
@@ -124,26 +124,19 @@ const FeaturedTasks = () => {
                     </span>
                   </div>
 
-                  <div className="mt-6 flex items-center justify-between border-t border-border/60 pt-4">
+                  <div className="flex items-center justify-between border-t border-border/60 pt-4">
                     <span className="text-xs text-muted-foreground">
                       Posted by{" "}
                       <span className="font-semibold text-foreground">
                         {task.buyer_name}
                       </span>
                     </span>
-                    <Button
-                      size="sm"
-                      className="rounded-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/task-details/${task._id}`);
-                      }}
-                    >
+                    <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
                       See details
                       <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                    </Button>
+                    </span>
                   </div>
-                </Card>
+                </Link>
               </motion.div>
             ))}
           </div>

@@ -19,7 +19,7 @@ import PageTitle from "../../components/PageTitle";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signInUser, user: authUser } = useAuth();
+  const { signInUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 

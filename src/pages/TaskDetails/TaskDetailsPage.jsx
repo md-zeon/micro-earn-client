@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { useLoaderData, useNavigate, useParams } from "react-router";
+import { useLoaderData, useNavigate, useParams, Link } from "react-router";
 import {
   LuArrowRight,
   LuBadgeCheck,
@@ -68,10 +68,10 @@ const InfoRow = ({ icon, label, children }) => (
   </div>
 );
 
-const RelatedTaskCard = ({ task, onOpen }) => (
-  <Card
-    className="group flex h-full cursor-pointer flex-col overflow-hidden p-0 transition-colors duration-300 hover:border-emerald-500/40"
-    onClick={() => onOpen(task._id)}
+const RelatedTaskCard = ({ task }) => (
+  <Link
+    to={`/task-details/${task._id}`}
+    className="group flex h-full flex-col gap-4 overflow-hidden rounded-xl bg-card text-sm text-card-foreground ring-1 ring-foreground/10 transition-colors duration-300 hover:ring-emerald-500/40"
   >
     <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent">
       {task.task_image_url ? (
@@ -103,20 +103,13 @@ const RelatedTaskCard = ({ task, onOpen }) => (
           <LuUsers className="size-3.5 text-emerald-500" />
           {task.required_workers} slots left
         </span>
-        <Button
-          size="sm"
-          className="rounded-full"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpen(task._id);
-          }}
-        >
+        <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
           Details
           <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Button>
+        </span>
       </div>
     </div>
-  </Card>
+  </Link>
 );
 
 const TaskDetailsPage = () => {
@@ -194,7 +187,6 @@ const TaskDetailsPage = () => {
   const filled = Math.max(0, totalWorkers - task.required_workers);
   const filledPct =
     totalWorkers > 0 ? Math.min(100, Math.round((filled / totalWorkers) * 100)) : 0;
-  const openTask = (taskId) => navigate(`/task-details/${taskId}`);
   const handleApply = () =>
     user
       ? navigate(`/dashboard/task-details/${task._id}`)
@@ -493,7 +485,7 @@ const TaskDetailsPage = () => {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  <RelatedTaskCard task={item} onOpen={openTask} />
+                  <RelatedTaskCard task={item} />
                 </motion.div>
               ))
             ) : (

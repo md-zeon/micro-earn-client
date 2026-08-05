@@ -3,6 +3,7 @@ import { LuBellRing, LuMail, LuSend, LuShieldCheck } from "react-icons/lu";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { motion } from "motion/react";
 
 const Newsletter = () => {
@@ -50,8 +51,12 @@ const Newsletter = () => {
               className="mt-8 flex w-full max-w-xl flex-col gap-3 sm:flex-row"
             >
               <div className="relative flex-1">
+                <Label htmlFor="newsletter-email" className="sr-only">
+                  Email address
+                </Label>
                 <LuMail className="absolute top-1/2 left-4 -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input
+                  id="newsletter-email"
                   type="email"
                   placeholder="Enter your email address"
                   value={email}

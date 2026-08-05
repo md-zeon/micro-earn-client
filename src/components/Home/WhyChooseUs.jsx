@@ -66,13 +66,13 @@ const WhyChooseUs = () => {
                   <h3 className="text-xl font-semibold tracking-tight">
                     Fast, transparent payouts
                   </h3>
-                  <p className="text-sm text-white/70">
+                  <p className="text-sm text-white/90">
                     Your earnings, on your terms
                   </p>
                 </div>
               </div>
 
-              <p className="relative mt-6 max-w-md leading-relaxed text-white/85">
+              <p className="relative mt-6 max-w-md leading-relaxed text-white/90">
                 Once a task is approved, coins land in your wallet instantly.
                 Request a withdrawal any time and get paid quickly — with zero
                 hidden fees.
@@ -81,7 +81,7 @@ const WhyChooseUs = () => {
               {/* Mock payout card */}
               <div className="relative mt-8 rounded-2xl bg-white/10 p-5 backdrop-blur-md ring-1 ring-white/15">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-white/70">This week's earnings</span>
+                  <span className="text-white/90">This week's earnings</span>
                   <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium">
                     Live
                   </span>
@@ -93,7 +93,7 @@ const WhyChooseUs = () => {
                   </span>
                 </div>
                 <div className="mt-4 space-y-2">
-                  <div className="flex justify-between text-xs text-white/70">
+                  <div className="flex justify-between text-xs text-white/90">
                     <span>Withdrawal progress</span>
                     <span>64%</span>
                   </div>
@@ -104,7 +104,7 @@ const WhyChooseUs = () => {
                 </div>
               </div>
 
-              <p className="relative mt-6 text-xs text-white/60">
+              <p className="relative mt-6 text-xs text-white/90">
                 200 coin minimum · Stripe & bank transfer supported
               </p>
             </Card>

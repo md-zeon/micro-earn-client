@@ -77,9 +77,9 @@ const CheckoutForm = ({ pkg, onSuccess }) => {
           style: {
             base: {
               fontSize: "16px",
-              color: "#6a7282",
+              color: "var(--muted-foreground)",
             },
-            invalid: { color: "#fa755a" },
+            invalid: { color: "var(--destructive)" },
           },
         }}
       />

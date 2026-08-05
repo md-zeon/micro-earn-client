@@ -297,7 +297,10 @@ const Contact = () => {
                       What's this about?
                     </Label>
                     <Select required>
-                      <SelectTrigger className="h-12 w-full rounded-xl border-white/20 bg-white/10 text-white focus-visible:border-white/40 focus-visible:ring-white/20">
+                      <SelectTrigger
+                        id="subject"
+                        className="h-12 w-full rounded-xl border-white/20 bg-white/10 text-white focus-visible:border-white/40 focus-visible:ring-white/20"
+                      >
                         <SelectValue placeholder="Choose a reason" />
                       </SelectTrigger>
                       <SelectContent>

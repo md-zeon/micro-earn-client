@@ -42,6 +42,9 @@ const WorkerOverview = () => {
 	];
 
 	const total = pieData.reduce((sum, d) => sum + (d.value ?? 0), 0);
+	const pieSummary = pieData
+		.map((d) => `${d.name}: ${d.value ?? 0}`)
+		.join(", ");
 
 	return (
 		<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -56,43 +59,66 @@ const WorkerOverview = () => {
 					{isLoading ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
-						<div className="h-72">
-							<ResponsiveContainer
-								width="100%"
-								height="100%"
+						<>
+							<div
+								className="h-72"
+								role="img"
+								aria-label={`Submission distribution chart. ${pieSummary}.`}
 							>
-								<PieChart>
-									<Pie
-										data={pieData}
-										cx="50%"
-										cy="50%"
-										outerRadius={90}
-										innerRadius={50}
-										dataKey="value"
-										paddingAngle={2}
-										label={({ name, percent }) =>
-											total > 0 && percent > 0
-												? `${name}: ${(percent * 100).toFixed(0)}%`
-												: ""
-										}
-										isAnimationActive={true}
-									>
-										{pieData.map((entry) => (
-											<Cell
-												key={entry.name}
-												fill={CHART_COLORS[entry.name?.toLowerCase()] ?? "#94a3b8"}
-											/>
-										))}
-									</Pie>
-									<Tooltip
-										contentStyle={{
-											borderRadius: "0.75rem",
-											fontSize: "0.875rem",
-										}}
-									/>
-								</PieChart>
-							</ResponsiveContainer>
-						</div>
+								<ResponsiveContainer
+									width="100%"
+									height="100%"
+								>
+									<PieChart>
+										<Pie
+											data={pieData}
+											cx="50%"
+											cy="50%"
+											outerRadius={90}
+											innerRadius={50}
+											dataKey="value"
+											paddingAngle={2}
+											label={({ name, percent }) =>
+												total > 0 && percent > 0
+													? `${name}: ${(percent * 100).toFixed(0)}%`
+													: ""
+											}
+											isAnimationActive={true}
+										>
+											{pieData.map((entry) => (
+												<Cell
+													key={entry.name}
+													fill={CHART_COLORS[entry.name?.toLowerCase()] ?? "#94a3b8"}
+												/>
+											))}
+										</Pie>
+										<Tooltip
+											contentStyle={{
+												borderRadius: "0.75rem",
+												fontSize: "0.875rem",
+											}}
+										/>
+									</PieChart>
+								</ResponsiveContainer>
+							</div>
+							<table className="sr-only">
+								<caption>Submission distribution</caption>
+								<thead>
+									<tr>
+										<th scope="col">Status</th>
+										<th scope="col">Count</th>
+									</tr>
+								</thead>
+								<tbody>
+									{pieData.map((entry) => (
+										<tr key={entry.name}>
+											<td>{entry.name}</td>
+											<td>{entry.value}</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</>
 					)}
 				</CardContent>
 			</Card>
@@ -108,48 +134,71 @@ const WorkerOverview = () => {
 					{isLoading ? (
 						<Skeleton className="h-72 w-full" />
 					) : (
-						<div className="h-72">
-							<ResponsiveContainer
-								width="100%"
-								height="100%"
+						<>
+							<div
+								className="h-72"
+								role="img"
+								aria-label="Earnings over time chart showing monthly approved earnings."
 							>
-								<LineChart data={earningsData}>
-									<CartesianGrid
-										strokeDasharray="3 3"
-										className="stroke-border"
-									/>
-									<XAxis
-										dataKey="name"
-										tick={{ fontSize: 12 }}
-										tickLine={false}
-										axisLine={false}
-										stroke="currentColor"
-										className="text-muted-foreground"
-									/>
-									<YAxis
-										tick={{ fontSize: 12 }}
-										tickLine={false}
-										axisLine={false}
-										stroke="currentColor"
-										className="text-muted-foreground"
-									/>
-									<Tooltip
-										contentStyle={{
-											borderRadius: "0.75rem",
-											fontSize: "0.875rem",
-										}}
-									/>
-									<Line
-										type="monotone"
-										dataKey="earnings"
-										stroke="#10b981"
-										strokeWidth={3}
-										dot={{ r: 4 }}
-										activeDot={{ r: 6 }}
-									/>
-								</LineChart>
-							</ResponsiveContainer>
-						</div>
+								<ResponsiveContainer
+									width="100%"
+									height="100%"
+								>
+									<LineChart data={earningsData}>
+										<CartesianGrid
+											strokeDasharray="3 3"
+											className="stroke-border"
+										/>
+										<XAxis
+											dataKey="name"
+											tick={{ fontSize: 12 }}
+											tickLine={false}
+											axisLine={false}
+											stroke="currentColor"
+											className="text-muted-foreground"
+										/>
+										<YAxis
+											tick={{ fontSize: 12 }}
+											tickLine={false}
+											axisLine={false}
+											stroke="currentColor"
+											className="text-muted-foreground"
+										/>
+										<Tooltip
+											contentStyle={{
+												borderRadius: "0.75rem",
+												fontSize: "0.875rem",
+											}}
+										/>
+										<Line
+											type="monotone"
+											dataKey="earnings"
+											stroke="#10b981"
+											strokeWidth={3}
+											dot={{ r: 4 }}
+											activeDot={{ r: 6 }}
+										/>
+									</LineChart>
+								</ResponsiveContainer>
+							</div>
+							<table className="sr-only">
+								<caption>Earnings over time</caption>
+								<thead>
+									<tr>
+										<th scope="col">Month</th>
+										<th scope="col">Earnings</th>
+									</tr>
+								</thead>
+								<tbody>
+									{earningsData.map((entry) => (
+										<tr key={entry.name}>
+											<td>{entry.name}</td>
+											<td>{entry.earnings}</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</>
 					)}
 				</CardContent>
 			</Card>

@@ -82,43 +82,62 @@ const AdminOverview = () => {
         </CardHeader>
         <CardContent>
           {hasUserData ? (
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                  <Pie
-                    data={userStats}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="45%"
-                    innerRadius={56}
-                    outerRadius={86}
-                    paddingAngle={3}
-                    strokeWidth={0}
-                    aria-label="User distribution by role"
-                  >
-                    {userStats.map((entry, index) => (
-                      <Cell
-                        key={entry.name}
-                        fill={
-                          chart.colors[index % chart.colors.length] ??
-                          DEFAULT_USER_COLORS[index % DEFAULT_USER_COLORS.length]
-                        }
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    content={<ChartTooltip colors={chart.colors} />}
-                    cursor={{ fill: "transparent" }}
-                  />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    wrapperStyle={{ fontSize: 12 }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <>
+              <div className="h-72" role="img" aria-label="User distribution by role">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                    <Pie
+                      data={userStats}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="45%"
+                      innerRadius={56}
+                      outerRadius={86}
+                      paddingAngle={3}
+                      strokeWidth={0}
+                      aria-label="User distribution by role"
+                    >
+                      {userStats.map((entry, index) => (
+                        <Cell
+                          key={entry.name}
+                          fill={
+                            chart.colors[index % chart.colors.length] ??
+                            DEFAULT_USER_COLORS[index % DEFAULT_USER_COLORS.length]
+                          }
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      content={<ChartTooltip colors={chart.colors} />}
+                      cursor={{ fill: "transparent" }}
+                    />
+                    <Legend
+                      iconType="circle"
+                      iconSize={8}
+                      wrapperStyle={{ fontSize: 12 }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <table className="sr-only">
+                <caption>User distribution</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Role</th>
+                    <th scope="col">Count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {userStats.map((entry) => (
+                    <tr key={entry.name}>
+                      <td>{entry.name}</td>
+                      <td>{entry.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           ) : (
             <div className="flex h-72 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
               No user data available yet.
@@ -136,41 +155,64 @@ const AdminOverview = () => {
         </CardHeader>
         <CardContent>
           {hasTaskData ? (
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={taskStats}
-                  margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
-                  aria-label="Tasks created per month"
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} vertical={false} />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fontSize: 11, fill: chart.axis }}
-                    axisLine={false}
-                    tickLine={false}
-                    interval="preserveStartEnd"
-                  />
-                  <YAxis
-                    tick={{ fontSize: 11, fill: chart.axis }}
-                    axisLine={false}
-                    tickLine={false}
-                    allowDecimals={false}
-                  />
-                  <Tooltip
-                    content={<ChartTooltip colors={chart.colors} />}
-                    cursor={{ fill: "transparent" }}
-                  />
-                  <Bar
-                    dataKey="tasks"
-                    name="Tasks"
-                    fill={chart.colors[0]}
-                    radius={[6, 6, 0, 0]}
-                    maxBarSize={48}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <>
+              <div
+                className="h-72"
+                role="img"
+                aria-label="Tasks created per month"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={taskStats}
+                    margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
+                    aria-label="Tasks created per month"
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} vertical={false} />
+                    <XAxis
+                      dataKey="name"
+                      tick={{ fontSize: 11, fill: chart.axis }}
+                      axisLine={false}
+                      tickLine={false}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis
+                      tick={{ fontSize: 11, fill: chart.axis }}
+                      axisLine={false}
+                      tickLine={false}
+                      allowDecimals={false}
+                    />
+                    <Tooltip
+                      content={<ChartTooltip colors={chart.colors} />}
+                      cursor={{ fill: "transparent" }}
+                    />
+                    <Bar
+                      dataKey="tasks"
+                      name="Tasks"
+                      fill={chart.colors[0]}
+                      radius={[6, 6, 0, 0]}
+                      maxBarSize={48}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <table className="sr-only">
+                <caption>Tasks created per month</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Month</th>
+                    <th scope="col">Tasks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {taskStats.map((entry) => (
+                    <tr key={entry.name}>
+                      <td>{entry.name}</td>
+                      <td>{entry.tasks}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           ) : (
             <div className="flex h-72 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
               No task data available yet.

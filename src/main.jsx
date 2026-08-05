@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router";
+import { MotionConfig } from "motion/react";
 import router from "./Routes/Routes.jsx";
 import AuthProvider from "./providers/AuthProvider.jsx";
 import { Toaster } from "sonner";
@@ -17,7 +18,9 @@ createRoot(document.getElementById("root")).render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <TooltipProvider>
-            <RouterProvider router={router} />
+            <MotionConfig reducedMotion="user">
+              <RouterProvider router={router} />
+            </MotionConfig>
           </TooltipProvider>
         </AuthProvider>
       </QueryClientProvider>

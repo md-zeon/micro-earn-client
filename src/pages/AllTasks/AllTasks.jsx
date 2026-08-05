@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import {
   LuArrowRight,
   LuCalendar,
@@ -53,13 +53,13 @@ const getDeadlineInfo = (deadline) => {
   return { days, className: "text-muted-foreground", endingSoon: false };
 };
 
-const TaskCard = ({ task, onOpen }) => {
+const TaskCard = ({ task }) => {
   const deadline = getDeadlineInfo(task.completion_deadline);
 
   return (
-    <Card
-      className="group flex h-full cursor-pointer flex-col overflow-hidden p-0 transition-colors duration-300 hover:border-emerald-500/40"
-      onClick={() => onOpen(task._id)}
+    <Link
+      to={`/task-details/${task._id}`}
+      className="group flex h-full flex-col gap-4 overflow-hidden rounded-xl bg-card text-sm text-card-foreground ring-1 ring-foreground/10 transition-colors duration-300 hover:ring-emerald-500/40"
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent">
         {task.task_image_url ? (
@@ -118,20 +118,13 @@ const TaskCard = ({ task, onOpen }) => {
             <LuUser className="size-3.5 shrink-0 text-emerald-500" />
             <span className="truncate">{task.buyer_name}</span>
           </span>
-          <Button
-            size="sm"
-            className="shrink-0 rounded-full"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpen(task._id);
-            }}
-          >
+          <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
             Details
             <LuArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-          </Button>
+          </span>
         </div>
       </div>
-    </Card>
+    </Link>
   );
 };
 
@@ -160,7 +153,6 @@ const AllTasks = () => {
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [sortOption, setSortOption] = useState("highest-pay");
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -225,7 +217,6 @@ const AllTasks = () => {
   }, [tasks, query, sortOption]);
 
   const searching = query.trim() !== "";
-  const openTask = (id) => navigate(`/task-details/${id}`);
 
   return (
     <Container>
@@ -424,7 +415,7 @@ const AllTasks = () => {
                       ease: [0.22, 1, 0.36, 1],
                     }}
                   >
-                    <TaskCard task={task} onOpen={openTask} />
+                    <TaskCard task={task} />
                   </motion.div>
                 ))}
               </AnimatePresence>

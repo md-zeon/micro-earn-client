@@ -37,7 +37,7 @@ const CTA = () => {
             <h2 className="mx-auto mt-6 max-w-2xl text-3xl font-extrabold tracking-tight text-balance md:text-5xl">
               Ready to turn your spare time into real income?
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/90 md:text-lg">
               Whether you want to earn from micro-tasks or get work done
               quickly, MicroEarn makes it simple. Sign up free and start today.
             </p>
@@ -64,7 +64,7 @@ const CTA = () => {
               </Link>
             </div>
 
-            <p className="mt-8 flex items-center justify-center gap-2 text-sm text-white/60">
+            <p className="mt-8 flex items-center justify-center gap-2 text-sm text-white/90">
               <LuArrowRight className="size-4 rotate-90" />
               No fees to join · Cancel anytime · Withdraw from 200 coins
             </p>

@@ -10,6 +10,7 @@ import {
   LuCoins,
   LuUserCheck,
 } from "react-icons/lu";
+import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "./SectionHeading";
 
@@ -42,8 +43,11 @@ const steps = [
 const HowItWorks = () => {
   const sectionRef = useRef(null);
   const lineRef = useRef(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         lineRef.current,
@@ -62,7 +66,7 @@ const HowItWorks = () => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <section

@@ -10,11 +10,8 @@ const AvailableCoins = () => {
   }
 
   return (
-    <Badge
-      variant="secondary"
-      className="bg-gradient text-white hover:opacity-80 gap-1"
-    >
-      <LuCoins className="h-3 w-3" />
+    <Badge variant="secondary" className="gap-1">
+      <LuCoins className="h-3 w-3 text-emerald-500" />
       {microCoins ?? 0}
       <span className="hidden sm:inline text-xs">Micro Coins</span>
     </Badge>

@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LuArrowRight, LuCoins, LuPlay, LuSparkles } from "react-icons/lu";
+import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { Avatar, AvatarFallback, AvatarImage, AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
@@ -25,8 +26,11 @@ const trustAvatars = [
 
 const Hero = () => {
   const sectionRef = useRef(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const ctx = gsap.context(() => {
       // Intro timeline
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -73,7 +77,7 @@ const Hero = () => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <section

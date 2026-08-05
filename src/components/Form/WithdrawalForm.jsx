@@ -35,7 +35,7 @@ const WithdrawalForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label>Payment System</Label>
+        <Label htmlFor="payment-system">Payment System</Label>
         <Select
           value={paymentSystem}
           onValueChange={(v) => {
@@ -43,7 +43,7 @@ const WithdrawalForm = ({
             setAccountNumber("");
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger id="payment-system">
             <SelectValue placeholder="Select payment system" />
           </SelectTrigger>
           <SelectContent>
@@ -56,8 +56,9 @@ const WithdrawalForm = ({
       </div>
 
       <div className="space-y-2">
-        <Label>Account Number</Label>
+        <Label htmlFor="account-number">Account Number</Label>
         <Input
+          id="account-number"
           value={accountNumber}
           onChange={(e) => setAccountNumber(e.target.value)}
           placeholder="Enter your account number"
@@ -66,8 +67,9 @@ const WithdrawalForm = ({
       </div>
 
       <div className="space-y-2">
-        <Label>Coins to Withdraw</Label>
+        <Label htmlFor="coin-amount">Coins to Withdraw</Label>
         <Input
+          id="coin-amount"
           type="number"
           value={coinToWithdraw}
           onChange={(e) => setCoinToWithdraw(e.target.value)}
