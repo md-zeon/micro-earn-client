@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import useAuth from "../../hooks/useAuth";
+import { getGoogleAuthError, saveUserInDb } from "../../api/utils";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
@@ -31,10 +33,17 @@ const GoogleSignIn = ({ loading, setLoading, from = "/dashboard", label }) => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+      await saveUserInDb({
+        uid: result.user.uid,
+        name: result.user.displayName || "User",
+        email: result.user.email,
+        photoURL: result.user.photoURL || "",
+      });
       navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
+      toast.error(getGoogleAuthError(err?.code));
     } finally {
       setLoading(false);
     }
