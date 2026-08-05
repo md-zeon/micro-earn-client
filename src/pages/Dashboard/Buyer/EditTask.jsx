@@ -79,7 +79,7 @@ const EditTask = () => {
   } = useForm({
     resolver: zodResolver(editTaskSchema),
     mode: "onTouched",
-    defaultValues: {
+    values: {
       task_title: task?.task_title || "",
       task_detail: task?.task_detail || "",
       submission_info: task?.submission_info || "",

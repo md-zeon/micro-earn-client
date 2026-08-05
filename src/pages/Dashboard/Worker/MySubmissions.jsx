@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { FileText } from "lucide-react";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import MySubmissionsSkeleton from "../../../components/ui/MySubmissionsSkeleton";
 import PageTitle from "../../../components/PageTitle";
 import StatusBadge from "../../../components/shared/StatusBadge";
+import SubmissionDetailsDialog from "../../../components/shared/SubmissionDetailsDialog";
 import {
 	Card,
 	CardHeader,
@@ -20,7 +20,6 @@ import {
 	TableCell,
 } from "../../../components/ui/table";
 import { Button } from "../../../components/ui/button";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../../../components/ui/tooltip";
 import { cn } from "../../../lib/utils";
 
 const itemsPerPage = 5;
@@ -140,14 +139,7 @@ const MySubmissions = () => {
 											<StatusBadge status={submission?.status} />
 										</TableCell>
 										<TableCell>
-											<Tooltip>
-												<TooltipTrigger render={<Button variant="ghost" size="icon" />}>
-													<FileText className="size-4 text-sky-500" />
-												</TooltipTrigger>
-												<TooltipContent className="max-w-sm whitespace-pre-line">
-													{submission?.submission_details || "No details provided"}
-												</TooltipContent>
-											</Tooltip>
+											<SubmissionDetailsDialog submission={submission} />
 										</TableCell>
 									</TableRow>
 								))}

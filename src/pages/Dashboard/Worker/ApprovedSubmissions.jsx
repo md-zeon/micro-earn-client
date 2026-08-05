@@ -1,8 +1,9 @@
-import { FileText, BadgeCheck } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
 import PageTitle from "../../../components/PageTitle";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 import StatusBadge from "../../../components/shared/StatusBadge";
+import SubmissionDetailsDialog from "../../../components/shared/SubmissionDetailsDialog";
 import {
 	Card,
 	CardHeader,
@@ -18,8 +19,6 @@ import {
 	TableHead,
 	TableCell,
 } from "../../../components/ui/table";
-import { Button } from "../../../components/ui/button";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../../../components/ui/tooltip";
 
 const ApprovedSubmissions = () => {
 	const { submissions: data, isLoading } = useWorkerSubmissions();
@@ -103,17 +102,7 @@ const ApprovedSubmissions = () => {
 											<StatusBadge status="approved" />
 										</TableCell>
 										<TableCell>
-											<Tooltip>
-												<TooltipTrigger
-													render={<Button variant="ghost" size="icon" />}
-												>
-													<FileText className="size-4 text-sky-500" />
-												</TooltipTrigger>
-												<TooltipContent className="max-w-sm whitespace-pre-line">
-													{submission.submission_details ||
-														"No details provided"}
-												</TooltipContent>
-											</Tooltip>
+											<SubmissionDetailsDialog submission={submission} />
 										</TableCell>
 									</TableRow>
 								))}
