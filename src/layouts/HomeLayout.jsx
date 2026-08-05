@@ -11,7 +11,7 @@ const HomeLayout = () => {
   return (
     <>
       <Navbar />
-      <main className="min-h-[calc(100vh-23rem)]">
+      <main id="main-content" className="min-h-[calc(100vh-23rem)]">
         {state === "loading" ? (
           <Loader />
         ) : (

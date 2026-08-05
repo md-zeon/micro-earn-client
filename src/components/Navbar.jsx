@@ -1,12 +1,18 @@
-import {
-  LuLogOut,
-  LuMenu,
-  LuX,
-  LuExternalLink,
-  LuHandCoins,
-} from "react-icons/lu";
+import { useState, useEffect, useCallback } from "react";
 import { Link, NavLink } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
+import {
+  LuArrowRight,
+  LuExternalLink,
+  LuHouse,
+  LuInfo,
+  LuLayoutDashboard,
+  LuListTodo,
+  LuLogOut,
+  LuMail,
+  LuMenu,
+  LuX,
+} from "react-icons/lu";
 import Container from "./Container";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
@@ -24,8 +30,46 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useState, useEffect } from "react";
+
+const navItems = [
+  {
+    to: "/",
+    label: "Home",
+    description: "Back to the MicroEarn homepage",
+    icon: <LuHouse className="size-5" />,
+    end: true,
+  },
+  {
+    to: "/all-tasks",
+    label: "All Tasks",
+    description: "Browse tasks and earn coins",
+    icon: <LuListTodo className="size-5" />,
+  },
+  {
+    to: "/dashboard",
+    label: "Dashboard",
+    description: "Manage tasks, submissions, and payments",
+    icon: <LuLayoutDashboard className="size-5" />,
+    requiresAuth: true,
+  },
+  {
+    to: "/about",
+    label: "About Us",
+    description: "Our mission, values, and journey",
+    icon: <LuInfo className="size-5" />,
+  },
+  {
+    to: "/contact",
+    label: "Contact Us",
+    description: "Support, partnerships, and feedback",
+    icon: <LuMail className="size-5" />,
+  },
+];
+
+const desktopLinkClass = ({ isActive }) =>
+  `relative px-3.5 py-2 text-sm font-medium transition-all duration-300 ${
+    isActive ? "text-gradient" : "text-foreground/70 hover:text-gradient"
+  }`;
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -34,252 +78,366 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinkClass = ({ isActive }) =>
-    `relative px-3 py-2 text-sm font-medium transition-all duration-300 ${
-      isActive ? "text-gradient" : "text-foreground/70 hover:text-gradient"
-    }`;
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = original;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [mobileMenuOpen]);
 
-  const navLinks = (
-    <>
-      <NavLink to="/" className={navLinkClass}>
-        {({ isActive }) => (
-          <>
-            Home
-            {isActive && (
-              <motion.span
-                layoutId="navbar-indicator"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient rounded-full"
-              />
-            )}
-          </>
-        )}
-      </NavLink>
-      <NavLink to="/all-tasks" className={navLinkClass}>
-        {({ isActive }) => (
-          <>
-            All Tasks
-            {isActive && (
-              <motion.span
-                layoutId="navbar-indicator"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient rounded-full"
-              />
-            )}
-          </>
-        )}
-      </NavLink>
-      {user && (
-        <NavLink to="/dashboard" className={navLinkClass}>
-          {({ isActive }) => (
-            <>
-              Dashboard
-              {isActive && (
-                <motion.span
-                  layoutId="navbar-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient rounded-full"
-                />
-              )}
-            </>
-          )}
-        </NavLink>
-      )}
-      <NavLink to="/about" className={navLinkClass}>
-        {({ isActive }) => (
-          <>
-            About Us
-            {isActive && (
-              <motion.span
-                layoutId="navbar-indicator"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient rounded-full"
-              />
-            )}
-          </>
-        )}
-      </NavLink>
-      <NavLink to="/contact" className={navLinkClass}>
-        {({ isActive }) => (
-          <>
-            Contact Us
-            {isActive && (
-              <motion.span
-                layoutId="navbar-indicator"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient rounded-full"
-              />
-            )}
-          </>
-        )}
-      </NavLink>
-    </>
+  const handleLogout = useCallback(() => {
+    logOut();
+    setMobileMenuOpen(false);
+  }, [logOut]);
+
+  const visibleNavItems = navItems.filter(
+    (item) => !item.requiresAuth || user,
   );
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/80 backdrop-blur-xl shadow-lg border-b border-border/50"
-          : "bg-transparent"
-      }`}
-    >
-      <Container>
-        <div className="flex items-center justify-between py-4 px-2">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[70] focus:rounded-full focus:bg-gradient focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
+
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "border-b border-border/50 bg-background/80 shadow-lg backdrop-blur-xl"
+            : "bg-transparent"
+        }`}
+      >
+        <Container>
+          <nav
+            aria-label="Main navigation"
+            className={`flex items-center justify-between px-2 transition-all duration-300 ${
+              scrolled ? "py-2.5" : "py-4"
+            }`}
+          >
             <Logo />
-          </div>
 
-          {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-1">{navLinks}</div>
-
-          {/* Right section */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {user ? (
-              <>
-                <AvailableCoins />
-                <ThemeController />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="relative h-9 w-9 rounded-full"
-                    >
-                      <Button
-                        variant="ghost"
-                        className="h-9 w-9 rounded-full p-0"
-                      >
-                        <Avatar className="h-9 w-9">
-                          <AvatarImage
-                            src={user?.photoURL || ""}
-                            alt={user?.displayName || "User"}
-                          />
-                          <AvatarFallback className="bg-muted">
-                            {user?.displayName?.charAt(0)?.toUpperCase() || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                      </Button>
-                    </motion.div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          {user?.displayName || "User"}
-                        </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {user?.email}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="flex justify-between">
-                      <span>Role</span>
-                      {isRoleLoading ? (
-                        <div className="h-4 w-16 bg-muted animate-pulse rounded" />
-                      ) : (
-                        <Badge
-                          variant="secondary"
-                          className="capitalize bg-gradient text-white"
-                        >
-                          {role}
-                        </Badge>
+            {/* Desktop nav links */}
+            <div className="hidden items-center gap-1 lg:flex">
+              {visibleNavItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={desktopLinkClass}
+                >
+                  {({ isActive }) => (
+                    <>
+                      {item.label}
+                      {isActive && (
+                        <motion.span
+                          layoutId="navbar-indicator"
+                          className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-gradient"
+                        />
                       )}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={logOut}
-                      className="cursor-pointer"
-                    >
-                      <LuLogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <>
-                <div className="hidden sm:block">
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </div>
+
+            {/* Right section */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {user ? (
+                <>
+                  <AvailableCoins />
                   <ThemeController />
-                </div>
-                <div className="flex gap-2">
-                  <Link to="/login">
-                    <Button variant="ghost" className="rounded-full">
-                      Login
-                    </Button>
-                  </Link>
-                  <Link to="/register">
-                    <Button className="rounded-full bg-gradient text-white hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300">
-                      Register
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="relative h-10 w-10 rounded-full"
+                      >
+                        <Button
+                          variant="ghost"
+                          className="h-10 w-10 rounded-full p-0"
+                        >
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage
+                              src={user?.photoURL || ""}
+                              alt={user?.displayName || "User"}
+                            />
+                            <AvatarFallback className="bg-muted">
+                              {user?.displayName?.charAt(0)?.toUpperCase() ||
+                                "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                        </Button>
+                      </motion.div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-56"
+                      align="end"
+                      forceMount
+                    >
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {user?.displayName || "User"}
+                          </p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            {user?.email}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="flex justify-between">
+                        <span>Role</span>
+                        {isRoleLoading ? (
+                          <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+                        ) : (
+                          <Badge
+                            variant="secondary"
+                            className="bg-gradient text-white capitalize"
+                          >
+                            {role}
+                          </Badge>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={logOut}
+                        className="cursor-pointer"
+                      >
+                        <LuLogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
+              ) : (
+                <>
+                  <div className="hidden sm:block">
+                    <ThemeController />
+                  </div>
+                  <div className="flex gap-2">
+                    <Link to="/login">
+                      <Button variant="ghost" className="rounded-full">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button className="rounded-full bg-gradient text-white shadow-lg transition-all duration-300 hover:opacity-90 hover:shadow-xl">
+                        Register
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              )}
 
-            <a
-              href="https://github.com/md-zeon/micro-earn-client"
-              target="_blank"
-              rel="noreferrer"
-              className="hidden lg:inline-flex"
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-full hidden xl:flex items-center gap-1.5"
+              <a
+                href="https://github.com/md-zeon/micro-earn-client"
+                target="_blank"
+                rel="noreferrer"
+                className="hidden xl:inline-flex"
               >
-                <LuExternalLink className="h-3 w-3" />
-                GitHub
-              </Button>
-            </a>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden items-center gap-1.5 rounded-full xl:flex"
+                >
+                  <LuExternalLink className="h-3 w-3" />
+                  GitHub
+                </Button>
+              </a>
 
-            {/* Mobile menu trigger */}
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
+              {/* Mobile menu trigger */}
+              <Button
+                variant="ghost"
+                className="gap-1.5 rounded-full lg:hidden"
+                aria-label="Open menu"
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <LuMenu className="h-5 w-5" />
+                <span className="text-xs font-medium">Menu</span>
+              </Button>
+            </div>
+          </nav>
+        </Container>
+      </motion.header>
+
+      {/* Full-screen mobile menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
+            className="fixed inset-0 z-[60] flex flex-col bg-background/98 backdrop-blur-2xl lg:hidden"
+          >
+            {/* Mobile header */}
+            <Container>
+              <div className="flex items-center justify-between px-2 py-4">
+                <Logo />
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden rounded-full"
+                  className="h-10 w-10 rounded-full focus-visible:ring-2 focus-visible:ring-emerald-500"
+                  aria-label="Close menu"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  <LuMenu className="h-5 w-5" />
+                  <motion.div
+                    initial={{ rotate: 0 }}
+                    animate={{ rotate: 90 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <LuX className="h-6 w-6" />
+                  </motion.div>
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[350px]">
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 50 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex flex-col gap-6 mt-8"
-                >
-                  <div className="flex flex-col gap-4">{navLinks}</div>
+              </div>
+            </Container>
 
-                  {!user && (
-                    <div className="flex flex-col gap-3 pt-4 border-t border-border">
+            {/* Mobile nav items */}
+            <div className="flex-1 overflow-y-auto">
+              <Container>
+                <nav
+                  className="mt-4 flex flex-col gap-1"
+                  aria-label="Mobile navigation"
+                >
+                  {visibleNavItems.map((item, i) => (
+                    <motion.div
+                      key={item.to}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.04 * i,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
+                      <NavLink
+                        to={item.to}
+                        end={item.end}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={({ isActive }) =>
+                          `group flex items-center justify-between rounded-2xl px-4 py-4 transition-all duration-200 ${
+                            isActive
+                              ? "bg-gradient-soft text-emerald-600 dark:text-emerald-400"
+                              : "text-foreground/70 hover:bg-muted/60 active:bg-muted"
+                          }`
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            <span className="flex items-center gap-4">
+                              <span
+                                className={`flex size-11 items-center justify-center rounded-xl transition-all duration-300 ${
+                                  isActive
+                                    ? "bg-gradient text-white shadow-lg shadow-emerald-500/25"
+                                    : "bg-muted text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500/15"
+                                }`}
+                              >
+                                {item.icon}
+                              </span>
+                              <div className="flex flex-col">
+                                <span className="text-lg font-semibold tracking-tight">
+                                  {item.label}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {item.description}
+                                </span>
+                              </div>
+                            </span>
+                            <LuArrowRight
+                              className={`size-4 transition-all duration-200 ${
+                                isActive
+                                  ? "translate-x-0 opacity-100"
+                                  : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-60"
+                              }`}
+                            />
+                          </>
+                        )}
+                      </NavLink>
+                    </motion.div>
+                  ))}
+                </nav>
+
+                {/* Mobile bottom actions */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 16 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.04 * visibleNavItems.length + 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="mt-auto flex flex-col gap-3 pb-10 pt-6"
+                >
+                  <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-muted/30 px-5 py-3.5">
+                    <span className="text-sm font-medium text-foreground/80">
+                      Theme
+                    </span>
+                    <ThemeController />
+                  </div>
+
+                  {user ? (
+                    <div className="flex flex-col gap-2.5">
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button className="h-12 w-full justify-center rounded-2xl bg-gradient text-white text-sm font-medium shadow-lg shadow-emerald-500/25">
+                          Go to Dashboard
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        onClick={handleLogout}
+                        className="h-12 w-full justify-center rounded-2xl text-sm font-medium text-destructive hover:bg-destructive/10"
+                      >
+                        <LuLogOut className="mr-2 h-4 w-4" />
+                        Log out
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2.5">
                       <Link
                         to="/login"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         <Button
-                          variant="ghost"
-                          className="w-full justify-start"
+                          variant="outline"
+                          className="h-12 w-full justify-center rounded-2xl text-sm font-medium"
                         >
-                          Login
+                          Log in
                         </Button>
                       </Link>
                       <Link
                         to="/register"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        <Button className="w-full justify-start bg-gradient text-white">
-                          Register
+                        <Button className="h-12 w-full justify-center rounded-2xl bg-gradient text-white text-sm font-medium shadow-lg shadow-emerald-500/25">
+                          Get Started
                         </Button>
                       </Link>
                     </div>
@@ -294,19 +452,19 @@ const Navbar = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full justify-start gap-2"
+                      className="h-11 w-full justify-center gap-2 rounded-2xl text-sm font-medium"
                     >
                       <LuExternalLink className="h-4 w-4" />
                       Join As Developer
                     </Button>
                   </a>
                 </motion.div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </Container>
-    </motion.nav>
+              </Container>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
