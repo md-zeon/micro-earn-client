@@ -1,32 +1,14 @@
-import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { LuCoins, LuMedal, LuStar } from "react-icons/lu";
-import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import SectionHeading from "./SectionHeading";
+import useBestWorkers from "@/hooks/useBestWorkers";
 
 const BestWorkers = () => {
-  const [workers, setWorkers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getTopWorkers = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/user/top-workers`,
-        );
-        setWorkers(res.data);
-      } catch (error) {
-        console.error("Failed to fetch top workers:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getTopWorkers();
-  }, []);
+  const { workers, isLoading } = useBestWorkers();
 
   return (
     <section className="relative overflow-hidden bg-muted/30 py-20 md:py-28">
@@ -39,7 +21,7 @@ const BestWorkers = () => {
           description="Real people, real results. These workers consistently deliver top quality and earn the most on the platform."
         />
 
-        {loading ? (
+        {isLoading ? (
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <Card key={i} className="p-6">

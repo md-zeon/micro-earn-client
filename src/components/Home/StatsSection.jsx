@@ -1,61 +1,43 @@
-import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { LuCircleCheck, LuListTodo, LuUsers, LuWallet } from "react-icons/lu";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import CountUp from "../shared/CountUp";
 import SectionHeading from "./SectionHeading";
+import usePlatformStats from "@/hooks/usePlatformStats";
 
 const StatsSection = () => {
-  const [stats, setStats] = useState({
+  const { stats, isLoading } = usePlatformStats();
+  const safeStats = stats ?? {
     totalWorkers: 0,
     totalBuyers: 0,
     totalTasks: 0,
     totalCoins: 0,
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/statistics`,
-        );
-        const data = await response.json();
-        setStats({ ...data });
-      } catch (error) {
-        console.error("Failed to fetch stats:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
+  };
 
   const statItems = [
     {
       icon: <LuUsers className="size-6" />,
       label: "Active workers",
-      value: stats.totalWorkers,
+      value: safeStats.totalWorkers,
       suffix: "+",
     },
     {
       icon: <LuListTodo className="size-6" />,
       label: "Tasks completed",
-      value: stats.totalTasks,
+      value: safeStats.totalTasks,
       suffix: "+",
     },
     {
       icon: <LuWallet className="size-6" />,
       label: "Coins earned",
-      value: stats.totalCoins,
+      value: safeStats.totalCoins,
       suffix: "+",
     },
     {
       icon: <LuCircleCheck className="size-6" />,
       label: "Satisfied buyers",
-      value: stats.totalBuyers,
+      value: safeStats.totalBuyers,
       suffix: "+",
     },
   ];
@@ -90,7 +72,7 @@ const StatsSection = () => {
                     {item.icon}
                   </div>
                   <div className="mt-5 text-3xl font-bold tracking-tight md:text-4xl">
-                    {loading ? (
+                    {isLoading ? (
                       <Skeleton className="h-9 w-20" />
                     ) : (
                       <span className="text-gradient">

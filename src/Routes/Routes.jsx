@@ -43,7 +43,6 @@ const router = createBrowserRouter([
 			{
 				path: "/all-tasks",
 				Component: AllTasks,
-				loader: () => fetch(`${import.meta.env.VITE_API_URL}/tasks`),
 			},
 			{
 				path: "/task-details/:id",

@@ -8,6 +8,7 @@ import {
   FileText,
   ImagePlus,
   Loader2,
+  Tag,
   Wallet,
   ShieldCheck,
 } from "lucide-react";
@@ -21,6 +22,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -31,6 +39,17 @@ import { cn } from "@/lib/utils";
 import PageTitle from "../../../components/PageTitle";
 
 const today = new Date().toISOString().split("T")[0];
+
+const TASK_CATEGORIES = [
+  "Design",
+  "Writing",
+  "Research",
+  "Data",
+  "Development",
+  "Marketing",
+  "Video",
+  "Other",
+];
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -44,6 +63,7 @@ const AddTask = () => {
     payableAmount: "",
     completion_deadline: "",
     submission_info: "",
+    category: "",
   });
   const [taskImageUrl, setTaskImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -87,6 +107,10 @@ const AddTask = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (insufficientFunds || totalCost <= 0) return;
+    if (!form.category) {
+      toast.error("Please select a category");
+      return;
+    }
 
     setLoading(true);
     const newTask = {
@@ -96,6 +120,7 @@ const AddTask = () => {
       payable_amount: payableAmount,
       completion_deadline: form.completion_deadline,
       submission_info: form.submission_info.trim(),
+      category: form.category,
       task_image_url: taskImageUrl,
       posted_by: user?.email,
       buyer_name: user?.displayName,
@@ -156,6 +181,32 @@ const AddTask = () => {
                   maxLength={120}
                   required
                 />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="category">Category *</Label>
+                <Select
+                  value={form.category}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, category: value }))
+                  }
+                >
+                  <SelectTrigger
+                    id="category"
+                    className="w-full"
+                    aria-label="Task category"
+                  >
+                    <Tag className="size-4 text-muted-foreground" aria-hidden="true" />
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TASK_CATEGORIES.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-1.5">

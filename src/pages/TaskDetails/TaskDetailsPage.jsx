@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useParams, Link } from "react-router";
 import {
   LuArrowRight,
@@ -118,46 +118,30 @@ const TaskDetailsPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const [related, setRelated] = useState([]);
-  const [relatedLoading, setRelatedLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    const fetchRelated = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/tasks?limit=6&exclude=${id}`,
-        );
-        if (!response.ok) throw new Error("Failed to load related tasks");
-        const data = await response.json();
-        if (!active) return;
-        const list = Array.isArray(data) ? data : [];
-        const base = task?.payable_amount || 0;
-        setRelated(
-          list
-            .sort((a, b) => {
-              const aSame = a.buyer_name === task?.buyer_name ? 1 : 0;
-              const bSame = b.buyer_name === task?.buyer_name ? 1 : 0;
-              if (aSame !== bSame) return bSame - aSame;
-              return (
-                Math.abs((a.payable_amount || 0) - base) -
-                Math.abs((b.payable_amount || 0) - base)
-              );
-            })
-            .slice(0, 3),
-        );
-      } catch (error) {
-        console.error("Failed to fetch related tasks:", error);
-        if (active) setRelated([]);
-      } finally {
-        if (active) setRelatedLoading(false);
-      }
-    };
-    fetchRelated();
-    return () => {
-      active = false;
-    };
-  }, [id, task?.buyer_name, task?.payable_amount]);
+  const { data: related = [], isLoading: relatedLoading } = useQuery({
+    queryKey: ["related-tasks", id],
+    queryFn: async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/tasks?limit=6&exclude=${id}`,
+      );
+      if (!response.ok) throw new Error("Failed to load related tasks");
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : data?.data ?? [];
+      const base = task?.payable_amount || 0;
+      return list
+        .sort((a, b) => {
+          const aSame = a.buyer_name === task?.buyer_name ? 1 : 0;
+          const bSame = b.buyer_name === task?.buyer_name ? 1 : 0;
+          if (aSame !== bSame) return bSame - aSame;
+          return (
+            Math.abs((a.payable_amount || 0) - base) -
+            Math.abs((b.payable_amount || 0) - base)
+          );
+        })
+        .slice(0, 3);
+    },
+    staleTime: 60_000,
+  });
 
   if (!task) {
     return (

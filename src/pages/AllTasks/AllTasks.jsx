@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import {
   LuArrowRight,
   LuCalendar,
@@ -36,6 +38,8 @@ const SORT_OPTIONS = [
   { value: "deadline-soon", label: "Deadline: soonest" },
   { value: "deadline-far", label: "Deadline: farthest" },
 ];
+
+const PAGE_SIZE = 9;
 
 const getDeadlineInfo = (deadline) => {
   const due = new Date(deadline);
@@ -148,75 +152,127 @@ const TaskCardSkeleton = () => (
 );
 
 const AllTasks = () => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [query, setQuery] = useState("");
-  const [sortOption, setSortOption] = useState("highest-pay");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+  const sortOption = searchParams.get("sort") ?? "highest-pay";
+  const category = searchParams.get("category") ?? "";
+  const page = parseInt(searchParams.get("page"), 10) || 1;
+
+  const [queryInput, setQueryInput] = useState(search);
+  const [prevSearch, setPrevSearch] = useState(search);
+  if (prevSearch !== search) {
+    setPrevSearch(search);
+    setQueryInput(search);
+  }
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/tasks`);
-        if (!response.ok) throw new Error("Failed to load tasks");
-        const data = await response.json();
-        setTasks(data);
-      } catch (err) {
-        console.error("Failed to fetch tasks:", err);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTasks();
-  }, []);
+    const timer = setTimeout(() => {
+      if (queryInput.trim() === search) return;
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (queryInput.trim()) next.set("search", queryInput.trim());
+          else next.delete("search");
+          next.delete("page");
+          return next;
+        },
+        { replace: true },
+      );
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [queryInput, search, setSearchParams]);
 
-  const stats = useMemo(() => {
-    const openSlots = tasks.reduce(
-      (sum, task) => sum + (task.required_workers || 0),
-      0,
+  const updateParams = (patch) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        Object.entries(patch).forEach(([key, value]) => {
+          if (value === null || value === "" || value === undefined)
+            next.delete(key);
+          else next.set(key, String(value));
+        });
+        next.delete("page");
+        return next;
+      },
+      { replace: true },
     );
-    const highestPay = tasks.reduce(
-      (max, task) => Math.max(max, task.payable_amount || 0),
-      0,
-    );
-    return { open: tasks.length, openSlots, highestPay };
-  }, [tasks]);
+  };
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const list = q
-      ? tasks.filter(
-          (task) =>
-            (task.task_title || "").toLowerCase().includes(q) ||
-            (task.task_detail || "").toLowerCase().includes(q),
-        )
-      : [...tasks];
+  const goToPage = useCallback(
+    (nextPage) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set("page", String(nextPage));
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
-    switch (sortOption) {
-      case "deadline-soon":
-        return list.sort(
-          (a, b) =>
-            new Date(a.completion_deadline) - new Date(b.completion_deadline),
-        );
-      case "deadline-far":
-        return list.sort(
-          (a, b) =>
-            new Date(b.completion_deadline) - new Date(a.completion_deadline),
-        );
-      case "lowest-pay":
-        return list.sort(
-          (a, b) => (a.payable_amount || 0) - (b.payable_amount || 0),
-        );
-      case "highest-pay":
-      default:
-        return list.sort(
-          (a, b) => (b.payable_amount || 0) - (a.payable_amount || 0),
-        );
-    }
-  }, [tasks, query, sortOption]);
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["all-tasks", { search, sort: sortOption, category, page }],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/tasks`,
+        {
+          params: {
+            search: search || undefined,
+            sort: sortOption,
+            category: category || undefined,
+            page,
+            limit: PAGE_SIZE,
+          },
+        },
+      );
+      return data;
+    },
+    staleTime: 60_000,
+  });
 
-  const searching = query.trim() !== "";
+  const tasks = data?.data ?? [];
+  const total = data?.total ?? 0;
+  const pageSize = data?.pageSize ?? PAGE_SIZE;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const aggregate = data?.aggregate ?? { totalSlots: 0, maxPay: 0 };
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ["task-categories"],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/tasks/task-categories`,
+      );
+      return Array.isArray(data) ? data : data?.data ?? [];
+    },
+    staleTime: 5 * 60_000,
+  });
+  const categories = categoriesData ?? [];
+
+  useEffect(() => {
+    if (!isLoading && page > totalPages) goToPage(totalPages);
+  }, [totalPages, page, isLoading, goToPage]);
+
+  const searching = search !== "";
+
+  const stats = {
+    open: total,
+    openSlots: aggregate.totalSlots,
+    highestPay: aggregate.maxPay,
+  };
+
+  const clearFilters = () => {
+    setQueryInput("");
+    updateParams({ search: "", category: "" });
+  };
+
+  const chipClassName = (active) =>
+    `rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+      active
+        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+        : "border-border/60 text-muted-foreground hover:border-emerald-500/30 hover:text-foreground"
+    }`;
 
   return (
     <Container>
@@ -290,8 +346,8 @@ const AllTasks = () => {
           <div className="relative flex-1">
             <LuSearch className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              value={queryInput}
+              onChange={(e) => setQueryInput(e.target.value)}
               placeholder="Search tasks by title or description…"
               className="h-9 rounded-full pl-9"
               aria-label="Search tasks"
@@ -299,7 +355,7 @@ const AllTasks = () => {
             {searching && (
               <button
                 type="button"
-                onClick={() => setQuery("")}
+                onClick={clearFilters}
                 className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 aria-label="Clear search"
               >
@@ -309,7 +365,10 @@ const AllTasks = () => {
           </div>
 
           <div className="w-full sm:w-64">
-            <Select value={sortOption} onValueChange={setSortOption}>
+            <Select
+              value={sortOption}
+              onValueChange={(value) => updateParams({ sort: value })}
+            >
               <SelectTrigger className="w-full rounded-full">
                 <LuSlidersHorizontal className="size-4 text-muted-foreground" />
                 <SelectValue placeholder="Sort by" />
@@ -325,33 +384,55 @@ const AllTasks = () => {
           </div>
         </motion.div>
 
+        <div className="mt-4 flex flex-wrap items-center gap-2" aria-label="Filter by category">
+          <button
+            type="button"
+            onClick={() => updateParams({ category: "" })}
+            className={chipClassName(category === "")}
+          >
+            All
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() =>
+                updateParams({ category: category === c ? "" : c })
+              }
+              className={chipClassName(category === c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+
         <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
           <p>
             Showing{" "}
             <span className="font-semibold text-foreground">
-              {loading ? "…" : filtered.length}
+              {isLoading ? "…" : tasks.length}
             </span>{" "}
-            of {loading ? "…" : tasks.length} tasks
+            of {isLoading ? "…" : total} tasks
           </p>
-          {searching && (
+          {(searching || category) && (
             <button
               type="button"
-              onClick={() => setQuery("")}
+              onClick={clearFilters}
               className="text-xs font-medium text-emerald-600 transition-colors hover:text-emerald-500 dark:text-emerald-400"
             >
-              Clear search
+              Clear filters
             </button>
           )}
         </div>
 
         <div className="relative mt-8">
-          {loading ? (
+          {isLoading ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <TaskCardSkeleton key={i} />
               ))}
             </div>
-          ) : error ? (
+          ) : isError ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 px-6 py-20 text-center">
               <div className="flex size-16 items-center justify-center rounded-2xl bg-rose-500/10">
                 <LuInbox className="size-8 text-rose-500" />
@@ -364,46 +445,41 @@ const AllTasks = () => {
               <Button
                 variant="outline"
                 className="mt-6 rounded-full"
-                onClick={() => {
-                  setError(false);
-                  setLoading(true);
-                  fetch(`${import.meta.env.VITE_API_URL}/tasks`)
-                    .then((res) => res.json())
-                    .then(setTasks)
-                    .catch(() => setError(true))
-                    .finally(() => setLoading(false));
-                }}
+                onClick={() => refetch()}
               >
                 <LuLoader className="size-4" />
                 Retry
               </Button>
             </div>
-          ) : filtered.length === 0 ? (
+          ) : tasks.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 px-6 py-20 text-center">
               <div className="flex size-16 items-center justify-center rounded-2xl bg-emerald-500/10">
                 <LuInbox className="size-8 text-emerald-500" />
               </div>
               <h3 className="mt-5 text-xl font-semibold">No tasks found</h3>
               <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                {searching
-                  ? "No tasks match your search. Try a different keyword or clear the filter."
+                {searching || category
+                  ? "No tasks match your filters. Try a different keyword or clear the filters."
                   : "No tasks are available right now — new tasks are posted regularly. Check back soon."}
               </p>
-              {searching && (
+              {(searching || category) && (
                 <Button
                   variant="outline"
                   className="mt-6 rounded-full"
-                  onClick={() => setQuery("")}
+                  onClick={clearFilters}
                 >
-                  Clear search
+                  Clear filters
                   <LuX className="size-4" />
                 </Button>
               )}
             </div>
           ) : (
-            <motion.div layout className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <motion.div
+              layout
+              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+            >
               <AnimatePresence mode="popLayout">
-                {filtered.map((task) => (
+                {tasks.map((task) => (
                   <motion.div
                     layout
                     key={task._id}
@@ -422,6 +498,34 @@ const AllTasks = () => {
             </motion.div>
           )}
         </div>
+
+        {!isLoading && !isError && totalPages > 1 && (
+          <div className="mt-10 flex items-center justify-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              disabled={page <= 1}
+              onClick={() => goToPage(page - 1)}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page{" "}
+              <span className="font-semibold text-foreground">{page}</span> of{" "}
+              {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              disabled={page >= totalPages}
+              onClick={() => goToPage(page + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </Container>
   );

@@ -1,35 +1,16 @@
-import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { LuArrowRight, LuCalendar, LuCoins, LuUser } from "react-icons/lu";
-import axios from "axios";
 import { useNavigate, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import SectionHeading from "./SectionHeading";
+import useFeaturedTasks from "@/hooks/useFeaturedTasks";
 
 const FeaturedTasks = () => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { tasks, isLoading } = useFeaturedTasks();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchFeaturedTasks = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/tasks?limit=6`,
-        );
-        setTasks(res.data);
-      } catch (error) {
-        console.error("Failed to fetch featured tasks:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedTasks();
-  }, []);
 
   return (
     <section className="relative overflow-hidden py-20 md:py-28">
@@ -55,7 +36,7 @@ const FeaturedTasks = () => {
           </Button>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <Card key={i} className="p-6">
