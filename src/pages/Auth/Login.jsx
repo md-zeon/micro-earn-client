@@ -3,33 +3,54 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import useAuth from "../../hooks/useAuth";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+import useAuth from "../../hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Eye, EyeOff, Loader2, User } from "lucide-react";
-import FormField from "../../components/Form/FormField";
-import GoogleSignIn from "./GoogleSignIn";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PageTitle from "../../components/PageTitle";
+import AuthLayout from "./AuthLayout";
+import AuthInput from "./AuthInput";
+import { PasswordField } from "./PasswordField";
+import GoogleSignIn from "./GoogleSignIn";
+
+const EMAIL_KEY = "microearn-remembered-email";
 
 const loginSchema = z.object({
-  email: z.string().trim().min(1, "Email is required").email("Enter a valid email address"),
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .email("Enter a valid email address"),
   password: z
     .string()
+    .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters"),
 });
 
+const demos = [
+  { role: "Worker", email: "demo@worker.com", password: "demo123" },
+  { role: "Buyer", email: "demo@buyer.com", password: "demo123" },
+  { role: "Admin", email: "admin@microearn.com", password: "Admin@1234" },
+];
+
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signInUser } = useAuth();
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [sendingReset, setSendingReset] = useState(false);
+  const { signInUser, resetPassword } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -39,16 +60,33 @@ const Login = () => {
     ? "/dashboard"
     : location?.state?.from?.pathname || "/dashboard";
 
+  const rememberedEmail =
+    typeof window !== "undefined"
+      ? window.localStorage.getItem(EMAIL_KEY) || ""
+      : "";
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(loginSchema), mode: "onTouched" });
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: "onTouched",
+    defaultValues: {
+      email: rememberedEmail,
+      remember: Boolean(rememberedEmail),
+    },
+  });
 
   const onSubmit = async (data) => {
     setLoading(true);
     try {
       await signInUser(data.email, data.password);
+      if (data.remember) {
+        window.localStorage.setItem(EMAIL_KEY, data.email);
+      } else {
+        window.localStorage.removeItem(EMAIL_KEY);
+      }
       toast.success("Welcome back!");
       navigate(from, { replace: true });
     } catch (err) {
@@ -73,78 +111,127 @@ const Login = () => {
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!forgotEmail.trim()) {
+      toast.error("Please enter your email address first.");
+      return;
+    }
+    setSendingReset(true);
+    try {
+      await resetPassword(forgotEmail.trim());
+      toast.success("Password reset link sent! Check your inbox.");
+      setForgotEmail("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not send reset link. Check the email and try again.");
+    } finally {
+      setSendingReset(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background to-muted/20">
+    <>
       <PageTitle
         title="Login"
-        description="Sign in to your MicroEarn account."
+        description="Sign in to your MicroEarn account and continue earning."
       />
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="text-center space-y-1">
-          <div className="flex justify-center mb-2">
-            <div className="p-3 bg-gradient rounded-full">
-              <User className="h-6 w-6 text-white" />
-            </div>
+      <AuthLayout>
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+          <div className="mb-6">
+            <h1 className="text-xl font-bold tracking-tight">Welcome back</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Sign in to continue with MicroEarn.
+            </p>
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription>Sign in to your MicroEarn account</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <FormField
-              label="Email"
-              id="email"
-              error={errors.email?.message}
-              required
-            >
-              <Input
-                type="email"
-                placeholder="your@email.com"
-                autoComplete="email"
-                {...register("email")}
-              />
-            </FormField>
 
-            <FormField
-              label="Password"
-              id="password"
-              error={errors.password?.message}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+            <AuthInput
+              id="email"
+              label="Email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
               required
-              trailing={
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-0 top-0 h-full px-3"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
-              }
-            >
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                autoComplete="current-password"
-                className="pr-10"
+              error={errors.email?.message}
+              {...register("email")}
+            />
+
+            <div className="space-y-2">
+              <PasswordField
+                id="password"
+                label="Password"
+                required
+                error={errors.password?.message}
                 {...register("password")}
               />
-            </FormField>
+              <div className="flex items-center justify-between pt-0.5">
+                <label className="flex cursor-pointer select-none items-center gap-2 text-sm text-muted-foreground">
+                  <Checkbox {...register("remember")} />
+                  Remember me
+                </label>
+                <Dialog>
+                  <DialogTrigger
+                    render={
+                      <button
+                        type="button"
+                        className="text-sm font-semibold text-emerald-600 underline-offset-4 transition-colors hover:underline dark:text-emerald-400"
+                      >
+                        Forgot password?
+                      </button>
+                    }
+                  />
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-base">
+                        Reset your password
+                      </DialogTitle>
+                      <DialogDescription>
+                        Enter the email associated with your account and
+                        we&apos;ll send you a link to reset your password.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <AuthInput
+                      id="forgot-email"
+                      label="Email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                    />
+                    <DialogFooter>
+                      <DialogClose render={<Button variant="outline" />}>
+                        Cancel
+                      </DialogClose>
+                      <Button
+                        type="button"
+                        onClick={handleResetPassword}
+                        disabled={sendingReset}
+                        className="bg-gradient text-white"
+                      >
+                        {sendingReset && (
+                          <Loader2
+                            className="size-4 animate-spin"
+                            aria-hidden="true"
+                          />
+                        )}
+                        Send reset link
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
 
             <Button
               type="submit"
-              className="w-full bg-gradient text-white"
+              className="h-10 w-full rounded-lg bg-gradient"
               disabled={loading}
             >
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing In...
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  Signing in...
                 </>
               ) : (
                 "Sign In"
@@ -152,52 +239,47 @@ const Login = () => {
             </Button>
           </form>
 
-          {/* Demo Account Buttons */}
-          <div className="mt-6 space-y-3">
-            <p className="text-center text-sm text-muted-foreground">
-              Try a demo account:
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={loading}
-                onClick={() => handleDemoLogin("demo@worker.com", "demo123")}
-              >
-                Demo Worker
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={loading}
-                onClick={() => handleDemoLogin("demo@buyer.com", "demo123")}
-              >
-                Demo Buyer
-              </Button>
-            </div>
+          <div className="my-6 flex items-center gap-3">
+            <Separator className="flex-1" />
+            <span className="text-xs font-medium text-muted-foreground">
+              or continue with
+            </span>
+            <Separator className="flex-1" />
           </div>
 
-          <div className="mt-4">
-            <GoogleSignIn
-              loading={loading}
-              setLoading={setLoading}
-              from={from}
-            />
+          <GoogleSignIn loading={loading} setLoading={setLoading} from={from} />
+
+          <div className="mt-6 rounded-xl border border-dashed border-border p-3">
+            <p className="text-center text-xs font-medium text-muted-foreground">
+              Try a demo account
+            </p>
+            <div className="mt-2.5 flex flex-wrap justify-center gap-2">
+              {demos.map((demo) => (
+                <button
+                  key={demo.role}
+                  type="button"
+                  onClick={() => handleDemoLogin(demo.email, demo.password)}
+                  disabled={loading}
+                  className="rounded-lg border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-emerald-500/50 hover:bg-emerald-500/10 disabled:opacity-50"
+                >
+                  {demo.role}
+                </button>
+              ))}
+            </div>
           </div>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="text-gradient font-medium hover:underline"
-            >
-              Register
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          New to MicroEarn?{" "}
+          <Link
+            to="/register"
+            className="font-semibold text-emerald-600 underline-offset-4 transition-colors hover:underline dark:text-emerald-400"
+          >
+            Create a free account
+          </Link>
+        </p>
+      </AuthLayout>
+    </>
   );
 };
 

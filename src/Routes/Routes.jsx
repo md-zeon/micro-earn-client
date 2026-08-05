@@ -28,6 +28,8 @@ import Forbidden from "../pages/Forbidden/Forbidden";
 import NotFound from "../pages/NotFound/NotFound";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
+import Terms from "../pages/Terms/Terms";
+import Privacy from "../pages/Privacy/Privacy";
 import AllTasks from "../pages/AllTasks/AllTasks";
 import TaskDetailsPage from "../pages/TaskDetails/TaskDetailsPage";
 import TaskDetailsSkeleton from "../components/ui/TaskDetailsSkeleton";
@@ -78,6 +80,14 @@ const router = createBrowserRouter([
 			{
 				path: "/contact",
 				Component: Contact,
+			},
+			{
+				path: "/terms",
+				Component: Terms,
+			},
+			{
+				path: "/privacy",
+				Component: Privacy,
 			},
 			{
 				path: "/login",
