@@ -18,6 +18,7 @@ import {
   Wallet,
 } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
+import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +28,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
@@ -136,6 +138,8 @@ const groupLabel = {
 const AppSidebar = ({ role }) => {
   const { pathname } = useLocation();
   const { user, loading, logOut } = useAuth();
+  const { pendingRequests } = useWithdrawRequests({ enabled: role === "admin" });
+  const pendingWithdrawCount = pendingRequests?.length ?? 0;
 
   const isActive = (path, end) =>
     end ? pathname === path : pathname.startsWith(path);
@@ -165,7 +169,7 @@ const AppSidebar = ({ role }) => {
         <SidebarGroup>
           <SidebarGroupLabel>{groupLabel[role]}</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu aria-label={groupLabel[role]}>
               {(navItems[role] ?? []).map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
@@ -176,6 +180,13 @@ const AppSidebar = ({ role }) => {
                     <item.icon />
                     <span>{item.label}</span>
                   </SidebarMenuButton>
+                  {role === "admin" &&
+                    item.path === "/dashboard/withdraw-requests" &&
+                    pendingWithdrawCount > 0 && (
+                      <SidebarMenuBadge className="bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                        {pendingWithdrawCount}
+                      </SidebarMenuBadge>
+                    )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -185,7 +196,7 @@ const AppSidebar = ({ role }) => {
         <SidebarGroup>
           <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu aria-label="General links">
               {generalItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
