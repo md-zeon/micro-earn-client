@@ -1,219 +1,229 @@
 # MicroEarn - Client Side
 
-## Overview
+![React](https://img.shields.io/badge/React-19-blue)
+![Vite](https://img.shields.io/badge/Vite-7-green)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8)
+![shadcn/ui](https://img.shields.io/badge/shadcn--ui-000000)
+![React Router](https://img.shields.io/badge/React_Router-7-CA4245)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28)
+![Stripe](https://img.shields.io/badge/Stripe-635BFF)
+![Node](https://img.shields.io/badge/Node.js-22-green)
 
-The client side of MicroEarn is a responsive micro-tasking platform interface built with React.js and Tailwind CSS. It serves three primary user roles—Workers, Buyers, and Admins—allowing them to interact with tasks, submissions, and earnings through a user-friendly dashboard experience. The app integrates Firebase for authentication, uses React Router for seamless navigation, and communicates securely with the backend via Axios.
+## Live URL
 
-## 🌐 Live Site
+🔗 **Live Website:** [https://micro-earn-7be08.web.app/](https://micro-earn-7be08.web.app/)
 
-**URL:** [https://micro-earn-7be08.web.app/](https://micro-earn-7be08.web.app/)
+## Demo Credentials
 
-## 👤 Admin Credentials
-
-**Email:** [admin@microearn.com](mailto:admin@microearn.com)  
-**Password:** Admin@1234
-
----
-
-## ✨ Key Features
-
-- 🔐 **Role-Based Authentication** – Firebase authentication with Buyer, Worker, and Admin roles
-- 📋 **Task Creation** – Buyers can post tasks with descriptions, instructions, and required workers
-- 🨠 **Task Discovery** – Workers can browse tasks with filters by category, coins, deadline, etc.
-- 📝 **Task Submission** – Workers can submit proof with file upload and message
-- ✅ **Buyer Review System** – Buyers approve/reject submissions; coins awarded upon approval
-- 📤 **ImgBB Upload** – Workers upload task proof/images via ImgBB API
-- 💰 **Coin-Based Economy** – Buyers buy coins with Stripe, Workers earn coins from tasks
-- 💸 **Withdrawals** – Workers can withdraw coins (20 coins = $1, min 200 coins); status = pending until admin approval
-- 📊 **Dashboards** – Role-specific dashboards showing tasks, payments, coins, and submissions
-- 📥 **Notifications** – Real-time alerts for submission approvals, rejections, new tasks, and withdrawals
-- 🧑‍💼 **Admin Panel** – Manage users, tasks, and approve withdrawals
-- 📄 **Payment History** – Buyers see purchase history; Workers see withdrawals
-- 🛡️ **Secure Routes** – Route protection and role-based redirection
-- 🖼️ **Profile Management** – Edit name, profile photo, and track performance
-- 📱 **Responsive UI** – Fully responsive layout with TailwindCSS + DaisyUI
-- 📈 **Performance Analytics** – Track total coins earned, tasks completed, and payment history
-- 🪪 **Form Validation** – Clean forms using React Hook Form + custom validation
-- ⚙️ **Custom Hooks** – All role and auth logic separated into reusable hooks
+| Role | Email | Password |
+| -------- | -------- | -------- |
+| **Admin** | `admin@microearn.com` | `Admin@1234` |
+| **Buyer** | Create your own account | - |
+| **Worker** | Create your own account | - |
 
 ---
 
-## 📋 Feature Overview Table
+## Key Features
 
-| Feature                   | Description                                                         |
-| ------------------------- | ------------------------------------------------------------------- |
-| Role-Based Authentication | Separate login access for Workers, Buyers, and Admins               |
-| Task Creation             | Buyers can post detailed tasks with instructions and deadlines      |
-| Task Submission           | Workers can submit task proofs with image upload                    |
-| Buyer Review System       | Buyers approve or reject submissions; status updates in real-time   |
-| Worker Earnings           | Earn coins per approved task; track coin balance                    |
-| Coin-Based Economy        | Internal system where 20 coins = $1 for withdrawal                  |
-| Stripe Payments           | Buyers purchase coins securely using Stripe                         |
-| Withdrawals               | Workers can request to withdraw money after earning minimum coins   |
-| Admin Panel               | Manage users, tasks, and withdrawal requests                        |
-| Notifications             | Bell-based alert system for submissions, approvals, and withdrawals |
+- **🔐 Authentication** – Email/password registration & login with Firebase Authentication.
+- **⚡ Task Posting** – Buyers create tasks with images, descriptions, and deadlines. The required coin cost is deducted from the buyer's balance **server-side** on creation.
+- **📝 Rich Task Submissions** – Workers complete tasks and submit proof (image + details).
+- **💰 Coin-Based Economy** – Buyers purchase coins via **Stripe**; coins are credited idempotently through the Stripe webhook. Creating a task deducts coins; deleting an active task refunds unfilled slot costs.
+- **🖼️ Image Upload** – Workers upload proof images via **Cloudinary** (with **ImgBB** fallback).
+- **✅ Admin Panel** – Manage users, tasks, submissions, and approve/reject withdrawal requests.
+- **🔔 Notifications** – In-app notifications with mark-as-read / mark-all-read; unread count polling every 30 seconds.
+- **🛡️ Secure Routes** – Route protection and role-based redirection (Buyer / Worker / Admin).
+- **📊 Analytics Dashboard** – Track earnings, completed tasks, and payment history with Recharts.
+- **🎨 Modern UI** – Tailwind CSS v4 + **shadcn/ui** components with light/dark styling, smooth Motion animations, and a responsive design.
 
----
+## Feature Overview
 
-## 🛠️ Tech Stack
+| Feature | Description |
+| ------- | ----------- |
+| **User Authentication** | Firebase Auth handles registration, login, and protected routes. |
+| **Task Management** | Buyers can post, edit, and delete tasks with rich text details (TipTap). |
+| **Task Discovery** | Search, filter by category, and paginate through available tasks. |
+| **Submission System** | Workers submit proof; buyers review and approve/reject. |
+| **Coin-Based Economy** | Buyers purchase coins (Stripe), tasks cost coins, completions reward coins. |
+| **Withdrawal System** | Workers request withdrawals after reaching the minimum balance (20 coins = $1, min 200 coins). |
+| **Admin Panel** | Manage users, tasks, and withdrawal requests. |
+| **Payment History** | View Stripe purchase history and transaction records. |
+| **Profile Management** | Users can update their profile, and buyers can become workers (role switching). |
 
-### Frontend
+## Tech Stack
 
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![DaisyUI](https://img.shields.io/badge/DaisyUI-5A0FC8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://daisyui.com/)
-[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![Stripe](https://img.shields.io/badge/Stripe-008CDD?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
-[![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=react-query&logoColor=white)](https://tanstack.com/query)
-[![React Router](https://img.shields.io/badge/React%20Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)](https://reactrouter.com/)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-EF00FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
-[![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white)](https://react-hook-form.com/)
+- **React 19** – UI framework
+- **Vite 7** – Build tool & dev server
+- **Tailwind CSS v4** – Styling
+- **shadcn/ui + Base UI** – Component library & primitives
+- **React Router 7** – Client-side routing
+- **TanStack Query 5** – Server state management
+- **React Hook Form + Zod** – Form handling & validation
+- **Axios** – HTTP client
+- **Firebase** – Authentication
+- **Stripe** – Payment processing
+- **Recharts** – Charts
+- **TipTap** – Rich text editor
+- **Motion** – Animations
+- **Swiper** – Carousels
+- **GSAP** – Scroll animations
+- **Sonner** – Toasts
+- **react-helmet-async** – SEO / document head management
+- **lucide-react** – Icons
 
-### Backend
+## Pages and Routes
 
-[![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Firebase Admin](https://img.shields.io/badge/Firebase_Admin-FFA611?style=for-the-badge&logo=firebase&logoColor=white)](https://firebase.google.com/docs/admin)
-[![Stripe API](https://img.shields.io/badge/Stripe_API-008CDD?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/docs/api)
-[![dotenv](https://img.shields.io/badge/dotenv-8DD6F9?style=for-the-badge&logo=dotenv&logoColor=black)](https://www.npmjs.com/package/dotenv)
+### Public Pages
+| Route | Page |
+| ----- | ---- |
+| `/` | Home (Hero, Trust Bar, Stats, How It Works, Why Choose Us, Featured Tasks, Best Workers, Testimonials, FAQ, CTA, Newsletter) |
+| `/all-tasks` | Browse & search all tasks |
+| `/task-details/:id` | Public task details |
+| `/worker/:id` | Public worker profile |
+| `/pricing` | Pricing |
+| `/about` | About |
+| `/contact` | Contact |
+| `/terms` | Terms & Conditions |
+| `/privacy` | Privacy Policy |
+| `/login` | Login |
+| `/register` | Register |
+| `/forbidden` | 403 – unauthorized access |
+| `*` | 404 – not found |
 
----
+### Buyer Dashboard
+| Route | Page |
+| ----- | ---- |
+| `/dashboard` | Buyer dashboard overview |
+| `/dashboard/add-task` | Create a new task |
+| `/dashboard/my-tasks` | My posted tasks |
+| `/dashboard/edit-task/:id` | Edit a posted task |
+| `/dashboard/purchase-coin` | Buy coins (Stripe) |
+| `/dashboard/payment-history` | Payment history |
+| `/dashboard/tasks-to-review` | Review worker submissions |
 
-## 🧪 Pages and Routes
+### Worker Dashboard
+| Route | Page |
+| ----- | ---- |
+| `/dashboard/tasks-list` | Available tasks |
+| `/dashboard/task-details/:id` | Submit work on a task |
+| `/dashboard/my-submissions` | My submissions |
+| `/dashboard/approved-submissions` | Approved & paid submissions |
+| `/dashboard/withdrawals` | Withdraw earnings |
 
-| Route                          | Description                                     |
-| ------------------------------ | ----------------------------------------------- |
-| `/`                            | Homepage with banner, features, and top workers |
-| `/login`                       | User login page                                 |
-| `/register`                    | User registration page                          |
-| `/dashboard`                   | Redirects based on user role                    |
-| `/dashboard/my-tasks`          | Buyer: Manage own tasks                         |
-| `/dashboard/create-task`       | Buyer: Post a task                              |
-| `/dashboard/payments`          | Buyer: View payments                            |
-| `/dashboard/take-task`         | Worker: Browse available tasks                  |
-| `/dashboard/my-submissions`    | Worker: See submitted tasks                     |
-| `/dashboard/request-withdraw`  | Worker: Submit a withdrawal request             |
-| `/dashboard/withdrawals`       | Worker: View withdrawal history                 |
-| `/dashboard/all-users`         | Admin: View/manage users                        |
-| `/dashboard/all-tasks`         | Admin: View/delete tasks                        |
-| `/dashboard/stats`             | Admin: View platform stats                      |
-| `/dashboard/withdraw-requests` | Admin: Approve withdrawals                      |
+### Admin Dashboard
+| Route | Page |
+| ----- | ---- |
+| `/dashboard/manage-users` | Manage all users |
+| `/dashboard/manage-tasks` | Approve / reject / delete tasks |
+| `/dashboard/withdraw-requests` | Approve / reject withdrawals |
 
-## 🔑 Environment Variables
+### Common Dashboard
+| Route | Page |
+| ----- | ---- |
+| `/dashboard/profile` | Profile management |
+| `/dashboard/notifications` | Notifications |
 
-Create a `.env.local` file in the root:
+## Project Structure
 
-```env
-VITE_apiKey=your_firebase_api_key
-VITE_authDomain=your_firebase_auth_domain
-VITE_projectId=your_project_id
-VITE_storageBucket=your_storage_bucket
-VITE_messagingSenderId=your_messaging_id
-VITE_appId=your_app_id
-VITE_IMGBB_API_KEY=your_imgbb_api_key
-VITE_API_URL=https://micro-earn-server.vercel.app
-VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+```
+micro-earn-client/
+├── public/
+├── src/
+│   ├── api/              # API configuration & utilities
+│   ├── assets/           # Images and static assets
+│   ├── components/       # Reusable UI components
+│   │   ├── Home/         # Landing page sections
+│   │   ├── ui/           # shadcn/ui primitives
+│   │   └── ...
+│   ├── contexts/         # React contexts
+│   ├── firebase/         # Firebase config
+│   ├── hooks/            # Custom hooks
+│   ├── layouts/          # Layout components
+│   ├── pages/            # Page components
+│   ├── providers/        # Provider components
+│   ├── Routes/           # Router configuration
+│   ├── index.css         # Global styles
+│   └── main.jsx          # Application entry point
+├── components.json       # shadcn/ui config
+├── index.html
+├── vite.config.js
+├── eslint.config.js
+└── package.json
 ```
 
-## 🛠️ Installation
+## Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```
+VITE_apiKey=
+VITE_authDomain=
+VITE_projectId=
+VITE_storageBucket=
+VITE_messagingSenderId=
+VITE_appId=
+VITE_API_URL=https://micro-earn-server.vercel.app
+VITE_STRIPE_PUBLISHABLE_KEY=
+VITE_CLOUDINARY_UPLOAD_PRESET=
+VITE_CLOUDINARY_CLOUD_NAME=
+VITE_IMGBB_API_KEY=
+```
+
+## Installation
+
+Clone/download the project and install dependencies:
 
 ```bash
-git clone https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-md-zeon
-cd b11a12-client-side-md-zeon
 npm install
 ```
 
-Run the development server:
+## Run Locally
+
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-## 🧾 Notes
+Build for production:
 
-- Uses JWT from Firebase for secure API communication.
-- Fully responsive and mobile-friendly.
-- Includes loading states, error boundaries, and fallback UIs.
-- Integrated with backend server hosted at: [https://micro-earn-server.vercel.app](https://micro-earn-server.vercel.app)
-
-## 🧪 Testing
-
-- Tested manually across major routes and dashboard flows.
-- Protected routes tested for all roles.
-
----
-
-## 👥 User Roles
-
-### 👷 Workers
-
-- Browse and complete available tasks
-- Earn coins and withdraw real money
-- View task history and performance stats
-
-### 💼 Buyers
-
-- Create and manage tasks
-- Review and approve/reject submissions
-- Monitor task performance and payments
-
-### 🛡️ Admins
-
-- Oversee the entire platform
-- Manage users, tasks, and withdrawal requests
-- Monitor overall platform statistics and earnings
-
----
-
-## 📄 License
-
-This project is for educational purpose only.
-
-
-
-## 🗂️ Project Structure
-
-```
-micro-earn-client/
-├── public/                # Static assets (SVGs, video, favicon)
-├── src/
-│   ├── api/               # API utilities
-│   ├── assets/            # SVGs and images
-│   ├── components/        # Reusable UI components
-│   ├── contexts/          # React context providers
-│   ├── firebase/          # Firebase config
-│   ├── hooks/             # Custom React hooks
-│   ├── layouts/           # Page layouts
-│   ├── pages/             # Route pages (Home, About, Auth, Dashboard, etc.)
-│   ├── providers/         # App-level providers
-│   ├── Routes/            # Route protection and role-based routes
-│   └── index.css, main.jsx, App.jsx
-├── package.json           # Project metadata and dependencies
-├── vite.config.js         # Vite configuration
-├── firebase.json          # Firebase hosting config
-├── eslint.config.js       # ESLint configuration
-└── README.md
+```bash
+npm run build
 ```
 
-### Home Page Sections
+Preview the production build:
 
-The Home page (`src/pages/Home/Home.jsx`) features these main sections:
-- **Hero** – Landing banner and introduction
-- **HowItWorks** – Steps to get started
-- **BestWorkers** – Showcase of top workers
-- **TestimonialSlider** – User testimonials
-- **WhyChooseUs** – Platform benefits
-- **FAQ** – Frequently asked questions
+```bash
+npm run preview
+```
 
-## 🤝 Contributing
+Run the linter:
 
-Contributions are welcome! Feel free to fork the repo and submit pull requests. Whether it's fixing bugs, improving documentation, or adding new features — all efforts are appreciated.
+```bash
+npm run lint
+```
 
-## 📬 Contact
+## Deployment
 
-If you have any questions or feedback, feel free to reach out:
+The app is deployed on **Firebase Hosting** (`firebase.json` / `.firebaserc`).
 
-**Developer:** Zeanur Rahaman Zeon  
-**Email:** [zeon.cse@gmail.com](mailto:zeon.cse@gmail.com)  
-**LinkedIn:** [https://www.linkedin.com/in/zeanur-rahaman-zeon](https://www.linkedin.com/in/zeanur-rahaman-zeon)
+```bash
+npm run build
+firebase deploy
+```
+
+## Testing & Verification
+
+- App is tested manually against the live backend at `https://micro-earn-server.vercel.app`.
+- `npm run lint` passes with 0 errors.
+- `npm run build` completes successfully (Vite 7).
+
+## Notes
+
+- The app uses **Firebase ID tokens** (JWT) sent via the `Authorization: Bearer` header for authenticated API calls.
+- Task creation cost = `required_workers × payable_amount`; it is computed client-side for the UI but **charged server-side**.
+- The backend is hosted at **Vercel** and the frontend at **Firebase Hosting**.
+
+## License
+
+This project was created for educational purposes as part of the **Programming Hero Next Level Development** course.
