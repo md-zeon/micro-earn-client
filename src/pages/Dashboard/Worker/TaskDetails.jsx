@@ -65,7 +65,9 @@ const TaskDetails = () => {
     },
   });
 
-  const deadlinePassed = new Date(task?.completion_deadline) < new Date() + 1;
+  const deadlineDate = new Date(task?.completion_deadline);
+  deadlineDate.setHours(23, 59, 59, 999);
+  const deadlinePassed = deadlineDate.getTime() < new Date().getTime();
 
   const onSubmit = async (data) => {
     let proof_img_url = "";

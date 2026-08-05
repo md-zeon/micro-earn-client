@@ -153,10 +153,6 @@ const AddTask = () => {
 
     try {
       await axiosSecure.post("/tasks", newTask);
-      await axiosSecure.patch(`/user/update-coins/${user?.email}`, {
-        coinsToUpdate: totalCost,
-        status: "decrease",
-      });
       refetch();
       toast.success("Task created successfully");
       navigate("/dashboard/my-tasks");

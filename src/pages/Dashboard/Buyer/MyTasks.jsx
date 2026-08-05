@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import useBuyerTasks from "../../../hooks/useBuyerTasks";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import useAuth from "../../../hooks/useAuth";
 import MyTaskTable from "../../../components/Table/MyTaskTable";
 import StatsCard from "../../../components/shared/StatsCard";
 import EmptyState from "../../../components/shared/EmptyState";
@@ -34,7 +33,6 @@ const STATUS_FILTERS = [
 
 const MyTasks = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { tasks, isTasksLoading, refetch } = useBuyerTasks();
   const { refetch: refetchCoins } = useAvailableCoins();
   const axiosSecure = useAxiosSecure();
@@ -70,14 +68,6 @@ const MyTasks = () => {
     if (!deleteTarget) return;
     try {
       await axiosSecure.delete(`/tasks/${deleteTarget._id}`);
-      if (deleteTarget.status === "active") {
-        const refundAmount =
-          (deleteTarget.required_workers || 0) * (deleteTarget.payable_amount || 0);
-        await axiosSecure.patch(`/user/update-coins/${user?.email}`, {
-          coinsToUpdate: refundAmount,
-          status: "increase",
-        });
-      }
       refetch();
       refetchCoins();
       toast.success("Task deleted successfully");
