@@ -271,19 +271,19 @@ const Contact = () => {
 
             {/* Form column */}
             <div>
-              <Card className="relative overflow-hidden bg-gradient p-8 text-white shadow-2xl shadow-emerald-500/30 md:p-10">
-                <div className="grid-pattern absolute inset-0 opacity-40" />
-                <div className="absolute -top-16 -right-16 size-56 rounded-full bg-white/10 blur-3xl" />
+              <Card className="relative overflow-hidden border-emerald-500/20 bg-gradient-soft p-8 text-foreground shadow-xl shadow-emerald-500/10 md:p-10">
+                <div className="grid-pattern absolute inset-0 opacity-30" />
+                <div className="absolute -top-16 -right-16 size-56 rounded-full bg-emerald-500/10 blur-3xl" />
 
                 <div className="relative flex items-center gap-3">
-                  <div className="flex size-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+                  <div className="flex size-11 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                     <MessageSquare className="size-5" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold tracking-tight">
                       Send us a message
                     </h3>
-                    <p className="text-sm text-white/75">
+                    <p className="text-sm text-muted-foreground">
                       We reply within 24–48 hours
                     </p>
                   </div>
@@ -300,13 +300,10 @@ const Contact = () => {
                       id="name"
                       error={errors.name?.message}
                       required
-                      labelClassName="text-white/85"
-                      errorClassName="text-rose-300"
                     >
                       <Input
                         type="text"
                         placeholder="John Doe"
-                        className="h-12 rounded-xl border-white/20 bg-white/10 text-white placeholder:text-white/50 focus-visible:border-white/40 focus-visible:ring-white/20"
                         {...register("name")}
                       />
                     </FormField>
@@ -315,13 +312,10 @@ const Contact = () => {
                       id="email"
                       error={errors.email?.message}
                       required
-                      labelClassName="text-white/85"
-                      errorClassName="text-rose-300"
                     >
                       <Input
                         type="email"
                         placeholder="john@example.com"
-                        className="h-12 rounded-xl border-white/20 bg-white/10 text-white placeholder:text-white/50 focus-visible:border-white/40 focus-visible:ring-white/20"
                         {...register("email")}
                       />
                     </FormField>
@@ -332,8 +326,6 @@ const Contact = () => {
                     id="subject"
                     error={errors.subject?.message}
                     required
-                    labelClassName="text-white/85"
-                    errorClassName="text-rose-300"
                   >
                     <Controller
                       name="subject"
@@ -345,7 +337,6 @@ const Contact = () => {
                         >
                           <SelectTrigger
                             id="subject"
-                            className="h-12 w-full rounded-xl border-white/20 bg-white/10 text-white focus-visible:border-white/40 focus-visible:ring-white/20"
                             aria-invalid={!!errors.subject}
                             aria-describedby={
                               errors.subject ? "subject-error" : undefined
@@ -372,14 +363,11 @@ const Contact = () => {
                     id="message"
                     error={errors.message?.message}
                     required
-                    labelClassName="text-white/85"
-                    errorClassName="text-rose-300"
                   >
                     <Textarea
                       id="message"
                       rows={5}
                       placeholder="Tell us what's on your mind..."
-                      className="rounded-xl border-white/20 bg-white/10 text-white placeholder:text-white/50 focus-visible:border-white/40 focus-visible:ring-white/20"
                       {...register("message")}
                     />
                   </FormField>
@@ -387,13 +375,13 @@ const Contact = () => {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full gap-2 rounded-full bg-white text-emerald-700 shadow-lg shadow-black/10 hover:bg-emerald-50"
+                    className="w-full gap-2 rounded-full bg-gradient shadow-lg shadow-emerald-500/25"
                   >
                     <Send className="size-4" />
                     Send Message
                   </Button>
 
-                  <p className="flex items-center justify-center gap-1.5 text-center text-xs text-white/70">
+                  <p className="flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
                     <ShieldCheck className="size-4" />
                     Your details stay private — we never share your data.
                   </p>

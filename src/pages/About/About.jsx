@@ -264,12 +264,12 @@ const About = () => {
             </div>
 
             <div>
-              <Card className="relative overflow-hidden bg-gradient p-8 text-white shadow-2xl shadow-emerald-500/30 md:p-10">
-                <div className="grid-pattern absolute inset-0 opacity-40" />
-                <div className="absolute -top-16 -right-16 size-56 rounded-full bg-white/10 blur-3xl" />
+              <Card className="relative overflow-hidden border-emerald-500/20 bg-gradient-soft p-8 text-foreground shadow-xl shadow-emerald-500/10 md:p-10">
+                <div className="grid-pattern absolute inset-0 opacity-30" />
+                <div className="absolute -top-16 -right-16 size-56 rounded-full bg-emerald-500/10 blur-3xl" />
 
                 <div className="relative flex items-center gap-3">
-                  <div className="flex size-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+                  <div className="flex size-11 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                     <Sparkles className="size-5" />
                   </div>
                   <h3 className="text-xl font-semibold tracking-tight">
@@ -281,9 +281,9 @@ const About = () => {
                   {beliefs.map((belief) => (
                     <li
                       key={belief}
-                      className="flex items-start gap-3 leading-relaxed text-white/85"
+                      className="flex items-start gap-3 leading-relaxed text-muted-foreground"
                     >
-                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/15">
+                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
                         <Check className="size-3.5" />
                       </span>
                       {belief}

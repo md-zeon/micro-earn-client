@@ -46,57 +46,57 @@ const WhyChooseUs = () => {
 
         <FadeContent className="mt-14 grid gap-5 lg:grid-cols-3">
           {/* Featured card */}
-          <Card className="relative flex h-full flex-col overflow-hidden bg-gradient p-8 text-white shadow-2xl shadow-emerald-500/30 lg:col-span-2 lg:row-span-2 md:p-10">
-            <div className="grid-pattern absolute inset-0 opacity-40" />
-            <div className="absolute -top-16 -right-16 size-56 rounded-full bg-white/10 blur-3xl" />
+          <Card className="relative flex h-full flex-col overflow-hidden border-emerald-500/20 bg-gradient-soft p-8 text-foreground shadow-xl shadow-emerald-500/10 lg:col-span-2 lg:row-span-2 md:p-10">
+            <div className="grid-pattern absolute inset-0 opacity-30" />
+            <div className="absolute -top-16 -right-16 size-56 rounded-full bg-emerald-500/10 blur-3xl" />
 
             <div className="relative flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+              <div className="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <Zap className="size-6" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold tracking-tight">
                   Fast, transparent payouts
                 </h3>
-                <p className="text-sm text-white/90">
+                <p className="text-sm text-muted-foreground">
                   Your earnings, on your terms
                 </p>
               </div>
             </div>
 
-            <p className="relative mt-6 max-w-md leading-relaxed text-white/90">
+            <p className="relative mt-6 max-w-md leading-relaxed text-muted-foreground">
               Once a task is approved, coins land in your wallet instantly.
               Request a withdrawal any time and get paid quickly — with zero
               hidden fees.
             </p>
 
             {/* Mock payout card */}
-            <div className="relative mt-8 rounded-2xl bg-white/10 p-5 backdrop-blur-md ring-1 ring-white/15">
+            <div className="relative mt-8 rounded-2xl bg-card/70 p-5 backdrop-blur-md ring-1 ring-border">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-white/90">This week's earnings</span>
-                <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium">
+                <span className="text-muted-foreground">This week's earnings</span>
+                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   Live
                 </span>
               </div>
               <div className="mt-2 flex items-end gap-1">
                 <span className="text-3xl font-bold tracking-tight">$128.40</span>
-                <span className="mb-1 flex items-center gap-1 text-xs font-medium text-emerald-300">
+                <span className="mb-1 flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   <Zap className="size-3" /> +24%
                 </span>
               </div>
               <div className="mt-4 space-y-2">
-                <div className="flex justify-between text-xs text-white/90">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Withdrawal progress</span>
                   <span>64%</span>
                 </div>
                 <Progress
                   value={64}
-                  className="bg-white/15 [&_[data-slot=progress-indicator]]:bg-white"
+                  className="bg-emerald-500/15 [&_[data-slot=progress-indicator]]:bg-emerald-500"
                 />
               </div>
             </div>
 
-            <p className="relative mt-6 text-xs text-white/90">
+            <p className="relative mt-6 text-xs text-muted-foreground">
               200 coin minimum · Stripe & bank transfer supported
             </p>
           </Card>
