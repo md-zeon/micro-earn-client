@@ -86,26 +86,31 @@ const HowItWorks = () => {
             {/* Connector line */}
             <div
               ref={lineRef}
-              className="absolute top-7 left-0 hidden h-px w-full origin-left bg-gradient-to-r from-emerald-500/20 via-emerald-500/60 to-emerald-500/20 lg:block"
+              className="absolute top-14 left-0 hidden h-px w-full origin-left bg-gradient-to-r from-emerald-500/20 via-emerald-500/60 to-emerald-500/20 lg:block"
             />
 
-            <FadeContent className="grid gap-6 lg:grid-cols-3">
+            <FadeContent className="relative grid gap-6 lg:grid-cols-3">
               {steps.map((step, index) => (
                 <div key={index} className="relative">
-                  <div className="group relative flex h-full flex-col rounded-3xl border border-border/70 bg-card/70 p-7 backdrop-blur-sm transition-colors duration-300 hover:border-emerald-500/40">
+                  <div className="group relative flex h-full flex-col rounded-3xl border border-border/70 bg-card/90 p-7 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-500/10">
                     <div className="flex items-center justify-between">
-                      <div className="relative flex size-14 items-center justify-center rounded-2xl bg-gradient text-white shadow-lg shadow-emerald-500/25">
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient text-white shadow-lg shadow-emerald-500/25 transition-transform duration-300 group-hover:scale-105">
                         {step.icon}
-                        <span className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-card bg-background text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                          {index + 1}
-                        </span>
                       </div>
                       <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                         {step.tag}
                       </span>
                     </div>
 
-                    <h3 className="mt-6 text-xl font-semibold tracking-tight">
+                    <div className="mt-6 flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                      <span
+                        aria-hidden="true"
+                        className="h-px w-4 bg-emerald-500/50"
+                      />
+                      Step {String(index + 1).padStart(2, "0")}
+                    </div>
+
+                    <h3 className="mt-3 text-xl font-semibold tracking-tight">
                       {step.title}
                     </h3>
                     <p className="mt-3 flex-1 leading-relaxed text-muted-foreground">
@@ -119,13 +124,23 @@ const HowItWorks = () => {
                           className="gap-2 rounded-full p-0 text-emerald-600 hover:bg-transparent hover:text-emerald-500 dark:text-emerald-400"
                         >
                           Create your account
-                          <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                          <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
                         </Button>
                       </Link>
                     )}
                   </div>
                 </div>
               ))}
+
+              {/* Directional arrows between steps (desktop) */}
+              <ArrowRight
+                aria-hidden="true"
+                className="absolute top-[46px] left-[calc(100%/3-4px)] z-10 hidden size-5 -translate-x-1/2 text-emerald-500/50 lg:block"
+              />
+              <ArrowRight
+                aria-hidden="true"
+                className="absolute top-[46px] left-[calc(200%/3+4px)] z-10 hidden size-5 -translate-x-1/2 text-emerald-500/50 lg:block"
+              />
             </FadeContent>
           </div>
 
