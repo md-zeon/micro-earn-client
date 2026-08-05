@@ -1,37 +1,41 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
+import { Coins, Sparkles, ArrowRight } from "lucide-react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
-import { toast } from "sonner";
-import PaymentInformation from "../../../components/Dashboard/PaymentInformation";
-import CoinPackage from "../../../components/Dashboard/CoinPackage";
-import PurchaseModal from "../../../components/Modals/PurchaseModal";
 import { loadStripe } from "@stripe/stripe-js";
 import useAuth from "../../../hooks/useAuth";
+import CoinPackage from "../../../components/Dashboard/CoinPackage";
+import PaymentInformation from "../../../components/Dashboard/PaymentInformation";
+import PurchaseModal from "../../../components/Modals/PurchaseModal";
+import PageHeader from "../../../components/shared/PageHeader";
+import { Card, CardContent } from "@/components/ui/card";
 import PurchaseCoinSkeleton from "../../../components/ui/PurchaseCoinSkeleton";
 import PageTitle from "../../../components/PageTitle";
 
-// Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+const coinPackages = [
+  { id: "starter", coins: 100, price: 10 },
+  { id: "popular", coins: 300, price: 25, popular: true, bonus: 50 },
+  { id: "value", coins: 600, price: 45, bonus: 100 },
+  { id: "pro", coins: 800, price: 60, bonus: 150 },
+  { id: "premium", coins: 1200, price: 80, bonus: 300 },
+  { id: "elite", coins: 2000, price: 130, bonus: 500 },
+];
+
 const PurchaseCoin = () => {
   const axiosSecure = useAxiosSecure();
-  const { refetch: refetchCoins, isMicroCoinsLoading: coinsLoading } =
+  const { microCoins, refetch: refetchCoins, isMicroCoinsLoading: coinsLoading } =
     useAvailableCoins();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user } = useAuth();
 
-  // Coin packages
-  const coinPackages = [
-    { id: "starter", coins: 100, price: 10 },
-    { id: "popular", coins: 300, price: 25, popular: true, bonus: 50 },
-    { id: "value", coins: 600, price: 45, bonus: 100 },
-    { id: "pro", coins: 800, price: 60, bonus: 150 },
-    { id: "premium", coins: 1200, price: 80, bonus: 300 },
-    { id: "elite", coins: 2000, price: 130, bonus: 500 },
-  ];
-
-  // Handle Purchase
   const handlePurchase = async (pkg, receivedTransactionId) => {
     setProcessing(true);
     try {
@@ -54,34 +58,49 @@ const PurchaseCoin = () => {
       });
 
       refetchCoins();
-
+      setIsModalOpen(false);
+      setSelectedPackage(null);
       toast.success(`${totalCoins} coins have been added to your account.`);
+      navigate("/dashboard/add-task");
     } catch (err) {
       console.error("Purchase Error:", err);
       toast.error("Payment failed. Please try again.");
     } finally {
       setProcessing(false);
-      setIsModalOpen(false);
-      setSelectedPackage(null);
     }
   };
 
   if (coinsLoading) return <PurchaseCoinSkeleton />;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+    <div className="w-full space-y-8">
       <PageTitle
         title="Purchase Coins"
         description="Buy coins to pay workers for completing your tasks."
       />
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">Purchase Coins</h1>
-        <p className="text-gray-500">
-          Choose a package to add coins to your account
-        </p>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+      <PageHeader
+        eyebrow="Wallet"
+        title="Purchase Coins"
+        description="Top up your balance to create tasks and reward workers."
+        actions={
+          <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 px-4 py-2">
+            <Coins className="size-5 text-amber-500" aria-hidden="true" />
+            <div>
+              <p className="text-xs text-muted-foreground">Available balance</p>
+              <p className="text-sm font-semibold tabular-nums">
+                {microCoins ?? 0} coins
+              </p>
+            </div>
+          </div>
+        }
+      />
+
+      {/* Package grid */}
+      <section
+        aria-label="Coin packages"
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {coinPackages.map((pkg) => (
           <CoinPackage
             key={pkg.id}
@@ -92,9 +111,37 @@ const PurchaseCoin = () => {
             setIsModalOpen={setIsModalOpen}
           />
         ))}
-      </div>
+      </section>
+
+      {/* Quick tip */}
+      <Card className="border-primary/20 bg-gradient-soft">
+        <CardContent className="flex flex-col items-center gap-2 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
+          <div className="flex items-center gap-3">
+            <Sparkles className="size-5 shrink-0 text-primary" aria-hidden="true" />
+            <div>
+              <p className="text-sm font-semibold">Larger packages save you more</p>
+              <p className="text-xs text-muted-foreground">
+                Buy the 2000-coin Elite package and earn 500 bonus coins (25% extra).
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              const elite = coinPackages.find((p) => p.id === "elite");
+              setSelectedPackage(elite);
+              setIsModalOpen(true);
+            }}
+            className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+          >
+            View Elite package
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </button>
+        </CardContent>
+      </Card>
+
       <PaymentInformation />
-      {/* Modal */}
+
       <PurchaseModal
         isOpen={isModalOpen}
         onClose={() => {
