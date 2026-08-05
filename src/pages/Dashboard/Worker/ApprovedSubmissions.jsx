@@ -1,8 +1,24 @@
-import { LuDollarSign, LuFileText } from "react-icons/lu";
+import { BadgeCheck } from "lucide-react";
 import useWorkerSubmissions from "../../../hooks/useWorkerSubmissions";
-import Container from "../../../components/Container";
 import PageTitle from "../../../components/PageTitle";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
+import StatusBadge from "../../../components/shared/StatusBadge";
+import SubmissionDetailsDialog from "../../../components/shared/SubmissionDetailsDialog";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+} from "../../../components/ui/card";
+import {
+	Table,
+	TableHeader,
+	TableBody,
+	TableRow,
+	TableHead,
+	TableCell,
+} from "../../../components/ui/table";
 
 const ApprovedSubmissions = () => {
 	const { submissions: data, isLoading } = useWorkerSubmissions();
@@ -20,69 +36,82 @@ const ApprovedSubmissions = () => {
 	);
 
 	return (
-		<Container>
-			<div className='px-4 py-8'>
-				<PageTitle
-					title='Approved Submissions'
-					description='View your approved task submissions and earnings.'
-				/>
-				<h1 className='text-3xl font-bold mb-6 text-center text-gradient'>
+		<div className="space-y-6">
+			<PageTitle
+				title="Approved Submissions"
+				description="View your approved task submissions and earnings."
+			/>
+
+			<div>
+				<h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
 					Approved Submissions
 				</h1>
+				<p className="mt-1 text-sm text-muted-foreground">
+					{submissions.length} approved submission
+					{submissions.length === 1 ? "" : "s"} with pending payout.
+				</p>
+			</div>
 
-				{submissions.length === 0 ? (
-					<div className='text-center text-gray-500'>
-						No approved submissions yet.
-					</div>
-				) : (
-					<div className='shadow rounded-lg'>
-						<table className='table table-zebra w-full'>
-							<thead>
-								<tr className='text-sm text-gray-600'>
-									<th>#</th>
-									<th>Task</th>
-									<th>Submitted On</th>
-									<th>Payment</th>
-									<th>Status</th>
-									<th>Details</th>
-								</tr>
-							</thead>
-							<tbody>
+			<Card>
+				<CardHeader>
+					<CardTitle className="flex items-center gap-2">
+						<BadgeCheck className="size-4 text-emerald-500" />
+						Approved Work
+					</CardTitle>
+					<CardDescription>
+						Submissions accepted by buyers. Coins are credited on payout.
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{submissions.length === 0 ? (
+						<div className="py-10 text-center">
+							<p className="text-sm text-muted-foreground">
+								No approved submissions yet.
+							</p>
+						</div>
+					) : (
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>#</TableHead>
+									<TableHead>Task</TableHead>
+									<TableHead>Submitted On</TableHead>
+									<TableHead>Payment</TableHead>
+									<TableHead>Status</TableHead>
+									<TableHead>Details</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
 								{submissions.map((submission, index) => (
-									<tr key={submission._id}>
-										<td>{index + 1}</td>
-										<td className='font-medium'>{submission.task_title}</td>
-										<td>
+									<TableRow key={submission._id}>
+										<TableCell>{index + 1}</TableCell>
+										<TableCell className="font-medium">
+											{submission.task_title}
+										</TableCell>
+										<TableCell className="text-muted-foreground">
 											{new Date(
 												submission.submission_date,
 											).toLocaleDateString()}
-										</td>
-										<td className='flex items-center gap-1 text-green-500 font-semibold'>
-											<LuDollarSign className='inline' />
-											{submission.payable_amount}
-										</td>
-										<td>
-											<span className='badge badge-success text-white'>
-												Approved
+										</TableCell>
+										<TableCell>
+											<span className="font-semibold text-emerald-600 dark:text-emerald-400">
+												{submission.payable_amount} coins
 											</span>
-										</td>
-										<td>
-											<div
-												className='tooltip tooltip-left'
-												data-tip={submission.submission_details}>
-												<button className='btn btn-sm btn-ghost text-blue-500'>
-													<LuFileText className='w-5 h-5' />
-												</button>
-											</div>
-										</td>
-									</tr>
+										</TableCell>
+										<TableCell>
+											<StatusBadge status="approved" />
+										</TableCell>
+										<TableCell>
+											<SubmissionDetailsDialog submission={submission} />
+										</TableCell>
+									</TableRow>
 								))}
-							</tbody>
-						</table>
-					</div>
-				)}
-			</div>
-		</Container>
+							</TableBody>
+						</Table>
+					)}
+				</CardContent>
+			</Card>
+		</div>
 	);
 };
 

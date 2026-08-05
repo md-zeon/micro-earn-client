@@ -1,64 +1,61 @@
+import { Skeleton } from "./skeleton";
+
 const DashboardSkeleton = ({ statsCount = 4, showTable = false }) => {
-	const statsSkeletons = Array(statsCount)
+	const statsSkeletons = Array(Math.max(statsCount, 0))
 		.fill(0)
 		.map((_, i) => (
 			<div
 				key={i}
-				className='animate-pulse bg-base-300 rounded-xl p-6 flex flex-col space-y-4 shadow-inner'
+				className="flex flex-col gap-4 rounded-xl border bg-card p-5"
 			>
-				<div className='h-5 w-24 bg-base-300 rounded'></div>
-				<div className='h-10 w-full bg-base-300 rounded'></div>
-				<div className='h-3 w-32 bg-base-300 rounded'></div>
+				<Skeleton className="h-4 w-24" />
+				<Skeleton className="h-9 w-full" />
+				<Skeleton className="h-3 w-32" />
 			</div>
 		));
 
 	return (
-		<div className='space-y-8'>
-			{/* Header Skeleton */}
-			<div className='animate-pulse space-y-2 sm:px-4'>
-				<div className='h-8 w-48 bg-base-300 rounded'></div>
-				<div className='h-4 w-64 bg-base-300 rounded'></div>
+		<div className="space-y-8">
+			<div className="space-y-2 sm:px-4">
+				<Skeleton className="h-8 w-48" />
+				<Skeleton className="h-4 w-64" />
 			</div>
 
-			{/* Stats Grid */}
-			<div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-${statsCount} gap-4`}>{statsSkeletons}</div>
+			{statsSkeletons.length > 0 && (
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+					{statsSkeletons}
+				</div>
+			)}
 
-			{/* Table Skeleton */}
 			{showTable && (
-				<div className='overflow-x-auto mt-10'>
-					<div className='w-full border border-base-300 rounded-lg'>
-						{/* Table header */}
-						<div className='flex border-b border-base-300 p-3 space-x-4'>
-							{Array(6)
-								.fill(0)
-								.map((_, i) => (
-									<div
-										key={i}
-										className='h-6 flex-1 bg-base-300 rounded animate-pulse'
-									></div>
-								))}
-						</div>
-						{/* Table body */}
-						<div className='space-y-3 p-3'>
-							{Array(5)
-								.fill(0)
-								.map((_, i) => (
-									<div
-										key={i}
-										className='flex space-x-4'
-									>
-										{Array(6)
-											.fill(0)
-											.map((__, idx) => (
-												<div
-													key={idx}
-													className='h-6 flex-1 bg-base-200 rounded animate-pulse'
-												></div>
-											))}
-									</div>
-								))}
-						</div>
+				<div className="space-y-3 rounded-xl border bg-card p-4">
+					<div className="flex gap-4 border-b pb-3">
+						{Array(6)
+							.fill(0)
+							.map((_, i) => (
+								<Skeleton
+									key={i}
+									className="h-6 flex-1"
+								/>
+							))}
 					</div>
+					{Array(5)
+						.fill(0)
+						.map((_, i) => (
+							<div
+								key={i}
+								className="flex gap-4"
+							>
+								{Array(6)
+									.fill(0)
+									.map((__, idx) => (
+										<Skeleton
+											key={idx}
+											className="h-6 flex-1"
+										/>
+									))}
+							</div>
+						))}
 				</div>
 			)}
 		</div>

@@ -1,143 +1,247 @@
-import StatsCard from "../../../components/shared/StatsCard";
-import useAdminStats from "../../../hooks/useAdminStats";
-import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import {
-	LuUsers,
-	LuCoins,
-	LuCreditCard,
-	LuUserCheck,
-	LuUserRound,
-} from "react-icons/lu";
-import useAuth from "../../../hooks/useAuth";
+import { useState } from "react";
 import { Link } from "react-router";
-import toast from "react-hot-toast";
-import Swal from "sweetalert2";
-import WithdrawRequestTable from "../../../components/Table/WithDrawRequestTable";
+import { toast } from "sonner";
+import {
+  ArrowRight,
+  Coins,
+  CreditCard,
+  ShieldCheck,
+  UserRound,
+  Users,
+  Wallet,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import StatsCard from "../../../components/shared/StatsCard";
+import DataFreshness from "../../../components/shared/DataFreshness";
+import PageHeader from "../../../components/shared/PageHeader";
 import PageTitle from "../../../components/PageTitle";
 import AdminOverview from "../../../components/Dashboard/AdminOverview";
+import WithDrawRequestTable from "../../../components/Table/WithDrawRequestTable";
+import useAdminStats from "../../../hooks/useAdminStats";
+import useAdminCharts from "../../../hooks/useAdminCharts";
+import useWithdrawRequests from "../../../hooks/useWithdrawRequests";
+import computeTrend from "../../../lib/trend";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 import DashboardSkeleton from "../../../components/ui/DashboardSkeleton";
 
 const AdminDashboard = ({ greeting }) => {
-	const { user } = useAuth();
-	const { adminStats: stats, isLoading: isStatsLoading } = useAdminStats();
-	const {
-		pendingRequests: withdrawRequests,
-		isWithdrawLoading,
-		refetch,
-	} = useWithdrawRequests();
-	const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
+  const { adminStats: stats, isLoading: isStatsLoading } = useAdminStats();
+  const { revenueData } = useAdminCharts();
+  const {
+    pendingRequests,
+    isWithdrawLoading,
+    refetch,
+  } = useWithdrawRequests();
+  const axiosSecure = useAxiosSecure();
+  const [selectedWithdraw, setSelectedWithdraw] = useState(null);
+  const [isApproving, setIsApproving] = useState(false);
 
-	if (isStatsLoading || isWithdrawLoading)
-		return (
-			<DashboardSkeleton
-				statsCount={4}
-				showTable={true}
-			/>
-		);
+  const revenueTrend = computeTrend(revenueData, "revenue");
 
-	const handleApprove = async (withdraw) => {
-		try {
-			const result = await Swal.fire({
-				title: "Are you sure?",
-				text: "You want to approve this withdrawal request?",
-				icon: "warning",
-				showCancelButton: true,
-				buttonsStyling: false,
-				customClass: {
-					confirmButton: "btn mr-5 bg-gradient-success",
-					cancelButton: "btn bg-gradient-error",
-				},
-				confirmButtonText: "Yes, approve it!",
-			});
-			if (result.isConfirmed) {
-				// update withdraw status
-				await axiosSecure.patch(`/admin/approve-withdraw/${withdraw._id}`, {
-					status: "approved",
-				});
-				// update coins
-				await axiosSecure.patch(
-					`/user/update-coins/${withdraw?.worker_email}`,
-					{
-						coinsToUpdate: withdraw?.withdrawal_coin,
-						status: "decrease",
-					},
-				);
-				toast.success("Withdrawal Approved");
-				refetch();
-			}
-		} catch (err) {
-			console.error("Error approving withdrawal:", err);
-			toast.error("Failed to approve withdrawal");
-		}
-	};
+  const isLoading = isStatsLoading || isWithdrawLoading;
 
-	return (
-		<div className='space-y-8'>
-			<PageTitle
-				title='Admin Dashboard'
-				description='Admin panel to manage MicroEarn users, tasks, and withdrawals in real-time.'
-			/>
-			<div className='sm:px-4'>
-				<div className='flex items-center justify-between flex-wrap'>
-					<div>
-						<h1 className='text-3xl font-bold tracking-tight mb-2'>
-							{greeting}, {user?.displayName || "Admin"}!
-						</h1>
-						<p>Monitor platform activity and manage users.</p>
-					</div>
-					<Link
-						to='/dashboard/profile'
-						className='btn bg-gradient hidden sm:inline-flex'>
-						<LuUserRound className='w-4 h-4 mr-2' />
-						Profile
-					</Link>
-				</div>
-			</div>
+  const pendingCount = pendingRequests?.length ?? 0;
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
-			<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4'>
-				<StatsCard
-					label='Total Workers'
-					Icon={LuUsers}
-					value={stats?.totalWorkers}
-					subtitle='Active workers on platform'
-				/>
-				<StatsCard
-					label='Total Buyers'
-					Icon={LuUserCheck}
-					value={stats?.totalBuyers}
-					subtitle='Active buyers on platform'
-				/>
-				<StatsCard
-					label='Platform Coins'
-					Icon={LuCoins}
-					value={stats?.totalCoins}
-					subtitle='Total coins in circulation'
-				/>
-				<StatsCard
-					label='Total Payments'
-					Icon={LuCreditCard}
-					value={`$${stats?.totalPayments?.toFixed(2)}`}
-					subtitle='Total payments processed'
-				/>
-			</div>
+  const confirmApprove = async () => {
+    if (!selectedWithdraw) return;
+    setIsApproving(true);
+    try {
+      await axiosSecure.patch(
+        `/admin/approve-withdraw/${selectedWithdraw._id}`,
+      );
+      toast.success("Withdrawal approved");
+      refetch();
+    } catch (err) {
+      console.error("Error approving withdrawal:", err);
+      toast.error("Failed to approve withdrawal");
+    } finally {
+      setIsApproving(false);
+      setSelectedWithdraw(null);
+    }
+  };
 
-			{/* Dashboard Overview */}
-			<AdminOverview />
+  if (isLoading) return <DashboardSkeleton statsCount={4} showTable={true} />;
 
-			{/* Withdrawal Requests */}
-			<div className='mt-10'>
-				<h2 className='text-2xl font-semibold mb-2'>Withdrawal Requests</h2>
-				<p className='text-gray-400 text-xs mb-4'>
-					Pending withdrawal requests from workers
-				</p>
-				<WithdrawRequestTable
-					withdrawRequests={withdrawRequests}
-					handleApprove={handleApprove}
-				/>
-			</div>
-		</div>
-	);
+  return (
+    <div className="space-y-6">
+      <PageTitle
+        title="Admin Dashboard"
+        description="Monitor platform health and manage users, tasks, and withdrawals."
+      />
+
+      {/* Greeting hero */}
+      <section
+        aria-label="Admin overview"
+        className="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-gradient-soft p-6 text-foreground shadow-lg shadow-emerald-500/10 sm:p-8"
+      >
+        <div className="grid-pattern absolute inset-0 opacity-30" aria-hidden="true" />
+        <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+              {today}
+            </p>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              {greeting}, {user?.displayName?.split(" ")[0] || "Admin"}!
+            </h1>
+            <p className="max-w-lg text-sm text-muted-foreground">
+              Here is what&apos;s happening on MicroEarn today.
+            </p>
+            <DataFreshness className="mt-2 text-muted-foreground" />
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Badge
+                variant="secondary"
+                className="bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 dark:text-emerald-400"
+              >
+                <ShieldCheck className="size-3" aria-hidden="true" />
+                Admin Panel
+              </Badge>
+              {pendingCount > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 dark:text-emerald-400"
+                >
+                  <Wallet className="size-3" aria-hidden="true" />
+                  {pendingCount} pending withdrawal{pendingCount === 1 ? "" : "s"}
+                </Badge>
+              )}
+            </div>
+          </div>
+          <Link to="/dashboard/profile">
+            <Button
+              variant="secondary"
+              className="w-full bg-gradient text-white md:w-auto"
+            >
+              <UserRound aria-hidden="true" />
+              View Profile
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* KPI cards */}
+      <section aria-label="Platform metrics" className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <StatsCard
+          label="Total Workers"
+          Icon={Users}
+          tone="emerald"
+          value={stats?.totalWorkers}
+          subtitle="Active workers on platform"
+        />
+        <StatsCard
+          label="Total Buyers"
+          Icon={UserRound}
+          tone="sky"
+          value={stats?.totalBuyers}
+          subtitle="Active buyers on platform"
+        />
+        <StatsCard
+          label="Platform Coins"
+          Icon={Coins}
+          tone="amber"
+          value={stats?.totalCoins}
+          subtitle="Coins in circulation"
+        />
+        <StatsCard
+          label="Total Payments"
+          Icon={CreditCard}
+          tone="violet"
+          value={`$${Number(stats?.totalPayments ?? 0).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`}
+          subtitle="Payments processed"
+          trend={revenueTrend ? `${revenueTrend.pct}%` : undefined}
+          trendUp={revenueTrend?.up}
+        />
+      </section>
+
+      {/* Charts */}
+      <AdminOverview />
+
+      {/* Pending withdrawals */}
+      <section aria-label="Pending withdrawal requests">
+        <Card className="overflow-hidden">
+          <CardHeader className="flex-row items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Wallet className="size-4 text-muted-foreground" aria-hidden="true" />
+              <CardTitle>Withdrawal Requests</CardTitle>
+              {pendingCount > 0 && (
+                <Badge className="bg-amber-500/15 text-amber-600 ring-1 ring-amber-500/25 dark:text-amber-400">
+                  {pendingCount} pending
+                </Badge>
+              )}
+            </div>
+            <Link
+              to="/dashboard/withdraw-requests"
+              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              View all
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </CardHeader>
+          <Separator />
+          <CardContent className="pt-4">
+            <WithDrawRequestTable
+              withdrawRequests={pendingRequests ?? []}
+              handleApprove={setSelectedWithdraw}
+            />
+          </CardContent>
+        </Card>
+      </section>
+
+      <AlertDialog
+        open={!!selectedWithdraw}
+        onOpenChange={(open) => {
+          if (!open) setSelectedWithdraw(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Approve this withdrawal?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will approve the withdrawal of{" "}
+              <strong>{Number(selectedWithdraw?.withdrawal_coin ?? 0).toLocaleString()}</strong>{" "}
+              coins (${Number(selectedWithdraw?.withdrawal_amount ?? 0).toFixed(2)}) for{" "}
+              <strong>{selectedWithdraw?.worker_email}</strong>. The coins will be
+              deducted from the worker&apos;s balance.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isApproving}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmApprove}
+              disabled={isApproving}
+              className="bg-emerald-600 text-white hover:bg-emerald-500"
+            >
+              {isApproving ? "Approving..." : "Approve"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 };
 
 export default AdminDashboard;

@@ -1,131 +1,520 @@
-import { useState, useMemo } from "react";
-import PageTitle from "../../components/PageTitle";
-import { LuDollarSign, LuUsers, LuCalendarDays } from "react-icons/lu";
-import { useLoaderData, useNavigate } from "react-router";
+import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { Link, useSearchParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import {
+  ArrowRight,
+  Calendar,
+  Coins,
+  Inbox,
+  Loader,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  User,
+  Users,
+  X,
+  Zap,
+} from "lucide-react";
 import Container from "../../components/Container";
+import CountUp from "@/components/effects/CountUp";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { stripHtml } from "@/lib/utils";
+import { getDeadlineInfo } from "@/lib/date";
+
+const SORT_OPTIONS = [
+  { value: "highest-pay", label: "Highest pay" },
+  { value: "lowest-pay", label: "Lowest pay" },
+  { value: "deadline-soon", label: "Deadline: soonest" },
+  { value: "deadline-far", label: "Deadline: farthest" },
+];
+
+const PAGE_SIZE = 9;
+
+const TaskCard = ({ task }) => {
+  const deadline = getDeadlineInfo(task.completion_deadline);
+
+  return (
+    <Link
+      to={`/task-details/${task._id}`}
+      className="group flex h-full flex-col gap-4 overflow-hidden rounded-xl bg-card text-sm text-card-foreground ring-1 ring-foreground/10 transition-colors duration-300 hover:ring-emerald-500/40"
+    >
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent">
+        {task.task_image_url ? (
+          <img
+            src={task.task_image_url}
+            alt={task.task_title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <Sparkles className="size-10 text-emerald-500/40 transition-transform duration-500 group-hover:scale-110" />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+        <Badge className="absolute right-3 top-3 rounded-full bg-amber-500/15 font-semibold text-amber-600 backdrop-blur dark:text-amber-400">
+          <Coins className="mr-1 size-3.5" />
+          {task.payable_amount}
+        </Badge>
+
+        {deadline.endingSoon && (
+          <Badge className="absolute left-3 top-3 rounded-full bg-rose-500/15 font-semibold text-rose-500 backdrop-blur">
+            Ending soon
+          </Badge>
+        )}
+      </div>
+
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="line-clamp-2 text-lg font-semibold tracking-tight">
+          {task.task_title}
+        </h3>
+
+        <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+          {stripHtml(task.task_detail)}
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <Users className="size-4 text-emerald-500" />
+            {task.required_workers} slots left
+          </span>
+          <span className={deadline.className}>
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar className="size-4" />
+              {new Date(task.completion_deadline).toLocaleDateString()}
+              {deadline.days >= 0 && (
+                <span className="opacity-80">· {deadline.days}d left</span>
+              )}
+            </span>
+          </span>
+        </div>
+
+        <div className="mt-5 flex items-center justify-between gap-3 border-t border-border/60 pt-4">
+          <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+            <User className="size-3.5 shrink-0 text-emerald-500" />
+            <span className="truncate">{task.buyer_name}</span>
+          </span>
+          <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
+            Details
+            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+const TaskCardSkeleton = () => (
+  <Card className="flex h-full flex-col overflow-hidden p-0">
+    <Skeleton className="aspect-[16/9] w-full rounded-none" />
+    <div className="flex flex-1 flex-col p-5">
+      <Skeleton className="h-5 w-3/4" />
+      <Skeleton className="mt-3 h-4 w-full" />
+      <Skeleton className="mt-2 h-4 w-2/3" />
+      <div className="mt-5 flex gap-4">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-28" />
+      </div>
+      <div className="mt-5 flex items-center justify-between border-t border-border/60 pt-4">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-8 w-24 rounded-full" />
+      </div>
+    </div>
+  </Card>
+);
 
 const AllTasks = () => {
-	const tasks = useLoaderData();
-	const navigate = useNavigate();
-	const [sortOption, setSortOption] = useState("default");
-	const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+  const sortOption = searchParams.get("sort") ?? "highest-pay";
+  const category = searchParams.get("category") ?? "";
+  const page = parseInt(searchParams.get("page"), 10) || 1;
 
-	// Sorting and filtering logic
-	const sortedAndFilteredTasks = useMemo(() => {
-		let result = [...tasks];
+  const [queryInput, setQueryInput] = useState(search);
+  const [prevSearch, setPrevSearch] = useState(search);
+  if (prevSearch !== search) {
+    setPrevSearch(search);
+    setQueryInput(search);
+  }
 
-		// Filter by search term
-		if (searchTerm) {
-			result = result.filter(
-				(task) =>
-					task.task_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					task.task_detail.toLowerCase().includes(searchTerm.toLowerCase()),
-			);
-		}
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (queryInput.trim() === search) return;
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (queryInput.trim()) next.set("search", queryInput.trim());
+          else next.delete("search");
+          next.delete("page");
+          return next;
+        },
+        { replace: true },
+      );
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [queryInput, search, setSearchParams]);
 
-		// Sort based on option
-		switch (sortOption) {
-			case "price-asc":
-				result.sort((a, b) => a.payable_amount - b.payable_amount);
-				break;
-			case "price-desc":
-				result.sort((a, b) => b.payable_amount - a.payable_amount);
-				break;
-			case "deadline-soon":
-				result.sort((a, b) => new Date(a.completion_deadline) - new Date(b.completion_deadline));
-				break;
-			default:
-				// Default sorting (by creation date, newest first)
-				result.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
-		}
+  const updateParams = (patch) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        Object.entries(patch).forEach(([key, value]) => {
+          if (value === null || value === "" || value === undefined)
+            next.delete(key);
+          else next.set(key, String(value));
+        });
+        next.delete("page");
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
-		return result;
-	}, [tasks, sortOption, searchTerm]);
+  const goToPage = useCallback(
+    (nextPage) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set("page", String(nextPage));
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
-	return (
-		<div className='py-8 px-4 sm:px-6'>
-			<PageTitle
-				title='All Tasks'
-				description='Browse and apply for available micro-tasks to earn coins.'
-			/>
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["all-tasks", { search, sort: sortOption, category, page }],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/tasks`,
+        {
+          params: {
+            search: search || undefined,
+            sort: sortOption,
+            category: category || undefined,
+            page,
+            limit: PAGE_SIZE,
+          },
+        },
+      );
+      return data;
+    },
+    staleTime: 60_000,
+  });
 
-			<Container>
-				<h1 className='text-3xl font-bold mb-2'>Available Tasks</h1>
-				<p className='text-gray-600 mb-8'>Browse and apply for available micro-tasks to earn coins.</p>
+  const tasks = data?.data ?? [];
+  const total = data?.total ?? 0;
+  const pageSize = data?.pageSize ?? PAGE_SIZE;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const aggregate = data?.aggregate ?? { totalSlots: 0, maxPay: 0 };
 
-				{/* Search and Sort Controls */}
-				<div className='flex flex-col md:flex-row gap-4 mb-8'>
-					<div className='flex-1'>
-						<input
-							type='text'
-							placeholder='Search tasks...'
-							className='input input-bordered w-full'
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-						/>
-					</div>
-					<div className='w-full md:w-auto'>
-						<select
-							className='select select-bordered w-full'
-							value={sortOption}
-							onChange={(e) => setSortOption(e.target.value)}
-						>
-							<option value='default'>Sort by: Newest</option>
-							<option value='price-asc'>Price: Low to High</option>
-							<option value='price-desc'>Price: High to Low</option>
-							<option value='deadline-soon'>Deadline: Soonest</option>
-						</select>
-					</div>
-				</div>
+  const { data: categoriesData } = useQuery({
+    queryKey: ["task-categories"],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/tasks/task-categories`,
+      );
+      return Array.isArray(data) ? data : data?.data ?? [];
+    },
+    staleTime: 5 * 60_000,
+  });
+  const categories = categoriesData ?? [];
 
-				{/* Task Cards Grid */}
-				{sortedAndFilteredTasks.length === 0 ? (
-					<div className='text-center py-12'>
-						<h3 className='text-xl font-semibold mb-2'>No tasks found</h3>
-						<p className='text-gray-600'>Try adjusting your search or filter criteria</p>
-					</div>
-				) : (
-					<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-						{sortedAndFilteredTasks.map((task) => (
-							<div
-								key={task._id}
-								className='card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-500'
-							>
-								<div className='card-body'>
-									<h2 className='card-title text-xl font-semibold truncate line-clamp-1'>{task.task_title}</h2>
-									<p className='text-sm text-gray-600'>Posted by: {task.buyer_name}</p>
-									<div className='mt-4 space-y-2'>
-										<div className='flex items-center gap-2'>
-											<LuCalendarDays className='text-red-400' />
-											<span className='text-sm'>
-												Deadline: {new Date(task.completion_deadline).toLocaleDateString()}
-											</span>
-										</div>
-										<div className='flex items-center gap-2'>
-											<LuDollarSign className='text-green-400' />
-											<span className='text-sm'>Payment: {task.payable_amount} Micro Coins</span>
-										</div>
-										<div className='flex items-center gap-2'>
-											<LuUsers className='text-blue-400' />
-											<span className='text-sm'>Workers Needed: {task.required_workers}</span>
-										</div>
-									</div>
-									<div className='card-actions mt-4'>
-										<button
-											onClick={() => navigate(`/task-details/${task._id}`)}
-											className='btn bg-gradient w-full'
-										>
-											View Details
-										</button>
-									</div>
-								</div>
-							</div>
-						))}
-					</div>
-				)}
-			</Container>
-		</div>
-	);
+  useEffect(() => {
+    if (!isLoading && page > totalPages) goToPage(totalPages);
+  }, [totalPages, page, isLoading, goToPage]);
+
+  const searching = search !== "";
+
+  const stats = {
+    open: total,
+    openSlots: aggregate.totalSlots,
+    highestPay: aggregate.maxPay,
+  };
+
+  const clearFilters = () => {
+    setQueryInput("");
+    updateParams({ search: "", category: "" });
+  };
+
+  const chipClassName = (active) =>
+    `rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+      active
+        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+        : "border-border/60 text-muted-foreground hover:border-emerald-500/30 hover:text-foreground"
+    }`;
+
+  return (
+    <Container>
+      <div className="relative py-12 md:py-16">
+        <div className="pointer-events-none absolute -top-16 left-1/2 size-80 -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
+
+        <motion.header
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="relative text-center"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+            Live task board
+          </span>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-balance md:text-5xl">
+            Explore all tasks
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground text-pretty md:text-lg">
+            Browse the full marketplace and grab high-paying micro-tasks before
+            their slots fill up. Filter, sort, and find work that fits you.
+          </p>
+        </motion.header>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3"
+        >
+          {[
+            {
+              icon: <Zap className="size-4 text-emerald-500" />,
+              label: "Open tasks",
+              value: stats.open,
+            },
+            {
+              icon: <Users className="size-4 text-emerald-500" />,
+              label: "Worker slots",
+              value: stats.openSlots,
+            },
+            {
+              icon: <Coins className="size-4 text-amber-500" />,
+              label: "Highest payout",
+              value: stats.highestPay,
+              suffix: " coins",
+            },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col items-center justify-center rounded-2xl border border-border/60 bg-card/40 px-4 py-5 text-center backdrop-blur transition-colors hover:border-emerald-500/30"
+            >
+              <div className="text-3xl font-bold tracking-tight tabular-nums">
+                <CountUp value={stat.value} suffix={stat.suffix || ""} />
+              </div>
+              <div className="mt-1.5 flex items-center gap-1.5 text-sm text-muted-foreground">
+                {stat.icon}
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
+        >
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={queryInput}
+              onChange={(e) => setQueryInput(e.target.value)}
+              placeholder="Search tasks by title or description…"
+              className="h-9 rounded-full pl-9"
+              aria-label="Search tasks"
+            />
+            {searching && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-label="Clear search"
+              >
+                <X className="size-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="w-full sm:w-64">
+            <Select
+              value={sortOption}
+              onValueChange={(value) => updateParams({ sort: value })}
+            >
+              <SelectTrigger className="w-full rounded-full">
+                <SlidersHorizontal className="size-4 text-muted-foreground" />
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                {SORT_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </motion.div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2" aria-label="Filter by category">
+          <button
+            type="button"
+            onClick={() => updateParams({ category: "" })}
+            className={chipClassName(category === "")}
+          >
+            All
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() =>
+                updateParams({ category: category === c ? "" : c })
+              }
+              className={chipClassName(category === c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+          <p>
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {isLoading ? "…" : tasks.length}
+            </span>{" "}
+            of {isLoading ? "…" : total} tasks
+          </p>
+          {(searching || category) && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-xs font-medium text-emerald-600 transition-colors hover:text-emerald-500 dark:text-emerald-400"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+
+        <div className="relative mt-8">
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <TaskCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : isError ? (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 px-6 py-20 text-center">
+              <div className="flex size-16 items-center justify-center rounded-2xl bg-rose-500/10">
+                <Inbox className="size-8 text-rose-500" />
+              </div>
+              <h3 className="mt-5 text-xl font-semibold">Couldn’t load tasks</h3>
+              <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                Something went wrong while fetching the task board. Please try
+                again.
+              </p>
+              <Button
+                variant="outline"
+                className="mt-6 rounded-full"
+                onClick={() => refetch()}
+              >
+                <Loader className="size-4" />
+                Retry
+              </Button>
+            </div>
+          ) : tasks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 px-6 py-20 text-center">
+              <div className="flex size-16 items-center justify-center rounded-2xl bg-emerald-500/10">
+                <Inbox className="size-8 text-emerald-500" />
+              </div>
+              <h3 className="mt-5 text-xl font-semibold">No tasks found</h3>
+              <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                {searching || category
+                  ? "No tasks match your filters. Try a different keyword or clear the filters."
+                  : "No tasks are available right now — new tasks are posted regularly. Check back soon."}
+              </p>
+              {(searching || category) && (
+                <Button
+                  variant="outline"
+                  className="mt-6 rounded-full"
+                  onClick={clearFilters}
+                >
+                  Clear filters
+                  <X className="size-4" />
+                </Button>
+              )}
+            </div>
+          ) : (
+            <motion.div
+              layout
+              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+            >
+              <AnimatePresence mode="popLayout">
+                {tasks.map((task) => (
+                  <motion.div
+                    layout
+                    key={task._id}
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{
+                      duration: 0.35,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    <TaskCard task={task} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </div>
+
+        {!isLoading && !isError && totalPages > 1 && (
+          <div className="mt-10 flex items-center justify-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              disabled={page <= 1}
+              onClick={() => goToPage(page - 1)}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page{" "}
+              <span className="font-semibold text-foreground">{page}</span> of{" "}
+              {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              disabled={page >= totalPages}
+              onClick={() => goToPage(page + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+      </div>
+    </Container>
+  );
 };
 
 export default AllTasks;

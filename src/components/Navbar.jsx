@@ -1,205 +1,493 @@
-import { LuLogOut } from "react-icons/lu";
+import { useState, useEffect, useCallback } from "react";
 import { Link, NavLink } from "react-router";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  ArrowRight,
+  Coins,
+  ExternalLink,
+  House,
+  Info,
+  LayoutDashboard,
+  ListTodo,
+  LogOut,
+  Mail,
+  Menu,
+  Plus,
+  UserRound,
+  Users,
+  Wallet,
+  X,
+} from "lucide-react";
 import Container from "./Container";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
 import Logo from "./Logo";
 import AvailableCoins from "./AvailableCoins";
 import ThemeController from "./ThemeController";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const navItems = [
+  {
+    to: "/",
+    label: "Home",
+    description: "Back to the MicroEarn homepage",
+    icon: <House className="size-5" />,
+    end: true,
+  },
+  {
+    to: "/all-tasks",
+    label: "All Tasks",
+    description: "Browse tasks and earn coins",
+    icon: <ListTodo className="size-5" />,
+  },
+  {
+    to: "/pricing",
+    label: "Pricing",
+    description: "Buy coins to post tasks and pay workers",
+    icon: <Coins className="size-5" />,
+  },
+  {
+    to: "/about",
+    label: "About Us",
+    description: "Our mission, values, and journey",
+    icon: <Info className="size-5" />,
+  },
+  {
+    to: "/contact",
+    label: "Contact Us",
+    description: "Support, partnerships, and feedback",
+    icon: <Mail className="size-5" />,
+  },
+];
+
+const desktopLinkClass = ({ isActive }) =>
+  `relative px-3.5 py-2 text-sm font-medium transition-all duration-300 ${
+    isActive ? "text-gradient" : "text-foreground/70 hover:text-gradient"
+  }`;
+
+const roleMenuItems = {
+  worker: [
+    { to: "/dashboard/tasks-list", label: "Browse Tasks", icon: ListTodo },
+    { to: "/dashboard/withdrawals", label: "Withdrawals", icon: Wallet },
+  ],
+  buyer: [
+    { to: "/dashboard/add-task", label: "Post a Task", icon: Plus },
+    { to: "/dashboard/purchase-coin", label: "Purchase Coins", icon: Coins },
+  ],
+  admin: [
+    { to: "/dashboard/manage-users", label: "Manage Users", icon: Users },
+    {
+      to: "/dashboard/withdraw-requests",
+      label: "Withdraw Requests",
+      icon: Wallet,
+    },
+  ],
+};
 
 const Navbar = () => {
-	const { user, logOut } = useAuth();
-	const { role, isRoleLoading } = useRole();
+  const { user, logOut } = useAuth();
+  const { role, isRoleLoading } = useRole();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-	const navLinks = (
-		<>
-			<li>
-				<NavLink
-					to='/'
-					className={({ isActive }) =>
-						isActive
-							? "text-gradient"
-							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}>
-					Home
-				</NavLink>
-			</li>
-			<li>
-				<NavLink
-					to='/all-tasks'
-					className={({ isActive }) =>
-						isActive
-							? "text-gradient"
-							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}>
-					All Tasks
-				</NavLink>
-			</li>
-			{user && (
-				<li>
-					<NavLink
-						to='/dashboard'
-						className={({ isActive }) =>
-							isActive
-								? "text-gradient"
-								: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-						}>
-						Dashboard
-					</NavLink>
-				</li>
-			)}
-			<li>
-				<NavLink
-					to='/about'
-					className={({ isActive }) =>
-						isActive
-							? "text-gradient"
-							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}>
-					About Us
-				</NavLink>
-			</li>
-			<li>
-				<NavLink
-					to='/contact'
-					className={({ isActive }) =>
-						isActive
-							? "text-gradient"
-							: "text-base-content hover:bg-linear-to-br from-blue-500 to-green-500 bg-clip-text hover:text-transparent"
-					}>
-					Contact Us
-				</NavLink>
-			</li>
-		</>
-	);
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-	return (
-		<Container>
-			<nav className='navbar'>
-				<div className='navbar-start flex-1'>
-					<div className='dropdown'>
-						<div
-							tabIndex={0}
-							role='button'
-							className='btn btn-ghost px-1 mr-1 sm:px-3 lg:hidden'>
-							<svg
-								xmlns='http://www.w3.org/2000/svg'
-								className='h-5 w-5'
-								fill='none'
-								viewBox='0 0 24 24'
-								stroke='currentColor'>
-								{" "}
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth='2'
-									d='M4 6h16M4 12h8m-8 6h16'
-								/>{" "}
-							</svg>
-						</div>
-						<ul
-							tabIndex={0}
-							className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow space-y-2'>
-							{navLinks}
-							<li>
-								<a
-									href='https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-md-zeon'
-									target='_blank'
-									rel='noreferrer'
-									className='btn btn-sm bg-gradient'>
-									Join As Developer
-								</a>
-							</li>
-						</ul>
-					</div>
-					<Logo />
-				</div>
-				<div className='navbar-center hidden lg:flex justify-end'>
-					<ul className='menu menu-horizontal px-1'>{navLinks}</ul>
-				</div>
-				<div className='navbar-end w-max'>
-					<div className='flex gap-4 items-center'>
-						{user ? (
-							<>
-								<AvailableCoins />
-								{/* Profile */}
-								<div className='dropdown dropdown-end'>
-									<div
-										tabIndex={0}
-										role='button'
-										className='btn btn-ghost btn-circle avatar'>
-										<div className='w-10 h-10 rounded-full overflow-hidden'>
-											{!user?.photoURL ? (
-												<div className='w-full h-full bg-base-300 animate-pulse rounded-full'></div>
-											) : (
-												<img
-													alt={user?.displayName || "User Avatar"}
-													src={user?.photoURL}
-													referrerPolicy='no-referrer'
-													className='w-full h-full object-cover'
-												/>
-											)}
-										</div>
-									</div>
-									<div
-										tabIndex={0}
-										className='menu menu-sm dropdown-content min-w-52 w-fit bg-base-100 rounded-box z-1 mt-3 p-2 shadow space-y-2'>
-										<div>
-											{/* Email */}
-											<p>{user?.email}</p>
-										</div>
-										<div className='flex justify-between items-center'>
-											{isRoleLoading ? (
-												<div className='skeleton badge'></div>
-											) : (
-												<span className='badge bg-gradient capitalize'>
-													{role}
-												</span>
-											)}
-											<ThemeController />
-										</div>
-										<div>
-											<button
-												onClick={logOut}
-												className='flex gap-1 items-center cursor-pointer hover:scale-95'>
-												<LuLogOut />
-												Logout
-											</button>
-										</div>
-									</div>
-								</div>
-							</>
-						) : (
-							<>
-								<div className='hidden sm:block'>
-									<ThemeController />
-								</div>
-								<div className='space-x-1'>
-									<Link
-										to='/login'
-										className='btn btn-sm sm:btn-md btn-ghost'>
-										Login
-									</Link>
-									<Link
-										to='/register'
-										className='btn btn-sm sm:btn-md btn-ghost bg-gradient'>
-										Register
-									</Link>
-								</div>
-							</>
-						)}
-						<a
-							href='https://github.com/md-zeon/micro-earn-client'
-							target='_blank'
-							rel='noreferrer'
-							className='btn btn-outline hidden lg:inline-flex'>
-							Join As Developer
-						</a>
-					</div>
-				</div>
-			</nav>
-		</Container>
-	);
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = original;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [mobileMenuOpen]);
+
+  const handleLogout = useCallback(() => {
+    logOut();
+    setMobileMenuOpen(false);
+  }, [logOut]);
+
+  const visibleNavItems = navItems.filter((item) => !item.requiresAuth || user);
+
+  return (
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[70] focus:rounded-full focus:bg-gradient focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
+
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className={`sticky top-0 transition-all duration-300 ${
+          mobileMenuOpen ? "z-[70]" : "z-50"
+        } ${
+          !mobileMenuOpen && scrolled
+            ? "border-b border-border/50 bg-background/80 shadow-lg backdrop-blur-xl"
+            : "bg-transparent"
+        }`}
+      >
+        <Container>
+          <nav
+            aria-label="Main navigation"
+            className={`flex items-center justify-between px-2 transition-all duration-300 ${
+              scrolled ? "py-2.5" : "py-4"
+            }`}
+          >
+            <Logo />
+
+            {/* Desktop nav links */}
+            <div className="hidden items-center gap-1 lg:flex">
+              {visibleNavItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={desktopLinkClass}
+                >
+                  {({ isActive }) => (
+                    <>
+                      {item.label}
+                      {isActive && (
+                        <motion.span
+                          layoutId="navbar-indicator"
+                          className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-gradient"
+                        />
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </div>
+
+            {/* Right section */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {!mobileMenuOpen && (
+                <>
+                  {user ? (
+                    <>
+                      <AvailableCoins />
+                  <ThemeController />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      nativeButton={false}
+                      aria-label="Open user menu"
+                      render={
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="relative h-10 w-10 rounded-full ring-1 ring-transparent transition-shadow hover:ring-emerald-500/50"
+                        >
+                          <Button
+                            variant="ghost"
+                            className="h-10 w-10 rounded-full p-0"
+                          >
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage
+                                src={user?.photoURL || ""}
+                                alt={user?.displayName || "User"}
+                              />
+                              <AvatarFallback className="bg-muted">
+                                {user?.displayName?.charAt(0)?.toUpperCase() ||
+                                  "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                          </Button>
+                        </motion.div>
+                      }
+                    />
+                    <DropdownMenuContent className="w-60" align="end">
+                      <DropdownMenuLabel>
+                        <div className="flex items-center gap-3 p-1">
+                          <Avatar className="size-9">
+                            <AvatarImage
+                              src={user?.photoURL || ""}
+                              alt={user?.displayName || "User"}
+                            />
+                            <AvatarFallback className="bg-muted">
+                              {user?.displayName?.charAt(0)?.toUpperCase() ||
+                                "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <p className="truncate text-sm font-semibold leading-none text-foreground">
+                              {user?.displayName || "User"}
+                            </p>
+                            <p className="truncate text-xs leading-none text-muted-foreground">
+                              {user?.email}
+                            </p>
+                            {isRoleLoading ? (
+                              <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+                            ) : (
+                              <Badge
+                                variant="secondary"
+                                className="capitalize text-emerald-700 dark:text-emerald-400"
+                              >
+                                {role}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        render={<Link to="/dashboard/profile" />}
+                        className="cursor-pointer"
+                      >
+                        <UserRound />
+                        My Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        render={<Link to="/dashboard" />}
+                        className="cursor-pointer"
+                      >
+                        <LayoutDashboard />
+                        Dashboard
+                      </DropdownMenuItem>
+                      {role && roleMenuItems[role] && (
+                        <>
+                          <DropdownMenuSeparator />
+                          {roleMenuItems[role].map((item) => (
+                            <DropdownMenuItem
+                              key={item.to}
+                              render={<Link to={item.to} />}
+                              className="cursor-pointer"
+                            >
+                              <item.icon />
+                              {item.label}
+                            </DropdownMenuItem>
+                          ))}
+                        </>
+                      )}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={logOut}
+                        className="cursor-pointer"
+                      >
+                        <LogOut />
+                        Log out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
+              ) : (
+                <>
+                  <div className="hidden sm:block">
+                    <ThemeController />
+                  </div>
+                  <div className="flex gap-2">
+                    <Link to="/login">
+                      <Button variant="ghost" className="rounded-full">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button className="rounded-full bg-gradient text-white shadow-lg transition-all duration-300 hover:opacity-90 hover:shadow-xl">
+                        Register
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              )}
+                </>
+              )}
+
+              {/* Mobile menu trigger */}
+              <Button
+                variant="ghost"
+                className="gap-1.5 rounded-full lg:hidden"
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileMenuOpen}
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+              >
+                {mobileMenuOpen ? (
+                  <>
+                    <X className="h-5 w-5" />
+                    <span className="text-xs font-medium">Close</span>
+                  </>
+                ) : (
+                  <>
+                    <Menu className="h-5 w-5" />
+                    <span className="text-xs font-medium">Menu</span>
+                  </>
+                )}
+              </Button>
+            </div>
+          </nav>
+        </Container>
+      </motion.header>
+
+      {/* Full-screen mobile menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
+            className="fixed inset-0 z-[60] flex flex-col bg-background/98 backdrop-blur-2xl lg:hidden"
+          >
+            {/* Mobile nav items */}
+            <div className="flex-1 overflow-y-auto">
+              <Container>
+                <nav
+                  className="mt-20 flex flex-col gap-1"
+                  aria-label="Mobile navigation"
+                >
+                  {visibleNavItems.map((item, i) => (
+                    <motion.div
+                      key={item.to}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.04 * i,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
+                      <NavLink
+                        to={item.to}
+                        end={item.end}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={({ isActive }) =>
+                          `group flex items-center justify-between rounded-2xl px-4 py-4 transition-all duration-200 ${
+                            isActive
+                              ? "bg-gradient-soft text-emerald-600 dark:text-emerald-400"
+                              : "text-foreground/70 hover:bg-muted/60 active:bg-muted"
+                          }`
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            <span className="flex items-center gap-4">
+                              <span
+                                className={`flex size-11 items-center justify-center rounded-xl transition-all duration-300 ${
+                                  isActive
+                                    ? "bg-gradient text-white shadow-lg shadow-emerald-500/25"
+                                    : "bg-muted text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500/15"
+                                }`}
+                              >
+                                {item.icon}
+                              </span>
+                              <div className="flex flex-col">
+                                <span className="text-lg font-semibold tracking-tight">
+                                  {item.label}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {item.description}
+                                </span>
+                              </div>
+                            </span>
+                            <ArrowRight
+                              className={`size-4 transition-all duration-200 ${
+                                isActive
+                                  ? "translate-x-0 opacity-100"
+                                  : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-60"
+                              }`}
+                            />
+                          </>
+                        )}
+                      </NavLink>
+                    </motion.div>
+                  ))}
+                </nav>
+
+                {/* Mobile bottom actions */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 16 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: 0.04 * visibleNavItems.length + 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="mt-auto flex flex-col gap-3 pb-10 pt-6"
+                >
+                  <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-muted/30 px-5 py-3.5">
+                    <span className="text-sm font-medium text-foreground/80">
+                      Theme
+                    </span>
+                    <ThemeController />
+                  </div>
+
+                  {user ? (
+                    <div className="flex flex-col gap-2.5">
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button className="h-12 w-full justify-center rounded-2xl bg-gradient text-white text-sm font-medium shadow-lg shadow-emerald-500/25">
+                          Go to Dashboard
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        onClick={handleLogout}
+                        className="h-12 w-full justify-center rounded-2xl text-sm font-medium text-destructive hover:bg-destructive/10"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Log out
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2.5">
+                      <Link
+                        to="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button
+                          variant="outline"
+                          className="h-12 w-full justify-center rounded-2xl text-sm font-medium"
+                        >
+                          Log in
+                        </Button>
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button className="h-12 w-full justify-center rounded-2xl bg-gradient text-white text-sm font-medium shadow-lg shadow-emerald-500/25">
+                          Get Started
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </motion.div>
+              </Container>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 };
 
 export default Navbar;

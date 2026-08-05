@@ -1,70 +1,164 @@
+import { Link, useNavigate } from "react-router";
+import {
+  ChevronDown,
+  ChevronRight,
+  ExternalLink,
+  LogOut,
+  UserRound,
+} from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
-import Logo from "../../../components/Logo";
+import useRole from "../../../hooks/useRole";
 import AvailableCoins from "../../../components/AvailableCoins";
 import ThemeController from "../../../components/ThemeController";
-import { LuMenu, LuX } from "react-icons/lu";
-import { Link } from "react-router";
 import NotificationPopup from "./NotificationPopup";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const DashboardNavbar = ({ role, isSidebarOpen, setIsSidebarOpen }) => {
-	const { user, loading } = useAuth();
-	return (
-		<>
-			<div className='flex items-center'>
-				<button
-					onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-					className='lg:hidden btn btn-sm btn-ghost px-1 sm:px-3 hover:bg-transparent border-0 outline-0'
-					aria-label='Toggle Sidebar'
-				>
-					{isSidebarOpen ? <LuX className='w-5 h-5' /> : <LuMenu className='w-5 h-5' />}
-				</button>
-				<Logo />
-			</div>
+const DashboardNavbar = ({ currentTitle }) => {
+  const { user, loading, logOut } = useAuth();
+  const { role } = useRole();
+  const navigate = useNavigate();
 
-			<div className='flex items-center space-x-2 sm:space-x-4'>
-				{/* Available Coins */}
-				<span className='hidden md:block'>
-					{loading ? <div className='skeleton h-6 w-24 rounded'></div> : <AvailableCoins />}
-				</span>
+  const handleLogout = async () => {
+    await logOut();
+    navigate("/");
+  };
 
-				<ThemeController />
+  return (
+    <>
+      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+        <SidebarTrigger />
 
-				{/* User info */}
-				{loading ? (
-					<div className='flex items-center gap-2'>
-						<div className='skeleton w-10 h-10 rounded-full'></div>
-						<div className='hidden sm:flex flex-col gap-1'>
-							<div className='skeleton h-4 w-24 rounded'></div>
-							<div className='skeleton h-3 w-16 rounded'></div>
-						</div>
-					</div>
-				) : (
-					<div className='flex items-center sm:space-x-2'>
-						<Link to='/dashboard/profile'>
-							<img
-								src={
-									user?.photoURL ||
-									"https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
-								}
-								alt={user?.displayName}
-								referrerPolicy='no-referrer'
-								className='sm:w-10 sm:h-10 w-8 h-8 rounded-full object-cover'
-							/>
-						</Link>
-						<div className='hidden sm:flex flex-col leading-tight'>
-							<span className='font-semibold'>{user?.displayName || "User Name"}</span>
-							<span className='text-xs text-muted'>
-								{role ? role.charAt(0).toUpperCase() + role.slice(1) : "No Role"}
-							</span>
-						</div>
-					</div>
-				)}
+        <span className="min-w-0 truncate text-sm font-semibold lg:hidden">
+          {currentTitle}
+        </span>
 
-				{/* Notification Icon */}
-				{loading ? <div className='skeleton w-8 h-8 rounded-full'></div> : <NotificationPopup />}
-			</div>
-		</>
-	);
+        <nav
+          aria-label="Breadcrumb"
+          className="hidden min-w-0 items-center gap-1.5 text-sm lg:flex"
+        >
+          <Link
+            to="/dashboard"
+            className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Dashboard
+          </Link>
+          <ChevronRight
+            className="size-4 shrink-0 text-muted-foreground/50"
+            aria-hidden="true"
+          />
+          <span className="truncate font-semibold text-foreground">
+            {currentTitle}
+          </span>
+        </nav>
+      </div>
+
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        <span className="hidden md:block">
+          {loading ? (
+            <Skeleton className="h-6 w-24 rounded" />
+          ) : (
+            <AvailableCoins />
+          )}
+        </span>
+
+        <ThemeController />
+
+        {loading ? (
+          <Skeleton className="h-8 w-8 rounded-full" />
+        ) : (
+          <NotificationPopup />
+        )}
+
+        {loading ? (
+          <Skeleton className="h-8 w-8 rounded-full" />
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  className="h-10 gap-2 rounded-full px-1.5 pr-2 hover:bg-muted"
+                >
+                  <Avatar className="size-8">
+                    <AvatarImage
+                      src={user?.photoURL}
+                      alt={user?.displayName}
+                    />
+                    <AvatarFallback>
+                      {user?.displayName?.charAt(0)?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden max-w-32 truncate text-sm font-medium md:block">
+                    {user?.displayName || "User"}
+                  </span>
+                  <ChevronDown
+                    className="hidden size-3.5 text-muted-foreground md:block"
+                    aria-hidden="true"
+                  />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end" className="w-60">
+              <DropdownMenuLabel>
+                <div className="flex flex-col gap-1">
+                  <span className="truncate font-medium text-foreground">
+                    {user?.displayName || "User Name"}
+                  </span>
+                  <span className="truncate text-xs font-normal text-muted-foreground">
+                    {user?.email}
+                  </span>
+                  {role && (
+                    <Badge
+                      variant="secondary"
+                      className="mt-0.5 w-fit capitalize text-emerald-700 dark:text-emerald-400"
+                    >
+                      {role}
+                    </Badge>
+                  )}
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                render={<Link to="/dashboard/profile" />}
+                className="cursor-pointer"
+              >
+                <UserRound />
+                My Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                render={<Link to="/" />}
+                className="cursor-pointer"
+              >
+                <ExternalLink />
+                View Website
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={handleLogout}
+                className="cursor-pointer"
+              >
+                <LogOut />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+    </>
+  );
 };
 
 export default DashboardNavbar;

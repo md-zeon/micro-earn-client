@@ -1,80 +1,140 @@
-import { LuClock, LuListTodo, LuCoins } from "react-icons/lu";
-import illustration from "../../assets/why-choose.svg";
+import {
+  BadgeCheck,
+  Clock3,
+  HeartHandshake,
+  Wallet,
+  Zap,
+} from "lucide-react";
+import { Card } from "@/components/ui/card";
+import FadeContent from "@/components/effects/FadeContent";
+import { Progress } from "@/components/ui/progress";
+import SectionHeading from "./SectionHeading";
 
 const reasons = [
-	{
-		icon: <LuClock className='text-4xl text-accent' />,
-		title: "Freedom to Earn Anytime",
-		description: "MicroEarn empowers you to work whenever you want. No pressure — just tasks that pay.",
-	},
-	{
-		icon: <LuListTodo className='text-4xl text-accent' />,
-		title: "Hire Instantly, Without Hassle",
-		description: "Buyers post simple tasks and connect with thousands of ready-to-work users instantly.",
-	},
-	{
-		icon: <LuCoins className='text-4xl text-accent' />,
-		title: "Fair & Transparent Earnings",
-		description: "Earn coins for every approved task. Withdraw real cash — no hidden cuts or delays.",
-	},
+  {
+    icon: <Clock3 className="size-5" />,
+    title: "Work on your schedule",
+    description:
+      "No fixed hours, no deadlines pressure. Complete tasks whenever it suits you.",
+  },
+  {
+    icon: <BadgeCheck className="size-5" />,
+    title: "Trusted & secure",
+    description:
+      "Every buyer and task is verified. Payments are protected end to end.",
+  },
+  {
+    icon: <HeartHandshake className="size-5" />,
+    title: "Community driven",
+    description:
+      "Join a thriving network of earners who share tips and grow together.",
+  },
 ];
 
 const WhyChooseUs = () => {
-	return (
-		<section className='bg-base-100 py-20'>
-			<div className='px-4 flex flex-col-reverse lg:flex-row items-center gap-12'>
-				{/* Left Content */}
-				<div
-					className='w-full lg:w-1/2'
-					data-aos='fade-up'
-					data-aos-delay='100'
-					
-				>
-					<h2
-						className='text-4xl md:text-5xl font-bold mb-6 text-center sm:text-start'
-						data-aos='fade-down'
-						data-aos-delay='0'
-					>
-						Why Choose <span className='text-gradient'>MicroEarn?</span>
-					</h2>
-					<p className='text-gray-600 mb-8 max-w-lg text-center sm:text-start'>
-						Whether you're here to earn or get things done — MicroEarn gives you full control, real value, and instant
-						results.
-					</p>
+  return (
+    <section className="relative overflow-hidden py-20 md:py-28">
+      <div className="absolute top-20 -right-20 size-80 rounded-full bg-emerald-500/5 blur-3xl" />
+      <div className="absolute -bottom-20 -left-20 size-80 rounded-full bg-teal-500/5 blur-3xl" />
 
-					<div className='space-y-6'>
-						{reasons.map((item, index) => (
-							<div
-								key={index}
-								data-aos='fade-up'
-								data-aos-delay={300 + index * 100}
-								className='flex items-start gap-4'
-							>
-								<div>{item.icon}</div>
-								<div>
-									<h4 className='text-lg font-semibold'>{item.title}</h4>
-									<p className='text-sm text-gray-600'>{item.description}</p>
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionHeading
+          eyebrow="Why MicroEarn"
+          title="Built for people who value their time"
+          description="We combine the trust of a marketplace with the speed of modern fintech — so you can earn and hire with total confidence."
+        />
 
-				{/* Right Illustration */}
-				<div
-					className='w-full lg:w-1/2'
-					data-aos='zoom-in'
-					data-aos-delay='100'
-				>
-					<img
-						src={illustration}
-						alt='Why Choose Us Illustration'
-						className='w-full max-w-md mx-auto'
-					/>
-				</div>
-			</div>
-		</section>
-	);
+        <FadeContent className="mt-14 grid gap-5 lg:grid-cols-3">
+          {/* Featured card */}
+          <Card className="relative flex h-full flex-col overflow-hidden border-emerald-500/20 bg-gradient-soft p-8 text-foreground shadow-xl shadow-emerald-500/10 lg:col-span-2 lg:row-span-2 md:p-10">
+            <div className="grid-pattern absolute inset-0 opacity-30" />
+            <div className="absolute -top-16 -right-16 size-56 rounded-full bg-emerald-500/10 blur-3xl" />
+
+            <div className="relative flex items-center gap-3">
+              <div className="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <Zap className="size-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold tracking-tight">
+                  Fast, transparent payouts
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Your earnings, on your terms
+                </p>
+              </div>
+            </div>
+
+            <p className="relative mt-6 max-w-md leading-relaxed text-muted-foreground">
+              Once a task is approved, coins land in your wallet instantly.
+              Request a withdrawal any time and get paid quickly — with zero
+              hidden fees.
+            </p>
+
+            {/* Mock payout card */}
+            <div className="relative mt-8 rounded-2xl bg-card/70 p-5 backdrop-blur-md ring-1 ring-border">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">This week's earnings</span>
+                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  Live
+                </span>
+              </div>
+              <div className="mt-2 flex items-end gap-1">
+                <span className="text-3xl font-bold tracking-tight">$128.40</span>
+                <span className="mb-1 flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  <Zap className="size-3" /> +24%
+                </span>
+              </div>
+              <div className="mt-4 space-y-2">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Withdrawal progress</span>
+                  <span>64%</span>
+                </div>
+                <Progress
+                  value={64}
+                  className="bg-emerald-500/15 [&_[data-slot=progress-indicator]]:bg-emerald-500"
+                />
+              </div>
+            </div>
+
+            <p className="relative mt-6 text-xs text-muted-foreground">
+              200 coin minimum · Stripe & bank transfer supported
+            </p>
+          </Card>
+
+          {/* Small cards */}
+          {reasons.map((item) => (
+            <Card
+              key={item.title}
+              className="group h-full p-7 transition-colors duration-300 hover:border-emerald-500/40"
+            >
+              <div className="flex size-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 transition-colors duration-300 group-hover:bg-gradient group-hover:text-white dark:text-emerald-400">
+                {item.icon}
+              </div>
+              <h3 className="mt-5 text-lg font-semibold tracking-tight">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
+            </Card>
+          ))}
+
+          {/* Coins card */}
+          <Card className="group flex h-full flex-col items-center justify-center gap-3 border-dashed p-7 text-center transition-colors duration-300 hover:border-emerald-500/40">
+            <div className="flex size-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
+              <Wallet className="size-5" />
+            </div>
+            <h3 className="text-lg font-semibold tracking-tight">
+              Simple coin system
+            </h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              20 coins = $1. Transparent value, no surprise deductions.
+            </p>
+          </Card>
+        </FadeContent>
+      </div>
+    </section>
+  );
 };
 
 export default WhyChooseUs;

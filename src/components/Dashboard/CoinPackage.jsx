@@ -1,73 +1,98 @@
-import { LuCoins, LuCreditCard } from "react-icons/lu";
+import { Coins, Check, Loader2, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import SpotlightCard from "@/components/effects/SpotlightCard";
+import { cn } from "@/lib/utils";
 
-const CoinPackage = ({ pkg, selectedPackage, processing, setSelectedPackage, setIsModalOpen }) => {
-	return (
-		<div
-			className={`card rounded-lg p-6 transition-all duration-200 hover:shadow-lg 
-				${
-					pkg.popular
-						? "ring-2 ring-blue-400"
-						: "ring-2 ring-base-200 hover:ring-blue-400 transition ease-linear duration-300"
-				} 
-				${processing && selectedPackage?.id === pkg.id ? "opacity-75" : ""}`}
-		>
-			{pkg.popular && (
-				<div className='badge badge-lg text-xs bg-gradient absolute -top-2 left-1/2 transform -translate-x-1/2'>
-					Most Popular
-				</div>
-			)}
-			<div className='text-center pb-3'>
-				<div className='flex items-center justify-center mb-2'>
-					<LuCoins className='w-8 h-8 text-blue-400' />
-				</div>
-				<h2 className='text-2xl font-bold'>
-					{pkg.coins} {pkg.bonus && <span className='text-green-600'>+{pkg.bonus}</span>} Coins
-				</h2>
-				<p className='text-3xl font-bold text-blue-400 mt-2'>${pkg.price}</p>
-				{pkg.bonus && <div className='badge badge-secondary mt-2'>Bonus: {pkg.bonus} coins</div>}
-			</div>
-			<div className='space-y-2 mt-4'>
-				<div className='flex justify-between text-sm'>
-					<span>Base Coins:</span>
-					<span className='font-semibold'>{pkg.coins}</span>
-				</div>
-				{pkg.bonus && (
-					<div className='flex justify-between text-sm text-green-600'>
-						<span>Bonus Coins:</span>
-						<span className='font-semibold'>+{pkg.bonus}</span>
-					</div>
-				)}
-				<div className='flex justify-between text-sm font-semibold border-t pt-2'>
-					<span>Total Coins:</span>
-					<span className='text-blue-400'>{pkg.coins + (pkg.bonus || 0)}</span>
-				</div>
-				<div className='flex justify-between text-sm text-gray-500'>
-					<span>Price per coin:</span>
-					<span>${(pkg.price / (pkg.coins + (pkg.bonus || 0))).toFixed(3)}</span>
-				</div>
-			</div>
-			<button
-				className='btn w-full mt-4 bg-gradient hover:opacity-80'
-				onClick={() => {
-					setSelectedPackage(pkg);
-					setIsModalOpen(true);
-				}}
-				disabled={processing}
-			>
-				{processing && selectedPackage?.id === pkg.id ? (
-					<div className='flex items-center gap-2'>
-						<span className='loading loading-spinner'></span>
-						Processing...
-					</div>
-				) : (
-					<div className='flex items-center gap-2'>
-						<LuCreditCard className='w-4 h-4' />
-						Purchase Now
-					</div>
-				)}
-			</button>
-		</div>
-	);
+const CoinPackage = ({
+  pkg,
+  selectedPackage,
+  processing,
+  setSelectedPackage,
+  setIsModalOpen,
+}) => {
+  const totalCoins = pkg.coins + (pkg.bonus || 0);
+  const valuePerDollar = (totalCoins / pkg.price).toFixed(1);
+  const isSelected = selectedPackage?.id === pkg.id;
+  const isProcessing = processing && isSelected;
+
+  const content = (
+    <Card
+      className={cn(
+        "relative flex h-full flex-col overflow-visible p-6 transition-all duration-200 hover:shadow-lg",
+        isSelected && "border-primary shadow-lg shadow-primary/10",
+      )}
+    >
+      {pkg.popular && (
+        <Badge
+          className="absolute -top-2.5 left-1/2 -translate-x-1/2 gap-1 bg-gradient text-white shadow-md"
+        >
+          <Star className="size-3 fill-current" aria-hidden="true" />
+          Most Popular
+        </Badge>
+      )}
+
+      <div className="flex flex-1 flex-col items-center gap-2 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+          <Coins className="size-6" aria-hidden="true" />
+        </div>
+        <div className="mt-1">
+          <h3 className="text-xl font-semibold tabular-nums">
+            {totalCoins} coins
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            {pkg.bonus ? (
+              <>
+                {pkg.coins} +{" "}
+                <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                  {pkg.bonus} bonus
+                </span>
+              </>
+            ) : (
+              "No bonus included"
+            )}
+          </p>
+        </div>
+
+        <p className="text-3xl font-bold tabular-nums text-primary">
+          ${pkg.price}
+        </p>
+
+        <Badge variant="secondary" className="gap-1 tabular-nums">
+          <Check className="size-3 text-emerald-500" aria-hidden="true" />
+          {valuePerDollar} coins / $
+        </Badge>
+      </div>
+
+      <Button
+        className="mt-5 w-full bg-gradient shadow-lg shadow-emerald-500/20"
+        onClick={() => {
+          setSelectedPackage(pkg);
+          setIsModalOpen(true);
+        }}
+        disabled={processing}
+        aria-label={`Buy ${totalCoins} coins for $${pkg.price}`}
+      >
+        {isProcessing ? (
+          <>
+            <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
+            Processing...
+          </>
+        ) : (
+          "Buy Now"
+        )}
+      </Button>
+    </Card>
+  );
+
+  return pkg.popular ? (
+    <SpotlightCard className="h-full rounded-xl" spotlightClassName="rounded-xl">
+      {content}
+    </SpotlightCard>
+  ) : (
+    content
+  );
 };
 
 export default CoinPackage;

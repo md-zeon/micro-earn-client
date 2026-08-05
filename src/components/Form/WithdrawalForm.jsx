@@ -1,171 +1,153 @@
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useAuth from "../../hooks/useAuth";
-import useAvailableCoins from "../../hooks/useAvailableCoins";
+import { useMemo } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import FormField from "@/components/Form/FormField";
 
-const WithdrawalForm = ({ onSuccess }) => {
-	const { user } = useAuth();
-	const axiosSecure = useAxiosSecure();
-	const { microCoins: coins } = useAvailableCoins();
+const MIN_COINS = 200;
 
-	const [coinToWithdraw, setCoinToWithdraw] = useState("");
-	const [withdrawalAmount, setWithdrawalAmount] = useState(0);
-	const [paymentSystem, setPaymentSystem] = useState("");
-	const [accountNumber, setAccountNumber] = useState("");
-	const [loading, setLoading] = useState(false);
+const WithdrawalForm = ({ onSubmit, loading, maxCoins = 0 }) => {
+  const withdrawalSchema = useMemo(
+    () =>
+      z.object({
+        paymentSystem: z.string().min(1, "Select a payment system"),
+        accountNumber: z
+          .string()
+          .trim()
+          .min(6, "Account number must be at least 6 characters"),
+        coinToWithdraw: z.coerce
+          .number()
+          .int("Enter a whole number of coins")
+          .min(MIN_COINS, `Minimum ${MIN_COINS} coins required`)
+          .max(maxCoins, `You only have ${maxCoins} coins`),
+      }),
+    [maxCoins],
+  );
 
-	useEffect(() => {
-		const coinNum = parseInt(coinToWithdraw);
-		if (!isNaN(coinNum)) {
-			setWithdrawalAmount((coinNum / 20).toFixed(2));
-		} else {
-			setWithdrawalAmount(0);
-		}
-	}, [coinToWithdraw]);
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(withdrawalSchema),
+    mode: "onTouched",
+    defaultValues: {
+      paymentSystem: "",
+      accountNumber: "",
+      coinToWithdraw: "",
+    },
+  });
 
-	const handleWithdraw = async (e) => {
-		e.preventDefault();
-		const coinNum = parseInt(coinToWithdraw);
+  const amount = Number(watch("coinToWithdraw")) || 0;
 
-		if (coinNum > coins) return toast.error("Cannot withdraw more coins than you have");
-		if (coinNum < 200) return toast.error("Minimum 200 coins required to withdraw");
+  const onSubmitForm = async (data) => {
+    try {
+      await onSubmit({
+        coinToWithdraw: data.coinToWithdraw,
+        paymentSystem: data.paymentSystem,
+        accountNumber: data.accountNumber.trim(),
+      });
+      reset();
+    } catch {
+      // Parent handler is responsible for the error toast.
+    }
+  };
 
-		setLoading(true);
-		const withdrawalData = {
-			worker_email: user?.email,
-			worker_name: user?.displayName,
-			withdrawal_coin: coinNum,
-			withdrawal_amount: parseFloat(withdrawalAmount),
-			payment_system: paymentSystem,
-			account_number: accountNumber,
-			withdraw_date: new Date().toISOString(),
-		};
+  return (
+    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4" noValidate>
+      <FormField
+        label="Payment System"
+        id="payment-system"
+        error={errors.paymentSystem?.message}
+        required
+      >
+        <Controller
+          name="paymentSystem"
+          control={control}
+          render={({ field }) => (
+            <Select
+              value={field.value}
+              onValueChange={(value) => {
+                field.onChange(value);
+                setValue("accountNumber", "");
+              }}
+            >
+              <SelectTrigger
+                id="payment-system"
+                className="w-full"
+                aria-invalid={!!errors.paymentSystem}
+                aria-describedby={
+                  errors.paymentSystem ? "payment-system-error" : undefined
+                }
+              >
+                <SelectValue placeholder="Select payment system" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bank">Bank Transfer</SelectItem>
+                <SelectItem value="bkash">bKash</SelectItem>
+                <SelectItem value="nagad">Nagad</SelectItem>
+                <SelectItem value="rocket">Rocket</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </FormField>
 
-		try {
-			await axiosSecure.post("/withdrawals", withdrawalData);
-			toast.success(`Withdrawal request for $${withdrawalAmount} submitted successfully!`);
-			onSuccess(); // Refresh history
-		} catch (err) {
-			console.error(err);
-			toast.error("Failed to submit withdrawal request");
-		} finally {
-			setLoading(false);
-			setCoinToWithdraw("");
-			setPaymentSystem("");
-			setAccountNumber("");
-		}
-	};
+      <FormField
+        label="Account Number"
+        id="account-number"
+        error={errors.accountNumber?.message}
+        required
+      >
+        <Input
+          placeholder="Enter your account number"
+          autoComplete="off"
+          {...register("accountNumber")}
+        />
+      </FormField>
 
-	const canWithdraw = coins >= 200 && parseInt(coinToWithdraw) >= 200;
+      <FormField
+        label="Coins to Withdraw"
+        id="coin-amount"
+        error={errors.coinToWithdraw?.message}
+        required
+        hint={
+          amount > 0
+            ? `You will receive $${(amount / 20).toFixed(2)}`
+            : undefined
+        }
+      >
+        <Input
+          type="number"
+          placeholder="Enter amount"
+          min={MIN_COINS}
+          max={maxCoins}
+          {...register("coinToWithdraw")}
+        />
+      </FormField>
 
-	return (
-		<div className='rounded-xl shadow-lg p-6'>
-			<h2 className='text-2xl font-semibold mb-6 border-b pb-2'>Request Withdrawal</h2>
-			<p className='text-sm mb-6'>Minimum: 200 coins ($10) | 20 coins = $1</p>
-
-			<form
-				onSubmit={handleWithdraw}
-				className='space-y-6'
-			>
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-					{/* Coin Input */}
-					<div className='space-y-2'>
-						<label className='block'>Coins to Withdraw</label>
-						<input
-							type='number'
-							value={coinToWithdraw}
-							min='200'
-							max={coins}
-							onChange={(e) => {
-								const val = parseInt(e.target.value);
-								if (!isNaN(val)) {
-									if (val > coins) {
-										setCoinToWithdraw(coins);
-									} else {
-										setCoinToWithdraw(val);
-									}
-								} else {
-									setCoinToWithdraw("");
-								}
-							}}
-							onWheel={(e) => e.target.blur()}
-							className='input input-bordered w-full p-2'
-							placeholder='Enter coins'
-							required
-						/>
-						{coinToWithdraw && parseInt(coinToWithdraw) < 200 ? (
-							<p className='text-xs sm:text-sm text-red-600'>Minimum 200 coins required</p>
-						) : coinToWithdraw && parseInt(coinToWithdraw) > coins ? (
-							<p className='text-xs sm:text-sm text-red-600'>Insufficient coins</p>
-						) : null}
-					</div>
-
-					{/* Amount */}
-					<div className='space-y-2'>
-						<label className='block'>Withdrawal Amount ($)</label>
-						<input
-							type='number'
-							value={withdrawalAmount}
-							readOnly
-							className='input input-bordered w-full p-2'
-						/>
-					</div>
-				</div>
-
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-					{/* Payment System */}
-					<div className='space-y-2'>
-						<label className='block'>Payment System</label>
-						<select
-							value={paymentSystem}
-							onChange={(e) => setPaymentSystem(e.target.value)}
-							className='select select-bordered w-full p-2'
-							required
-						>
-							<option value=''>Select a method</option>
-							<option value='bkash'>Bkash</option>
-							<option value='rocket'>Rocket</option>
-							<option value='nagad'>Nagad</option>
-							<option value='paypal'>PayPal</option>
-							<option value='bank'>Bank Transfer</option>
-						</select>
-					</div>
-
-					{/* Account Number */}
-					<div className='space-y-2'>
-						<label className='block'>Account Number</label>
-						<input
-							type='text'
-							value={accountNumber}
-							onChange={(e) => setAccountNumber(e.target.value)}
-							className='input input-bordered w-full p-2'
-							placeholder='Enter account number'
-							required
-						/>
-					</div>
-				</div>
-
-				{/* Button */}
-				{!canWithdraw ? (
-					<div className='text-center text-sm sm:text-base py-4'>
-						<p className='mb-2'>Insufficient coins</p>
-						<div className='badge bg-gradient-error'>Minimum 200 coins required</div>
-					</div>
-				) : (
-					<button
-						type='submit'
-						className={`btn w-full ${
-							!coinToWithdraw || !paymentSystem || !accountNumber ? "cursor-not-allowed" : "cursor-pointer bg-gradient"
-						}`}
-						disabled={loading || !coinToWithdraw || !paymentSystem || !accountNumber}
-					>
-						{loading ? "Processing..." : "Submit Withdrawal Request"}
-					</button>
-				)}
-			</form>
-		</div>
-	);
+      <Button
+        type="submit"
+        className="w-full bg-gradient"
+        disabled={loading}
+      >
+        {loading ? "Processing..." : "Submit Withdrawal Request"}
+      </Button>
+    </form>
+  );
 };
 
 export default WithdrawalForm;

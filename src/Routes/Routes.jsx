@@ -7,6 +7,7 @@ import Register from "../pages/Auth/Register";
 import PrivateRoute from "../Routes/PrivateRoute";
 import Dashboard from "../pages/Dashboard/Common/DashBoard";
 import AddTask from "../pages/Dashboard/Buyer/AddTask";
+import EditTask from "../pages/Dashboard/Buyer/EditTask";
 import BuyerRoute from "./BuyerRoute";
 import MyTasks from "../pages/Dashboard/Buyer/MyTasks";
 import PurchaseCoin from "../pages/Dashboard/Buyer/PurchaseCoin";
@@ -23,13 +24,18 @@ import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageTasks from "../pages/Dashboard/Admin/ManageTasks";
 import WithdrawRequests from "../pages/Dashboard/Admin/WithdrawRequests";
 import Profile from "../pages/Dashboard/Common/Profile";
+import Notifications from "../pages/Dashboard/Common/Notifications";
 import Forbidden from "../pages/Forbidden/Forbidden";
 import NotFound from "../pages/NotFound/NotFound";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
+import Terms from "../pages/Terms/Terms";
+import Privacy from "../pages/Privacy/Privacy";
 import AllTasks from "../pages/AllTasks/AllTasks";
 import TaskDetailsPage from "../pages/TaskDetails/TaskDetailsPage";
 import TaskDetailsSkeleton from "../components/ui/TaskDetailsSkeleton";
+import WorkerProfile from "../pages/WorkerProfile/WorkerProfile";
+import Pricing from "../pages/Pricing/Pricing";
 
 const router = createBrowserRouter([
 	{
@@ -43,13 +49,30 @@ const router = createBrowserRouter([
 			{
 				path: "/all-tasks",
 				Component: AllTasks,
-				loader: () => fetch(`${import.meta.env.VITE_API_URL}/tasks`),
 			},
 			{
 				path: "/task-details/:id",
 				Component: TaskDetailsPage,
-				loader: () => fetch(`${import.meta.env.VITE_API_URL}/tasks`),
+				loader: async ({ params }) => {
+					try {
+						const response = await fetch(
+							`${import.meta.env.VITE_API_URL}/tasks/${params.id}`,
+						);
+						if (!response.ok) return null;
+						return await response.json();
+					} catch {
+						return null;
+					}
+				},
 				HydrateFallback: TaskDetailsSkeleton,
+			},
+			{
+				path: "/worker/:id",
+				Component: WorkerProfile,
+			},
+			{
+				path: "/pricing",
+				Component: Pricing,
 			},
 			{
 				path: "/about",
@@ -58,6 +81,14 @@ const router = createBrowserRouter([
 			{
 				path: "/contact",
 				Component: Contact,
+			},
+			{
+				path: "/terms",
+				Component: Terms,
+			},
+			{
+				path: "/privacy",
+				Component: Privacy,
 			},
 			{
 				path: "/login",
@@ -97,6 +128,16 @@ const router = createBrowserRouter([
 					<PrivateRoute>
 						<BuyerRoute>
 							<MyTasks />
+						</BuyerRoute>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "edit-task/:id",
+				element: (
+					<PrivateRoute>
+						<BuyerRoute>
+							<EditTask />
 						</BuyerRoute>
 					</PrivateRoute>
 				),
@@ -216,6 +257,14 @@ const router = createBrowserRouter([
 				element: (
 					<PrivateRoute>
 						<Profile />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: "notifications",
+				element: (
+					<PrivateRoute>
+						<Notifications />
 					</PrivateRoute>
 				),
 			},

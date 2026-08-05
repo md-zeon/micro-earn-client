@@ -1,0 +1,54 @@
+import {
+  BadgeCheck,
+  Clock3,
+  Lock,
+  ShieldCheck,
+  Wallet,
+  Zap,
+} from "lucide-react";
+
+const items = [
+  { icon: <Zap className="size-4" />, label: "Tasks posted daily" },
+  { icon: <BadgeCheck className="size-4" />, label: "Verified buyers & workers" },
+  { icon: <Wallet className="size-4" />, label: "Fast payouts" },
+  { icon: <Lock className="size-4" />, label: "Secure Stripe payments" },
+  { icon: <Clock3 className="size-4" />, label: "Earn on your schedule" },
+  { icon: <ShieldCheck className="size-4" />, label: "Reviewed submissions" },
+];
+
+const TrustBar = () => {
+  return (
+    <section className="relative border-y border-border/60 bg-muted/30 py-5">
+      <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <div className="marquee-track flex w-max items-center gap-10">
+          <div className="flex items-center gap-10">
+            {items.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center gap-2.5 whitespace-nowrap text-sm font-medium text-muted-foreground"
+              >
+                <span className="text-emerald-500">{item.icon}</span>
+                {item.label}
+                <span className="ml-6 text-emerald-500/40">•</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center gap-10" aria-hidden="true">
+            {items.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center gap-2.5 whitespace-nowrap text-sm font-medium text-muted-foreground"
+              >
+                <span className="text-emerald-500">{item.icon}</span>
+                {item.label}
+                <span className="ml-6 text-emerald-500/40">•</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TrustBar;

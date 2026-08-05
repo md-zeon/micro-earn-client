@@ -10,27 +10,33 @@ import FeaturedTasks from "../../components/Home/FeaturedTasks";
 import Newsletter from "../../components/Home/Newsletter";
 import StatsSection from "../../components/Home/StatsSection";
 import CTA from "../../components/Home/CTA";
+import TrustBar from "../../components/Home/TrustBar";
+import ScrollProgress from "../../components/Home/ScrollProgress";
 
 const Home = () => {
 	return (
-		<Container>
+		<>
+			<ScrollProgress />
 			<PageTitle
 				title='MicroEarn | Earn Money from Small Online Tasks'
 				description='Join MicroEarn to make money by completing small online tasks. A platform built for freelancers and task providers.'
 			/>
 			<div className='overflow-hidden'>
 				<Hero />
-				<HowItWorks />
-				<BestWorkers />
-				<StatsSection />
-				<FeaturedTasks />
-				<TestimonialSlider />
-				<CTA />
-				<WhyChooseUs />
-				<FAQ />
-				<Newsletter />
 			</div>
-		</Container>
+			<Container>
+				<TrustBar />
+				<StatsSection />
+				<HowItWorks />
+				<WhyChooseUs />
+				<FeaturedTasks />
+				<BestWorkers />
+				<TestimonialSlider />
+				<FAQ />
+				<CTA />
+				<Newsletter />
+			</Container>
+		</>
 	);
 };
 

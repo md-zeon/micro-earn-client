@@ -1,132 +1,273 @@
-import useAdminUsers from "../../../hooks/useAdminUsers";
-import { toast } from "react-hot-toast";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { LuCoins } from "react-icons/lu";
-import Swal from "sweetalert2";
-import ManageUsersSkeleton from "../../../components/ui/ManageUsersSkeleton";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import { Coins, ShieldAlert, Trash2, UserRound, Users } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import PageHeader from "../../../components/shared/PageHeader";
 import PageTitle from "../../../components/PageTitle";
+import DataTable from "../../../components/shared/DataTable";
+import ManageTableSkeleton from "../../../components/ui/ManageTableSkeleton";
+import useAdminUsers from "../../../hooks/useAdminUsers";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
+import { formatDate } from "../../../lib/date";
+
+const ROLE_STYLES = {
+  admin: "bg-violet-500/10 text-violet-600 ring-1 ring-violet-500/25 dark:text-violet-400",
+  buyer: "bg-sky-500/10 text-sky-600 ring-1 ring-sky-500/25 dark:text-sky-400",
+  worker: "bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/25 dark:text-emerald-400",
+};
 
 const ManageUsers = () => {
-	const { users, isLoading, refetch } = useAdminUsers();
-	const axiosSecure = useAxiosSecure();
+  const { users, isLoading, refetch } = useAdminUsers();
+  const axiosSecure = useAxiosSecure();
+  const { user: currentUser } = useAuth();
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [changingRoleId, setChangingRoleId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-	const handleRoleChange = async (id, role) => {
-		try {
-			await axiosSecure.patch(`/user/update-role/${id}`, { role });
-			toast.success("Role updated");
-			refetch();
-		} catch (err) {
-			console.error("Failed to update role", err);
-			toast.error("Failed to update role");
-		}
-	};
+  const summary = useMemo(() => {
+    const counts = { total: users.length, admin: 0, buyer: 0, worker: 0 };
+    users.forEach((u) => {
+      if (counts[u.role] !== undefined) counts[u.role] += 1;
+    });
+    return counts;
+  }, [users]);
 
-	const handleDelete = async (id) => {
-		try {
-			const result = await Swal.fire({
-				title: "Are you sure?",
-				text: "You really want to delete this user!",
-				icon: "warning",
-				showCancelButton: true,
-				buttonsStyling: false,
-				customClass: {
-					confirmButton: "btn mr-5 bg-gradient-error",
-					cancelButton: "btn bg-gradient-success",
-				},
-				confirmButtonText: "Yes, delete user!",
-			});
-			if (result.isConfirmed) {
-				await axiosSecure.delete(`/user/${id}`);
-				refetch();
-				await Swal.fire({
-					icon: "success",
-					title: "User deleted",
-					buttonsStyling: false,
-					customClass: {
-						confirmButton: "btn mr-5 bg-gradient-success",
-					},
-				});
-			}
-		} catch (err) {
-			console.error("Failed to delete user", err);
-			Swal.fire({
-				icon: "error",
-				title: "Failed to delete user",
-				buttonsStyling: false,
-				customClass: {
-					confirmButton: "btn mr-5 bg-gradient-error",
-				},
-			});
-		}
-	};
+  const handleRoleChange = async (userId, newRole) => {
+    if (changingRoleId) return;
+    setChangingRoleId(userId);
+    try {
+      await axiosSecure.patch(`/admin/update-role/${userId}`, { role: newRole });
+      toast.success("Role updated successfully");
+      refetch();
+    } catch {
+      toast.error("Failed to update role");
+    } finally {
+      setChangingRoleId(null);
+    }
+  };
 
-	if (isLoading) return <ManageUsersSkeleton />;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await axiosSecure.delete(`/admin/delete-user/${deleteTarget._id}`);
+      toast.success("User deleted successfully");
+      refetch();
+    } catch {
+      toast.error("Failed to delete user");
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
+    }
+  };
 
-	return (
-		<div className='mt-10'>
-			<PageTitle
-				title='Manage Users'
-				description='Manage platform users, roles, and account statuses.'
-			/>
-			<h2 className='text-xl font-semibold mb-4'>Manage Users</h2>
-			<div className='overflow-x-auto'>
-				<table className='table w-full'>
-					<thead>
-						<tr>
-							<th>Photo</th>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Role</th>
-							<th>Micro Coins</th>
-							<th>Update Role</th>
-							<th>Remove</th>
-						</tr>
-					</thead>
-					<tbody>
-						{users.map((user) => (
-							<tr key={user?._id}>
-								<td>
-									<div className='avatar'>
-										<div className='w-10 h-10 rounded-full'>
-											<img
-												src={user?.photoURL}
-												alt='User'
-											/>
-										</div>
-									</div>
-								</td>
-								<td>{user?.name || "N/A"}</td>
-								<td>{user?.email || "N/A"}</td>
-								<td className='capitalize'>{user?.role || "No Role"}</td>
-								<td>
-									{user?.microCoins} <LuCoins className='inline' />
-								</td>
-								<td>
-									<select
-										className='select select-bordered select-sm'
-										value={user?.role}
-										onChange={(e) =>
-											handleRoleChange(user?._id, e.target.value)
-										}>
-										<option value='worker'>Worker</option>
-										<option value='buyer'>Buyer</option>
-										<option value='admin'>Admin</option>
-									</select>
-								</td>
-								<td>
-									<button
-										className='btn bg-gradient-error btn-sm'
-										onClick={() => handleDelete(user?._id)}>
-										Delete
-									</button>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	);
+  if (isLoading) return <ManageTableSkeleton />;
+
+  const isSelf = (user) =>
+    user?.email?.toLowerCase() === currentUser?.email?.toLowerCase();
+
+  const columns = [
+    {
+      key: "user",
+      header: "User",
+      cell: (u) => (
+        <div className="flex items-center gap-3">
+          <Avatar className="size-9">
+            <AvatarImage src={u?.photoURL} alt={u?.name || u?.displayName} />
+            <AvatarFallback>
+              {(u?.name || u?.displayName)?.charAt(0)?.toUpperCase() || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col leading-tight">
+            <span className="flex items-center gap-1.5 font-medium">
+              {u?.name || u?.displayName || "Unknown"}
+              {isSelf(u) && (
+                <Badge variant="secondary" className="gap-1 text-[10px]">
+                  <ShieldAlert className="size-3" aria-hidden="true" />
+                  You
+                </Badge>
+              )}
+            </span>
+            <span className="text-xs text-muted-foreground">{u?.email}</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "role",
+      header: "Role",
+      cell: (u) => (
+        <Select
+          value={u?.role}
+          onValueChange={(value) => handleRoleChange(u._id, value)}
+          disabled={isSelf(u)}
+        >
+          <SelectTrigger className="h-7 w-28" aria-label={`Change role for ${u?.email}`}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="admin">Admin</SelectItem>
+            <SelectItem value="buyer">Buyer</SelectItem>
+            <SelectItem value="worker">Worker</SelectItem>
+          </SelectContent>
+        </Select>
+      ),
+    },
+    {
+      key: "role_badge",
+      header: "Access",
+      cell: (u) => (
+        <Badge variant="outline" className={ROLE_STYLES[u?.role] || ""}>
+          {u?.role}
+        </Badge>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      key: "microCoins",
+      header: "Coins",
+      cell: (u) => (
+        <span className="inline-flex items-center gap-1.5 tabular-nums">
+          <Coins className="size-3.5 text-amber-500" aria-hidden="true" />
+          {Number(u?.microCoins ?? 0).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      key: "createdAt",
+      header: "Joined",
+      cell: (u) => (
+        <span className="text-sm text-muted-foreground">
+          {formatDate(u?.createdAt)}
+        </span>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      key: "actions",
+      header: "Actions",
+      cell: (u) => (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+          aria-label={`Delete user ${u?.email}`}
+          disabled={isSelf(u)}
+          onClick={() => setDeleteTarget(u)}
+        >
+          <Trash2 aria-hidden="true" />
+        </Button>
+      ),
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <PageTitle
+        title="Manage Users"
+        description="Manage platform users, roles, and account access."
+      />
+      <PageHeader
+        eyebrow="Administration"
+        title="Manage Users"
+        description="Review accounts, change roles, and remove users who violate the platform terms."
+        actions={
+          <Badge variant="secondary" className="gap-1 px-3 py-1">
+            <Users className="size-3.5" aria-hidden="true" />
+            {summary.total} total
+          </Badge>
+        }
+      />
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { label: "Total Users", value: summary.total, tone: "text-foreground" },
+          { label: "Admins", value: summary.admin, tone: "text-violet-600 dark:text-violet-400" },
+          { label: "Buyers", value: summary.buyer, tone: "text-sky-600 dark:text-sky-400" },
+          { label: "Workers", value: summary.worker, tone: "text-emerald-600 dark:text-emerald-400" },
+        ].map((item) => (
+          <Card key={item.label}>
+            <CardContent className="flex flex-col gap-1 px-4 py-3">
+              <span className="text-xs text-muted-foreground">{item.label}</span>
+              <span className={`text-xl font-bold tabular-nums ${item.tone}`}>
+                {item.value}
+              </span>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <DataTable
+        data={users}
+        columns={columns}
+        caption="Platform users"
+        searchKeys={["name", "displayName", "email"]}
+        searchPlaceholder="Search by name or email..."
+        statusFilter={{
+          key: "role",
+          label: "Filter by role",
+          options: [
+            { label: "Admins", value: "admin" },
+            { label: "Buyers", value: "buyer" },
+            { label: "Workers", value: "worker" },
+          ],
+        }}
+        emptyIcon={<UserRound />}
+        emptyTitle="No users found"
+        emptyDescription="Try adjusting your search or role filter."
+      />
+
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this user?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete{" "}
+              <strong>{deleteTarget?.email}</strong> and revoke their access.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={isDeleting}
+              className="bg-red-600 text-white hover:bg-red-500"
+            >
+              {isDeleting ? "Deleting..." : "Delete user"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 };
 
 export default ManageUsers;

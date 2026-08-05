@@ -1,99 +1,86 @@
-import { useEffect, useState } from "react";
-import { LuUsers, LuCoins, LuListTodo, LuCheck } from "react-icons/lu";
-import GlassCard from "../ui/GlassCard";
-import Counter from "../shared/Counter";
+import { CircleCheck, ListTodo, Users, Wallet } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import FadeContent from "@/components/effects/FadeContent";
+import CountUp from "@/components/effects/CountUp";
+import SectionHeading from "./SectionHeading";
+import usePlatformStats from "@/hooks/usePlatformStats";
 
 const StatsSection = () => {
-	const [stats, setStats] = useState({
-		totalWorkers: 0,
-		totalBuyers: 0,
-		totalTasks: 0,
-		totalCoins: 0,
-	});
-	const [loading, setLoading] = useState(true);
+  const { stats, isLoading } = usePlatformStats();
+  const safeStats = stats ?? {
+    totalWorkers: 0,
+    totalBuyers: 0,
+    totalTasks: 0,
+    totalCoins: 0,
+  };
 
-	useEffect(() => {
-		const fetchStats = async () => {
-			try {
-				const response = await fetch(
-					`${import.meta.env.VITE_API_URL}/statistics`,
-				);
-				const data = await response.json();
-				setStats({ ...data });
-			} catch (error) {
-				console.error("Failed to fetch stats:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
+  const statItems = [
+    {
+      icon: <Users className="size-6" />,
+      label: "Active workers",
+      value: safeStats.totalWorkers,
+      suffix: "+",
+    },
+    {
+      icon: <ListTodo className="size-6" />,
+      label: "Tasks completed",
+      value: safeStats.totalTasks,
+      suffix: "+",
+    },
+    {
+      icon: <Wallet className="size-6" />,
+      label: "Coins earned",
+      value: safeStats.totalCoins,
+      suffix: "+",
+    },
+    {
+      icon: <CircleCheck className="size-6" />,
+      label: "Satisfied buyers",
+      value: safeStats.totalBuyers,
+      suffix: "+",
+    },
+  ];
 
-		fetchStats();
-	}, []);
+  return (
+    <section className="relative py-20 md:py-28">
+      <div className="mx-auto max-w-6xl px-4">
+        <SectionHeading
+          eyebrow="Platform statistics"
+          title="Our community in numbers"
+          description="Join thousands of people already earning and getting work done on MicroEarn."
+        />
 
-	const statItems = [
-		{
-			icon: <LuUsers className='text-3xl text-accent' />,
-			label: "Active Workers",
-			value: stats.totalWorkers,
-			suffix: "+",
-		},
-		{
-			icon: <LuListTodo className='text-3xl text-accent' />,
-			label: "Tasks Completed",
-			value: stats.totalTasks,
-			suffix: "+",
-		},
-		{
-			icon: <LuCoins className='text-3xl text-accent' />,
-			label: "Coins Earned",
-			value: stats.totalCoins,
-			suffix: "+",
-		},
-		{
-			icon: <LuCheck className='text-3xl text-accent' />,
-			label: "Satisfied Buyers",
-			value: stats.totalBuyers,
-			suffix: "+",
-		},
-	];
-
-	return (
-		<section className='py-16 bg-base-100'>
-			<div className='container mx-auto px-4'>
-				<h2 className='text-3xl md:text-4xl font-bold text-center mb-3 text-gradient'>
-					Our Community in Numbers
-				</h2>
-				<p className='text-center text-base text-gray-500 mb-12 max-w-2xl mx-auto'>
-					Join thousands of users who are already earning and getting work done
-					on MicroEarn.
-				</p>
-
-				<div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
-					{statItems.map((item, index) => (
-						<GlassCard
-							key={index}
-							className='bg-base-200 p-6 rounded-2xl shadow text-center'
-							data-aos='fade-up'
-							data-aos-delay={index * 100}>
-							<div className='flex justify-center mb-3'>{item.icon}</div>
-							<h3 className='text-2xl font-bold mb-1'>
-								{loading ? (
-									<div className='skeleton h-6 w-16 mx-auto rounded'></div>
-								) : (
-									<Counter
-										value={item.value}
-										suffix={item.suffix}
-									/>
-								)}
-							</h3>
-
-							<p className='text-sm text-gray-600'>{item.label}</p>
-						</GlassCard>
-					))}
-				</div>
-			</div>
-		</section>
-	);
+        <FadeContent className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {statItems.map((item) => (
+            <Card
+              key={item.label}
+              className="group relative overflow-hidden p-6 transition-colors duration-300 hover:border-emerald-500/40"
+            >
+              <div className="absolute -top-10 -right-10 size-28 rounded-full bg-emerald-500/10 blur-2xl transition-all duration-500 group-hover:bg-emerald-500/20" />
+              <div className="relative">
+                <div className="flex size-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  {item.icon}
+                </div>
+                <div className="mt-5 text-3xl font-bold tracking-tight md:text-4xl">
+                  {isLoading ? (
+                    <Skeleton className="h-9 w-20" />
+                  ) : (
+                    <span className="text-gradient">
+                      <CountUp value={item.value} suffix={item.suffix} />
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1.5 text-sm font-medium text-muted-foreground">
+                  {item.label}
+                </p>
+              </div>
+            </Card>
+          ))}
+        </FadeContent>
+      </div>
+    </section>
+  );
 };
 
 export default StatsSection;

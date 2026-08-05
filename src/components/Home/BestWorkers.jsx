@@ -1,99 +1,99 @@
-import { useEffect, useState } from "react";
-import { LuCoins } from "react-icons/lu";
-import axios from "axios";
-import GlassCard from "../ui/GlassCard";
+import { Link } from "react-router";
+import { Coins, Medal, Star } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import FadeContent from "@/components/effects/FadeContent";
+import { Skeleton } from "@/components/ui/skeleton";
+import SectionHeading from "./SectionHeading";
+import useBestWorkers from "@/hooks/useBestWorkers";
 
 const BestWorkers = () => {
-	const [workers, setWorkers] = useState([]);
-	const [loading, setLoading] = useState(true);
+  const { workers, isLoading } = useBestWorkers();
 
-	useEffect(() => {
-		const getTopWorkers = async () => {
-			try {
-				const res = await axios.get(
-					`${import.meta.env.VITE_API_URL}/user/top-workers`,
-				);
-				// console.log(res.data);
-				setWorkers(res.data);
-			} catch (error) {
-				console.error("Failed to fetch top workers:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-		getTopWorkers();
-	}, []);
+  return (
+    <section className="relative overflow-hidden bg-muted/30 py-20 md:py-28">
+      <div className="absolute -bottom-20 -right-20 size-80 rounded-full bg-amber-500/5 blur-3xl" />
 
-	return (
-		<section className='py-16 bg-base-100'>
-			<div className='container mx-auto px-4'>
-				<h2
-					className='text-3xl md:text-4xl font-bold text-center mb-3 text-gradient'
-					data-aos='fade-up'>
-					Top Performing Workers
-				</h2>
-				<p
-					className='text-center text-base text-gray-500 mb-12 max-w-2xl mx-auto'
-					data-aos='fade-up'>
-					Meet our highest-rated workers who consistently deliver top-quality
-					results and earn the most coins on the platform.
-				</p>
+      <div className="relative mx-auto max-w-6xl px-4">
+        <SectionHeading
+          eyebrow="Top performers"
+          title="Meet our highest earners"
+          description="Real people, real results. These workers consistently deliver top quality and earn the most on the platform."
+        />
 
-				{loading ? (
-					<div
-						className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'
-						data-aos='fade-up'>
-						{[...Array(6)].map((_, i) => (
-							<div
-								key={i}
-								className='bg-base-200 p-6 rounded-2xl shadow'
-								data-aos='zoom-in'
-								data-aos-delay={100 + i * 100}>
-								<div className='flex flex-col items-center gap-4'>
-									<div className='w-24 h-24 rounded-full skeleton' />
-									<div className='w-32 h-4 rounded-md skeleton' />
-									<div className='w-24 h-4 rounded-md skeleton' />
-								</div>
-							</div>
-						))}
-					</div>
-				) : workers.length === 0 ? (
-					<div className='text-center'>
-						<p className='mt-4 text-sm opacity-60'>No workers found</p>
-					</div>
-				) : (
-					<div
-						className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'
-						data-aos='fade-up'>
-						{workers.map((worker, i) => (
-							<div
-								key={worker._id}
-								data-aos=''
-								data-aos-delay={100 + i * 200}>
-								<GlassCard className='bg-base-200 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300'>
-									<div className='flex flex-col items-center text-center gap-3'>
-										<img
-											src={worker.photoURL}
-											alt={worker.name}
-											className='w-24 h-24 rounded-full object-cover border-4 border-accent'
-											referrerPolicy='no-referrer'
-										/>
-										<h3 className='text-lg font-semibold'>{worker.name}</h3>
-										<p className='flex items-center gap-1 text-green-600 font-medium'>
-											<LuCoins className='text-xl' />
-											<span className='text-gradient'>
-												{worker.microCoins} Coins
-											</span>
-										</p>
-									</div>
-								</GlassCard>
-							</div>
-						))}
-					</div>
-				)}
-			</div>
-		</section>
-	);
+        {isLoading ? (
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="p-6">
+                <div className="flex flex-col items-center gap-4">
+                  <Skeleton className="size-20 rounded-full" />
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-6 w-28 rounded-full" />
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : workers.length === 0 ? (
+          <div className="mt-14 text-center text-muted-foreground">
+            No top workers yet — be the first!
+          </div>
+        ) : (
+          <FadeContent className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {workers.map((worker, i) => (
+              <Link
+                key={worker._id}
+                to={`/worker/${worker._id}`}
+                className="group h-full"
+                aria-label={`View ${worker.name}'s profile`}
+              >
+              <Card
+                className="group relative flex h-full flex-col items-center overflow-hidden p-7 text-center transition-colors duration-300 hover:border-emerald-500/40"
+              >
+                {i === 0 && (
+                    <Badge className="absolute top-4 right-4 gap-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                      <Medal className="size-3" />
+                      #1
+                    </Badge>
+                  )}
+
+                  <div className="relative mt-2">
+                    <Avatar className="size-20 border-2 border-emerald-500/30">
+                      <AvatarImage
+                        src={worker.photoURL}
+                        alt={worker.name}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="bg-emerald-500/10 text-lg text-emerald-600 dark:text-emerald-400">
+                        {worker.name?.charAt(0) || "W"}
+                      </AvatarFallback>
+                    </Avatar>
+                    {i < 3 && (
+                      <div className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-amber-400 text-white shadow-md">
+                        <Star className="size-3.5 fill-white" />
+                      </div>
+                    )}
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-semibold tracking-tight">
+                    {worker.name}
+                  </h3>
+                  <p className="mt-0.5 text-sm text-muted-foreground">
+                    {worker.email?.split("@")[0] || "Worker"}
+                  </p>
+
+                  <Badge className="mt-4 gap-1.5 rounded-full border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <Coins className="size-3.5" />
+                    {worker.microCoins?.toLocaleString() || 0} coins earned
+                  </Badge>
+                </Card>
+              </Link>
+            ))}
+          </FadeContent>
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default BestWorkers;

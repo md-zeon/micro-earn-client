@@ -1,71 +1,84 @@
-import { Outlet, useNavigation } from "react-router";
+import { Outlet, useLocation, useNavigation } from "react-router";
 import useRole from "../hooks/useRole";
-import DashboardSidebar from "../pages/Dashboard/Common/DashboardSidebar";
+import AppSidebar from "../pages/Dashboard/Common/AppSidebar";
 import DashboardFooter from "../pages/Dashboard/Common/DashboardFooter";
 import DashboardNavbar from "../pages/Dashboard/Common/DashboardNavbar";
-import { useState } from "react";
-import Container from "../components/Container";
-import DashboardLayoutSkeleton from "../components/ui/DashboardLayoutSkeleton";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import PageTitle from "../components/PageTitle";
 import DashboardSkeleton from "../components/ui/DashboardSkeleton";
+import DashboardLayoutSkeleton from "../components/ui/DashboardLayoutSkeleton";
+import ScrollToTopButton from "../components/effects/ScrollToTopButton";
+
+const pageTitles = {
+  "/dashboard": "Overview",
+  "/dashboard/tasks-list": "Browse Tasks",
+  "/dashboard/my-submissions": "My Submissions",
+  "/dashboard/approved-submissions": "Approved Submissions",
+  "/dashboard/withdrawals": "Withdrawals",
+  "/dashboard/notifications": "Notifications",
+  "/dashboard/profile": "My Profile",
+  "/dashboard/add-task": "Add New Task",
+  "/dashboard/my-tasks": "My Tasks",
+  "/dashboard/purchase-coin": "Purchase Coin",
+  "/dashboard/tasks-to-review": "Tasks to Review",
+  "/dashboard/payment-history": "Payment History",
+  "/dashboard/manage-users": "Manage Users",
+  "/dashboard/manage-tasks": "Manage Tasks",
+  "/dashboard/withdraw-requests": "Withdraw Requests",
+};
 
 const DashboardLayout = () => {
-	const { state } = useNavigation();
-	const { role, isRoleLoading } = useRole();
-	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { state } = useNavigation();
+  const { role, isRoleLoading } = useRole();
+  const { pathname } = useLocation();
 
-	if (isRoleLoading) {
-		return <DashboardLayoutSkeleton />;
-	}
+  const currentTitle =
+    Object.entries(pageTitles).find(([path]) =>
+      path === "/dashboard" ? pathname === path : pathname.startsWith(path),
+    )?.[1] ?? "Dashboard";
 
-	return (
-		<Container>
-			<PageTitle
-				title='Dashboard'
-				description='User dashboard on MicroEarn platform.'
-			/>
-			<div className='flex flex-col'>
-				{/* Header */}
-				<header className='flex justify-between items-center px-2 py-4 sm:p-4 bg-base-200 rounded-xl shadow sticky top-0 z-50'>
-					<DashboardNavbar
-						role={role}
-						isSidebarOpen={isSidebarOpen}
-						setIsSidebarOpen={setIsSidebarOpen}
-					/>
-				</header>
+  if (isRoleLoading) {
+    return <DashboardLayoutSkeleton />;
+  }
 
-				{/* Main content area: Sidebar + Content */}
-				<div className='flex flex-1 h-[calc(100vh-72px)]'>
-					<DashboardSidebar
-						role={role}
-						isSidebarOpen={isSidebarOpen}
-						isRoleLoading={isRoleLoading}
-					/>
-					<main className='flex-1 overflow-y-auto bg-base-100 flex flex-col'>
-						{/* Content */}
-						<div className='flex-1 p-6'>
-							{state === "loading" ? (
-								<DashboardSkeleton
-									statsCount={3}
-									showTable={true}
-								/>
-							) : (
-								<Outlet />
-							)}
-						</div>
-						{/* Footer */}
-						<DashboardFooter />
-					</main>
-				</div>
-			</div>
-			{/* Sidebar Overlay */}
-			{isSidebarOpen && (
-				<div
-					className='fixed inset-0 z-30 bg-base-100/80 backdrop-blur-sm lg:hidden'
-					onClick={() => setIsSidebarOpen(false)}></div>
-			)}
-		</Container>
-	);
+  return (
+    <SidebarProvider>
+      <PageTitle
+        title={currentTitle}
+        description="User dashboard on MicroEarn platform."
+      />
+      <a
+        href="#main-content"
+        className="sr-only z-[100] rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      >
+        Skip to main content
+      </a>
+      <AppSidebar role={role} />
+
+      <div className="flex min-h-svh w-full flex-1 flex-col">
+        <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-2 border-b bg-background/95 px-3 sm:px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <DashboardNavbar currentTitle={currentTitle} />
+        </header>
+
+        <main
+          id="main-content"
+          className="flex-1 bg-background"
+        >
+          <div className="mx-auto w-full max-w-360 p-4 sm:p-6 lg:p-8">
+            {state === "loading" ? (
+              <DashboardSkeleton statsCount={4} showTable={true} />
+            ) : (
+              <Outlet />
+            )}
+          </div>
+        </main>
+
+        <DashboardFooter />
+      </div>
+
+      <ScrollToTopButton />
+    </SidebarProvider>
+  );
 };
 
 export default DashboardLayout;

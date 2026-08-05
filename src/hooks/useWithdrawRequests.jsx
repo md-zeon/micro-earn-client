@@ -1,22 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "./useAxiosSecure";
 
-const useWithdrawRequests = () => {
+const useWithdrawRequests = ({ enabled = true } = {}) => {
 	const axiosSecure = useAxiosSecure();
 
 	const {
-		data: withdrawRequests = [],
+		data: withdrawRequests = {},
 		isLoading: isWithdrawLoading,
 		refetch,
 	} = useQuery({
 		queryKey: ["withdrawRequests"],
+		enabled,
 		queryFn: async () => {
 			const res = await axiosSecure.get("/admin/withdraw-requests");
 			return res?.data;
 		},
 	});
 
-	return { pendingRequests: withdrawRequests?.pendingRequests, approvedRequests: withdrawRequests?.approvedRequests, isWithdrawLoading, refetch };
+	return {
+		pendingRequests: withdrawRequests?.pendingRequests,
+		approvedRequests: withdrawRequests?.approvedRequests,
+		isWithdrawLoading,
+		refetch,
+	};
 };
 
 export default useWithdrawRequests;

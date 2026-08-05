@@ -1,123 +1,146 @@
-import { useEffect, useState } from "react";
-import GlassCard from "../ui/GlassCard";
-import { LuCoins, LuCalendar, LuUser } from "react-icons/lu";
-import axios from "axios";
-import { useNavigate } from "react-router";
+import { cloneElement } from "react";
+import { ArrowRight, Calendar, Coins, User } from "lucide-react";
+import { useNavigate, Link } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import FadeContent from "@/components/effects/FadeContent";
+import SpotlightCard from "@/components/effects/SpotlightCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import SectionHeading from "./SectionHeading";
+import useFeaturedTasks from "@/hooks/useFeaturedTasks";
+import { stripHtml } from "@/lib/utils";
 
 const FeaturedTasks = () => {
-	const [tasks, setTasks] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const navigate = useNavigate();
+  const { tasks, isLoading } = useFeaturedTasks();
+  const navigate = useNavigate();
 
-	useEffect(() => {
-		const fetchFeaturedTasks = async () => {
-			try {
-				const res = await axios.get(`${import.meta.env.VITE_API_URL}/tasks?limit=6`);
-				setTasks(res.data);
-			} catch (error) {
-				console.error("Failed to fetch featured tasks:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
+  return (
+    <section className="relative overflow-hidden py-20 md:py-28">
+      <div className="absolute top-1/4 -left-24 size-72 rounded-full bg-emerald-500/5 blur-3xl" />
 
-		fetchFeaturedTasks();
-	}, []);
+      <div className="relative mx-auto max-w-6xl px-4">
+        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-end">
+          <SectionHeading
+            align="left"
+            eyebrow="Popular right now"
+            title="Featured tasks"
+            description="High-paying, verified tasks available this week. Start earning coins today."
+            className="mx-0 text-center sm:text-left"
+          />
+          <Button
+            variant="outline"
+            size="lg"
+            className="hidden shrink-0 gap-2 rounded-full sm:inline-flex"
+            onClick={() => navigate("/all-tasks")}
+          >
+            View all tasks
+            <ArrowRight className="size-4" />
+          </Button>
+        </div>
 
-	return (
-		<section className='py-16 bg-base-100'>
-			<div className='container mx-auto px-4'>
-				<h2 className='text-3xl md:text-4xl font-bold text-center mb-3 text-gradient'>Featured Tasks</h2>
-				<p className='text-center text-base text-gray-500 mb-12 max-w-2xl mx-auto'>
-					Discover the most popular tasks available right now. Start earning coins today!
-				</p>
+        {isLoading ? (
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="p-6">
+                <div className="flex items-start justify-between">
+                  <Skeleton className="h-6 w-2/3" />
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                </div>
+                <Skeleton className="mt-4 h-4 w-full" />
+                <Skeleton className="mt-2 h-4 w-3/4" />
+                <div className="mt-6 flex gap-4">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+                <div className="mt-6 flex items-center justify-between border-t border-border/60 pt-4">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-8 w-24 rounded-full" />
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : tasks.length === 0 ? (
+          <div className="mt-14 text-center text-muted-foreground">
+            No featured tasks available right now — check back soon.
+          </div>
+        ) : (
+          <FadeContent className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {tasks.map((task, i) => {
+              const card = (
+                <Link
+                  to={`/task-details/${task._id}`}
+                  className="group flex h-full flex-col gap-4 overflow-hidden rounded-xl bg-card p-6 text-sm text-card-foreground ring-1 ring-foreground/10 transition-colors duration-300 hover:ring-emerald-500/40"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="line-clamp-2 text-lg font-semibold tracking-tight">
+                      {task.task_title}
+                    </h3>
+                    <Badge className="shrink-0 rounded-full bg-amber-500/10 font-semibold text-amber-600 dark:text-amber-400">
+                      <Coins className="mr-1 size-3.5" />
+                      {task.payable_amount}
+                    </Badge>
+                  </div>
 
-				{loading ? (
-					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-						{[...Array(6)].map((_, i) => (
-							<div
-								key={i}
-								className='bg-base-200 p-6 h-[320px] flex flex-col justify-between rounded-2xl shadow'
-							>
-								<div>
-									{/* Title + Badge */}
-									<div className='flex justify-between items-center mb-2'>
-										<div className='h-6 w-2/3 rounded-md skeleton'></div>
-										<div className='h-6 w-16 rounded-md skeleton'></div>
-									</div>
+                  <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                    {stripHtml(task.task_detail)}
+                  </p>
 
-									{/* Description */}
-									<div className='h-4 w-full mb-2 rounded-md skeleton'></div>
-									<div className='h-4 w-3/4 rounded-md skeleton'></div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5">
+                      <User className="size-4 text-emerald-500" />
+                      {task.required_workers} workers needed
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar className="size-4 text-emerald-500" />
+                      {new Date(task.completion_deadline).toLocaleDateString()}
+                    </span>
+                  </div>
 
-									{/* Info Row */}
-									<div className='flex gap-4 mt-3'>
-										<div className='h-4 w-20 rounded-md skeleton'></div>
-										<div className='h-4 w-24 rounded-md skeleton'></div>
-									</div>
-								</div>
+                  <div className="flex items-center justify-between border-t border-border/60 pt-4">
+                    <span className="text-xs text-muted-foreground">
+                      Posted by{" "}
+                      <span className="font-semibold text-foreground">
+                        {task.buyer_name}
+                      </span>
+                    </span>
+                    <span className="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.8rem] font-medium whitespace-nowrap text-primary-foreground">
+                      See details
+                      <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                  </div>
+                </Link>
+              );
 
-								{/* Footer with button */}
-								<div className='flex justify-between items-center mt-4'>
-									<div className='h-4 w-24 rounded-md skeleton'></div>
-									<div className='h-8 w-20 rounded-full skeleton'></div>
-								</div>
-							</div>
-						))}
-					</div>
-				) : tasks.length === 0 ? (
-					<div className='text-center'>
-						<p className='mt-4 text-sm opacity-60'>No featured tasks available</p>
-					</div>
-				) : (
-					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-						{tasks.map((task, i) => (
-							<div
-								key={task._id}
-								data-aos='fade-up'
-								data-aos-delay={100 + i * 100}
-							>
-								<GlassCard className='bg-base-200 p-6 h-full rounded-2xl shadow hover:shadow-lg transition duration-300'>
-									<div className='flex flex-col'>
-										<div className='flex-1'>
-											<div className='flex justify-between items-start mb-3'>
-												<h3 className='text-lg font-semibold'>{task.task_title}</h3>
-												<span className='badge bg-gradient'>
-													{task.payable_amount} <LuCoins className='inline ml-1' />
-												</span>
-											</div>
+              return i === 0 ? (
+                <SpotlightCard
+                  key={task._id}
+                  className="overflow-hidden rounded-xl"
+                  spotlightColor="rgba(16, 185, 129, 0.22)"
+                >
+                  {card}
+                </SpotlightCard>
+              ) : (
+                cloneElement(card, { key: task._id })
+              );
+            })}
+          </FadeContent>
+        )}
 
-											<p className='text-sm text-gray-600 mb-4 line-clamp-2'>{task.task_detail}</p>
-
-											<div className='flex flex-wrap gap-2 mb-4'>
-												<div className='flex items-center text-sm text-gray-600'>
-													<LuUser className='mr-1' />
-													<span>{task.required_workers} workers</span>
-												</div>
-												<div className='flex items-center text-sm text-gray-600'>
-													<LuCalendar className='mr-1' />
-													<span>{new Date(task.completion_deadline).toLocaleDateString()}</span>
-												</div>
-											</div>
-										</div>
-										<div className='flex justify-between items-center mt-4'>
-											<span className='text-xs text-gray-500'>Posted by: {task.buyer_name}</span>
-											<button
-												onClick={() => navigate(`/task-details/${task._id}`)}
-												className='btn btn-sm bg-gradient'
-											>
-												See More
-											</button>
-										</div>
-									</div>
-								</GlassCard>
-							</div>
-						))}
-					</div>
-				)}
-			</div>
-		</section>
-	);
+        <div className="mt-12 text-center sm:hidden">
+          <Button
+            variant="outline"
+            size="lg"
+            className="rounded-full"
+            onClick={() => navigate("/all-tasks")}
+          >
+            View all tasks
+            <ArrowRight className="size-4" />
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default FeaturedTasks;

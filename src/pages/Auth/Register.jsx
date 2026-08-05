@@ -1,334 +1,260 @@
-import { useForm } from "react-hook-form";
-import { LuArrowLeft, LuEye, LuEyeClosed, LuLock, LuLockOpen, LuMail, LuUser, LuUserPlus } from "react-icons/lu";
-import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
-import GoogleSignIn from "./GoogleSignIn";
 import { Link, useLocation, useNavigate } from "react-router";
-import { getFirebaseRegisterError, imageUpload, saveUserInDb } from "../../api/utils";
-import toast from "react-hot-toast";
-import registerImg from "../../assets/signUp.svg";
-import Container from "../../components/Container";
-import StepIndicator from "../../components/Form/StepIndicator";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+import useAuth from "../../hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import PageTitle from "../../components/PageTitle";
+import AuthLayout from "./AuthLayout";
+import AuthInput from "./AuthInput";
+import { PasswordField } from "./PasswordField";
+import PasswordStrength from "./PasswordStrength";
+import RoleSelect from "./RoleSelect";
+import GoogleSignIn from "./GoogleSignIn";
+
+const registerSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(2, "Name must be at least 2 characters"),
+    email: z
+      .string()
+      .trim()
+      .min(1, "Email is required")
+      .email("Enter a valid email address"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+    role: z.enum(["worker", "buyer"], {
+      errorMap: () => ({ message: "Please select a role" }),
+    }),
+    terms: z.literal(true, {
+      errorMap: () => ({ message: "You must accept the Terms & Conditions" }),
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
 
 const Register = () => {
-	const { createUser, updateUserProfile, user: authUser } = useAuth();
-	const [showPassword, setShowPassword] = useState(false);
-	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const navigate = useNavigate();
-	const location = useLocation();
-	const from = ["/login", "/register", "/"].includes(location?.state?.from?.pathname)
-		? "/dashboard"
-		: location?.state?.from?.pathname || "/dashboard";
+  const [loading, setLoading] = useState(false);
+  const { createUser, updateUserProfile } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-	const {
-		register,
-		handleSubmit,
-		reset,
-		watch,
-		formState: { errors },
-		trigger,
-	} = useForm();
+  const from = ["/login", "/register", "/"].includes(
+    location?.state?.from?.pathname,
+  )
+    ? "/dashboard"
+    : location?.state?.from?.pathname || "/dashboard";
 
-	const [step, setStep] = useState(1);
-	const nextStep = () => setStep((prev) => prev + 1);
-	const prevStep = () => setStep((prev) => prev - 1);
+  const {
+    register,
+    watch,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    mode: "onTouched",
+    defaultValues: { role: "" },
+  });
 
-	const password = watch("password");
+  const password = watch("password");
 
-	const onSubmit = async (data) => {
-		if (authUser) {
-			toast.error("You are already logged in");
-			toast("Please log out first!");
-			return;
-		}
-		const imageUrl = await imageUpload(data?.photo[0]);
-		// console.log(data, imageUrl);
-		try {
-			setLoading(true);
-			// User Register
-			const result = await createUser(data?.email, data?.password);
-			// Update User Profile
-			await updateUserProfile(data?.name, imageUrl);
-			// console.log(result);
-			// save user in DB
-			const newUser = {
-				uid: result?.user?.uid,
-				name: data?.name,
-				email: data?.email,
-				role: data?.role,
-				photoURL: imageUrl,
-			};
-			// console.log(newUser);
-			// Save User In DB
-			await saveUserInDb(newUser);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      const result = await createUser(data.email, data.password);
+      await updateUserProfile({ displayName: data.name });
+      await fetch(`${import.meta.env.VITE_API_URL}/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uid: result.user.uid,
+          name: data.name,
+          email: data.email,
+          role: data.role,
+          photoURL: result.user.photoURL || "",
+        }),
+      });
+      toast.success(
+        `Welcome, ${data.name.split(" ")[0] || "friend"}! Your ${data.role} account is ready.`,
+      );
+      navigate(from, { replace: true });
+    } catch (err) {
+      console.error(err);
+      toast.error(
+        err?.code === "auth/email-already-in-use"
+          ? "This email is already registered. Try signing in instead."
+          : "Registration failed. Please check your details and try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-			setShowPassword(false);
-			setShowConfirmPassword(false);
-			toast.success("Account created successfully!");
-			navigate(from, { replace: true });
-			reset();
-		} catch (error) {
-			console.error("Registration Error:", error);
-			toast.error(getFirebaseRegisterError(error?.code));
-		} finally {
-			setLoading(false);
-		}
-	};
+  return (
+    <>
+      <PageTitle
+        title="Register"
+        description="Create your MicroEarn account and start earning from micro-tasks."
+      />
+      <AuthLayout>
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+          <div className="mb-6">
+            <h1 className="text-xl font-bold tracking-tight">
+              Create your account
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Join MicroEarn and start earning.
+            </p>
+          </div>
 
-	return (
-		<Container>
-			<PageTitle
-				title='Register'
-				description='Create your MicroEarn account and join thousands earning from micro-tasks.'
-			/>
-			<div className='py-12 px-4 min-h-screen grid md:grid-cols-2 items-center gap-10'>
-				{/* Illustration Section */}
-				<div className='hidden md:block'>
-					<img
-						src={registerImg}
-						alt='Register Illustration'
-						className='w-full max-w-md mx-auto'
-					/>
-				</div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+            <AuthInput
+              id="name"
+              label="Full Name"
+              type="text"
+              autoComplete="name"
+              placeholder="John Doe"
+              required
+              error={errors.name?.message}
+              {...register("name")}
+            />
 
-				{/* Form Section */}
-				<div className='mx-auto p-6 border rounded-xl bg-base-100 shadow text-base-content'>
-					<div className='flex items-center justify-center mb-2 bg-gradient w-10 h-10 rounded-full mx-auto font-bold text-xl'>
-						<LuUserPlus />
-					</div>
-					<h2 className='text-2xl font-bold text-center mb-2'>Create Account</h2>
-					<p className='text-center text-xs text-gray-400 mb-5'>Join MicroEarn and start your earning journey today</p>
-					<form
-						onSubmit={handleSubmit(onSubmit)}
-						className='space-y-4 w-full max-w-sm'
-					>
-						{step === 1 && (
-							<div className='space-y-4'>
-								{/* Full Name */}
-								<div>
-									<label className='text-sm'>
-										Full Name <span className='text-red-500'>*</span>
-									</label>
-									<div className='input input-bordered w-full'>
-										<LuUser className='text-gray-500' />
-										<input
-											type='text'
-											className='grow'
-											placeholder='Enter your name'
-											{...register("name", { required: "Name is required" })}
-											autoComplete='username'
-										/>
-									</div>
-									{errors.name && <p className='text-red-500 text-sm'>{errors.name.message}</p>}
-								</div>
-								{/* Email */}
-								<div>
-									<label className='text-sm'>
-										Email Address <span className='text-red-500 text-sm'>*</span>
-									</label>
-									<div className='input input-bordered w-full'>
-										<LuMail className='text-gray-500' />
-										<input
-											type='email'
-											className='grow'
-											{...register("email", {
-												required: "Email is required",
-												pattern: {
-													value: /^\S+@\S+$/i,
-													message: "Invalid email address",
-												},
-											})}
-											placeholder='example@mail.com'
-											autoComplete='email'
-										/>
-									</div>
-									{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
-								</div>
-								{/* Role */}
-								<div>
-									<label className='text-sm'>
-										Select Role <span className='text-red-500 text-sm'>*</span>
-									</label>
-									<select
-										className='select select-bordered w-full'
-										{...register("role", { required: "Select a role" })}
-									>
-										<option
-											value=''
-											disabled
-										>
-											Select Role
-										</option>
-										<option value='worker'>Worker</option>
-										<option value='buyer'>Buyer</option>
-									</select>
-									{errors.role && <p className='text-red-500 text-sm'>{errors.role.message}</p>}
-								</div>
-								{/* Next */}
-								<button
-									type='button'
-									onClick={async () => {
-										const valid = await trigger(["name", "email", "role"]);
-										if (valid) nextStep();
-									}}
-									className='btn w-full bg-gradient text-white'
-								>
-									Next
-								</button>
-							</div>
-						)}
-						{/* Step 2 */}
-						{step === 2 && (
-							<div className='space-y-4'>
-								{/* Prev */}
-								<div>
-									<button
-										type='button'
-										onClick={prevStep}
-										className='btn btn-xs btn-circle bg-gradient'
-									>
-										<LuArrowLeft />
-									</button>
-								</div>
-								{/* Profile Picture Upload */}
-								<div>
-									<label className='text-sm'>
-										Profile Picture <span className='text-red-500 text-sm'>*</span>
-									</label>
-									<input
-										type='file'
-										accept='image/*'
-										className='file-input file-input-accent file-input-bordered w-full'
-										{...register("photo", { required: "Photo is required" })}
-									/>
-									{errors.photo && <p className='text-red-500 text-sm'>{errors.photo.message}</p>}
-								</div>
-								{/* Password */}
-								<div>
-									<label className='text-sm'>
-										Password <span className='text-red-500 text-sm'>*</span>
-									</label>
-									<div className='input input-bordered w-full'>
-										{showPassword ? (
-											<LuLockOpen
-												className='text-gray-700 cursor-pointer'
-												onClick={() => setShowPassword(!showPassword)}
-											/>
-										) : (
-											<LuLock
-												className='text-gray-500 cursor-pointer'
-												onClick={() => setShowPassword(!showPassword)}
-											/>
-										)}
-										<input
-											type={showPassword ? "text" : "password"}
-											className='grow'
-											{...register("password", {
-												required: "Password is required",
-												minLength: { value: 6, message: "Min 6 characters" },
-												pattern: {
-													value: /^(?=.*[A-Z])(?=.*[!@#$&*])/,
-													message: "At least one uppercase and one special character",
-												},
-											})}
-											placeholder='Enter your password'
-											autoComplete='new-password'
-										/>
-										{!showPassword ? (
-											<LuEye
-												className='text-lg cursor-pointer'
-												onClick={() => setShowPassword(!showPassword)}
-											/>
-										) : (
-											<LuEyeClosed
-												className='text-lg cursor-pointer'
-												onClick={() => setShowPassword(!showPassword)}
-											/>
-										)}
-									</div>
-									{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
-								</div>
-								{/* Confirm Password */}
-								<div>
-									<label className='text-sm'>
-										Confirm Password <span className='text-red-500 text-sm'>*</span>
-									</label>
-									<div className='input input-bordered w-full'>
-										{showConfirmPassword ? (
-											<LuLockOpen
-												className='text-gray-700 cursor-pointer'
-												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-											/>
-										) : (
-											<LuLock
-												className='text-gray-500 cursor-pointer'
-												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-											/>
-										)}
-										<input
-											type={showConfirmPassword ? "text" : "password"}
-											className='grow'
-											{...register("confirmPassword", {
-												required: "Please confirm your password",
-												minLength: { value: 6, message: "Min 6 characters" },
-												validate: (value) => value === password || "Password did not match",
-											})}
-											placeholder='Confirm your password'
-											autoComplete='new-password'
-										/>
-										{!showConfirmPassword ? (
-											<LuEye
-												className='text-lg cursor-pointer'
-												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-											/>
-										) : (
-											<LuEyeClosed
-												className='text-lg cursor-pointer'
-												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-											/>
-										)}
-									</div>
-									{errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
-								</div>
+            <AuthInput
+              id="email"
+              label="Email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              required
+              error={errors.email?.message}
+              {...register("email")}
+            />
 
-								<button
-									type='submit'
-									className='btn w-full bg-gradient text-white'
-									disabled={loading}
-								>
-									{loading ? "Registering..." : "Create Account"}
-								</button>
-							</div>
-						)}
-						{/* Step Indicator */}
-						<StepIndicator
-							step={step}
-							totalSteps={2}
-						/>
-					</form>
-					<GoogleSignIn
-						loading={loading}
-						setLoading={setLoading}
-						from={from}
-					/>
-					{/* Login Link */}
-					<div className='mt-6 text-center'>
-						<p className='text-sm text-gray-400'>
-							Already have an account?{" "}
-							<Link
-								to='/login'
-								className='text-accent hover:underline font-medium'
-							>
-								Sign in here
-							</Link>
-						</p>
-					</div>
-				</div>
-			</div>
-		</Container>
-	);
+            <div className="space-y-2">
+              <PasswordField
+                id="password"
+                label="Password"
+                autoComplete="new-password"
+                required
+                error={errors.password?.message}
+                {...register("password")}
+              />
+              <PasswordStrength
+                password={password}
+                show={Boolean(password)}
+              />
+            </div>
+
+            <PasswordField
+              id="confirmPassword"
+              label="Confirm Password"
+              autoComplete="new-password"
+              placeholder="Re-enter your password"
+              required
+              error={errors.confirmPassword?.message}
+              {...register("confirmPassword")}
+            />
+
+            <RoleSelect
+              value={watch("role")}
+              onChange={(value) =>
+                setValue("role", value, { shouldValidate: true })
+              }
+              error={errors.role?.message}
+            />
+
+            <div className="space-y-2">
+              <label className="flex cursor-pointer select-none items-start gap-2.5 text-sm text-muted-foreground">
+                <span className="mt-0.5">
+                  <Checkbox
+                    aria-invalid={errors.terms ? true : undefined}
+                    {...register("terms")}
+                  />
+                </span>
+                <span className="leading-relaxed">
+                  I agree to the{" "}
+                  <Link
+                    to="/terms"
+                    className="font-semibold text-emerald-600 underline-offset-4 hover:underline dark:text-emerald-400"
+                  >
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    to="/privacy"
+                    className="font-semibold text-emerald-600 underline-offset-4 hover:underline dark:text-emerald-400"
+                  >
+                    Privacy Policy
+                  </Link>
+                </span>
+              </label>
+              {errors.terms && (
+                <p
+                  role="alert"
+                  className="text-sm font-medium text-destructive"
+                >
+                  {errors.terms.message}
+                </p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              className="h-10 w-full rounded-lg bg-gradient"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  Creating account...
+                </>
+              ) : (
+                "Create Account"
+              )}
+            </Button>
+          </form>
+
+          <div className="my-6 flex items-center gap-3">
+            <Separator className="flex-1" />
+            <span className="text-xs font-medium text-muted-foreground">
+              or sign up with
+            </span>
+            <Separator className="flex-1" />
+          </div>
+
+          <GoogleSignIn
+            loading={loading}
+            setLoading={setLoading}
+            from={from}
+            label="Continue with Google"
+          />
+        </div>
+
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-semibold text-emerald-600 underline-offset-4 transition-colors hover:underline dark:text-emerald-400"
+          >
+            Sign in
+          </Link>
+        </p>
+      </AuthLayout>
+    </>
+  );
 };
 
 export default Register;
