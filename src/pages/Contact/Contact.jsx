@@ -1,4 +1,7 @@
 import { motion } from "motion/react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from "sonner";
 import { Link } from "react-router";
 import {
@@ -17,11 +20,11 @@ import {
 import contactImage from "../../assets/contact.svg";
 import CTA from "../../components/Home/CTA";
 import FadeContent from "@/components/effects/FadeContent";
+import FormField from "@/components/Form/FormField";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -74,10 +77,40 @@ const details = [
   },
 ];
 
+const contactSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Enter your name")
+    .min(2, "Name must be at least 2 characters"),
+  email: z
+    .string()
+    .trim()
+    .min(1, "Enter your email address")
+    .email("Enter a valid email address"),
+  subject: z.string().min(1, "Please choose a reason"),
+  message: z
+    .string()
+    .trim()
+    .min(1, "Write a message")
+    .min(10, "Message must be at least 10 characters"),
+});
+
 const Contact = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    e.target.reset();
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(contactSchema),
+    mode: "onTouched",
+    defaultValues: { name: "", email: "", subject: "", message: "" },
+  });
+
+  const onSubmit = () => {
+    reset();
     toast.success("Message sent! We'll get back to you within 24–48 hours.");
   };
 
@@ -257,71 +290,99 @@ const Contact = () => {
                 </div>
 
                 <form
-                  onSubmit={handleSubmit}
+                  onSubmit={handleSubmit(onSubmit)}
+                  noValidate
                   className="relative mt-8 space-y-5"
                 >
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-white/85">
-                        Your name
-                      </Label>
+                    <FormField
+                      label="Your name"
+                      id="name"
+                      error={errors.name?.message}
+                      required
+                      labelClassName="text-white/85"
+                      errorClassName="text-rose-300"
+                    >
                       <Input
-                        id="name"
                         type="text"
-                        required
                         placeholder="John Doe"
                         className="h-12 rounded-xl border-white/20 bg-white/10 text-white placeholder:text-white/50 focus-visible:border-white/40 focus-visible:ring-white/20"
+                        {...register("name")}
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-white/85">
-                        Your email
-                      </Label>
+                    </FormField>
+                    <FormField
+                      label="Your email"
+                      id="email"
+                      error={errors.email?.message}
+                      required
+                      labelClassName="text-white/85"
+                      errorClassName="text-rose-300"
+                    >
                       <Input
-                        id="email"
                         type="email"
-                        required
                         placeholder="john@example.com"
                         className="h-12 rounded-xl border-white/20 bg-white/10 text-white placeholder:text-white/50 focus-visible:border-white/40 focus-visible:ring-white/20"
+                        {...register("email")}
                       />
-                    </div>
+                    </FormField>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="subject" className="text-white/85">
-                      What's this about?
-                    </Label>
-                    <Select required>
-                      <SelectTrigger
-                        id="subject"
-                        className="h-12 w-full rounded-xl border-white/20 bg-white/10 text-white focus-visible:border-white/40 focus-visible:ring-white/20"
-                      >
-                        <SelectValue placeholder="Choose a reason" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="support">
-                          General support
-                        </SelectItem>
-                        <SelectItem value="partnership">Partnership</SelectItem>
-                        <SelectItem value="feedback">Feedback</SelectItem>
-                        <SelectItem value="issue">Report an issue</SelectItem>
-                        <SelectItem value="other">Something else</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <FormField
+                    label="What's this about?"
+                    id="subject"
+                    error={errors.subject?.message}
+                    required
+                    labelClassName="text-white/85"
+                    errorClassName="text-rose-300"
+                  >
+                    <Controller
+                      name="subject"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger
+                            id="subject"
+                            className="h-12 w-full rounded-xl border-white/20 bg-white/10 text-white focus-visible:border-white/40 focus-visible:ring-white/20"
+                            aria-invalid={!!errors.subject}
+                            aria-describedby={
+                              errors.subject ? "subject-error" : undefined
+                            }
+                          >
+                            <SelectValue placeholder="Choose a reason" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="support">
+                              General support
+                            </SelectItem>
+                            <SelectItem value="partnership">Partnership</SelectItem>
+                            <SelectItem value="feedback">Feedback</SelectItem>
+                            <SelectItem value="issue">Report an issue</SelectItem>
+                            <SelectItem value="other">Something else</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </FormField>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="message" className="text-white/85">
-                      Message
-                    </Label>
+                  <FormField
+                    label="Message"
+                    id="message"
+                    error={errors.message?.message}
+                    required
+                    labelClassName="text-white/85"
+                    errorClassName="text-rose-300"
+                  >
                     <Textarea
                       id="message"
                       rows={5}
-                      required
                       placeholder="Tell us what's on your mind..."
                       className="rounded-xl border-white/20 bg-white/10 text-white placeholder:text-white/50 focus-visible:border-white/40 focus-visible:ring-white/20"
+                      {...register("message")}
                     />
-                  </div>
+                  </FormField>
 
                   <Button
                     type="submit"

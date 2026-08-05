@@ -1,23 +1,32 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { LuBellRing, LuMail, LuSend, LuShieldCheck } from "react-icons/lu";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import FormField from "@/components/Form/FormField";
 import FadeContent from "@/components/effects/FadeContent";
 
+const newsletterSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Enter your email address")
+    .email("Enter a valid email address"),
+});
+
 const Newsletter = () => {
-  const [email, setEmail] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(newsletterSchema), mode: "onTouched" });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email address");
-      return;
-    }
-
+  const onSubmit = () => {
     toast.success("Thank you for subscribing to our newsletter!");
-    setEmail("");
+    reset();
   };
 
   return (
@@ -41,23 +50,30 @@ const Newsletter = () => {
             </p>
 
             <form
-              onSubmit={handleSubmit}
-              className="mt-8 flex w-full max-w-xl flex-col gap-3 sm:flex-row"
+              onSubmit={handleSubmit(onSubmit)}
+              noValidate
+              className="mt-8 flex w-full max-w-xl flex-col items-start gap-3 sm:flex-row"
             >
-              <div className="relative flex-1">
-                <Label htmlFor="newsletter-email" className="sr-only">
-                  Email address
-                </Label>
-                <LuMail className="absolute top-1/2 left-4 -translate-y-1/2 size-4 text-muted-foreground" />
+              <FormField
+                label="Email address"
+                id="newsletter-email"
+                error={errors.email?.message}
+                className="w-full flex-1"
+                labelClassName="sr-only"
+                trailing={
+                  <LuMail
+                    className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 size-4 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                }
+              >
                 <Input
-                  id="newsletter-email"
                   type="email"
                   placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   className="h-12 rounded-full pl-11"
+                  {...register("email")}
                 />
-              </div>
+              </FormField>
               <Button
                 type="submit"
                 className="h-12 gap-2 rounded-full px-7 shadow-lg shadow-emerald-500/25"

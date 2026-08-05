@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { stripHtml } from "@/lib/utils";
 
 const SORT_OPTIONS = [
   { value: "highest-pay", label: "Highest pay" },
@@ -98,7 +99,7 @@ const TaskCard = ({ task }) => {
         </h3>
 
         <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-          {task.task_detail}
+          {stripHtml(task.task_detail)}
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">

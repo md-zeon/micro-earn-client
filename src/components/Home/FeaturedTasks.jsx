@@ -9,6 +9,7 @@ import SpotlightCard from "@/components/effects/SpotlightCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import SectionHeading from "./SectionHeading";
 import useFeaturedTasks from "@/hooks/useFeaturedTasks";
+import { stripHtml } from "@/lib/utils";
 
 const FeaturedTasks = () => {
   const { tasks, isLoading } = useFeaturedTasks();
@@ -82,7 +83,7 @@ const FeaturedTasks = () => {
                   </div>
 
                   <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                    {task.task_detail}
+                    {stripHtml(task.task_detail)}
                   </p>
 
                   <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">

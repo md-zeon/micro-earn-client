@@ -33,6 +33,12 @@ createRoot(document.getElementById("root")).render(
         </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
-    <Toaster position="top-right" richColors closeButton />
+    <Toaster
+      position="bottom-right"
+      richColors
+      closeButton
+      duration={4500}
+      limit={4}
+    />
   </StrictMode>,
 );

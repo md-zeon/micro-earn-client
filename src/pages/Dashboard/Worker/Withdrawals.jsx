@@ -22,7 +22,6 @@ const Withdrawals = () => {
 	} = useWithDrawals();
 	const { user } = useAuth();
 	const axiosSecure = useAxiosSecure();
-	const [coinToWithdraw, setCoinToWithdraw] = useState(0);
 	const [loading, setLoading] = useState(false);
 
 	if (isCoinsLoading || isWithdrawalLoading) return <WithdrawalsSkeleton />;
@@ -42,12 +41,12 @@ const Withdrawals = () => {
 			});
 
 			toast.success("Withdrawal request submitted!");
-			setCoinToWithdraw(0);
 			refetchWithdrawals();
 			refetchCoins();
 		} catch (err) {
 			console.error("Withdrawal error:", err);
 			toast.error("Failed to submit withdrawal request. Please try again.");
+			throw err;
 		} finally {
 			setLoading(false);
 		}
@@ -99,8 +98,6 @@ const Withdrawals = () => {
 					</CardHeader>
 					<CardContent className="py-6">
 						<WithdrawalForm
-							coinToWithdraw={coinToWithdraw}
-							setCoinToWithdraw={setCoinToWithdraw}
 							onSubmit={handleSubmit}
 							loading={loading}
 							maxCoins={coins}

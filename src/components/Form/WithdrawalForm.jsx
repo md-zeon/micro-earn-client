@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { useMemo } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -10,97 +11,138 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import FormField from "@/components/Form/FormField";
 
 const MIN_COINS = 200;
 
-const WithdrawalForm = ({
-  coinToWithdraw,
-  setCoinToWithdraw,
-  onSubmit,
-  loading,
-  maxCoins = 0,
-}) => {
-  const [paymentSystem, setPaymentSystem] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const amount = Number(coinToWithdraw) || 0;
-  const belowMinimum = amount > 0 && amount < MIN_COINS;
-  const exceedsBalance = amount > maxCoins;
-  const invalid = belowMinimum || exceedsBalance;
+const WithdrawalForm = ({ onSubmit, loading, maxCoins = 0 }) => {
+  const withdrawalSchema = useMemo(
+    () =>
+      z.object({
+        paymentSystem: z.string().min(1, "Select a payment system"),
+        accountNumber: z
+          .string()
+          .trim()
+          .min(6, "Account number must be at least 6 characters"),
+        coinToWithdraw: z.coerce
+          .number()
+          .int("Enter a whole number of coins")
+          .min(MIN_COINS, `Minimum ${MIN_COINS} coins required`)
+          .max(maxCoins, `You only have ${maxCoins} coins`),
+      }),
+    [maxCoins],
+  );
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({ coinToWithdraw: amount, paymentSystem, accountNumber });
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(withdrawalSchema),
+    mode: "onTouched",
+    defaultValues: {
+      paymentSystem: "",
+      accountNumber: "",
+      coinToWithdraw: "",
+    },
+  });
+
+  const amount = Number(watch("coinToWithdraw")) || 0;
+
+  const onSubmitForm = async (data) => {
+    try {
+      await onSubmit({
+        coinToWithdraw: data.coinToWithdraw,
+        paymentSystem: data.paymentSystem,
+        accountNumber: data.accountNumber.trim(),
+      });
+      reset();
+    } catch {
+      // Parent handler is responsible for the error toast.
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="payment-system">Payment System</Label>
-        <Select
-          value={paymentSystem}
-          onValueChange={(v) => {
-            setPaymentSystem(v);
-            setAccountNumber("");
-          }}
-        >
-          <SelectTrigger id="payment-system">
-            <SelectValue placeholder="Select payment system" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="bank">Bank Transfer</SelectItem>
-            <SelectItem value="bkash">bKash</SelectItem>
-            <SelectItem value="nagad">Nagad</SelectItem>
-            <SelectItem value="rocket">Rocket</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="account-number">Account Number</Label>
-        <Input
-          id="account-number"
-          value={accountNumber}
-          onChange={(e) => setAccountNumber(e.target.value)}
-          placeholder="Enter your account number"
-          required
+    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4" noValidate>
+      <FormField
+        label="Payment System"
+        id="payment-system"
+        error={errors.paymentSystem?.message}
+        required
+      >
+        <Controller
+          name="paymentSystem"
+          control={control}
+          render={({ field }) => (
+            <Select
+              value={field.value}
+              onValueChange={(value) => {
+                field.onChange(value);
+                setValue("accountNumber", "");
+              }}
+            >
+              <SelectTrigger
+                id="payment-system"
+                className="w-full"
+                aria-invalid={!!errors.paymentSystem}
+                aria-describedby={
+                  errors.paymentSystem ? "payment-system-error" : undefined
+                }
+              >
+                <SelectValue placeholder="Select payment system" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bank">Bank Transfer</SelectItem>
+                <SelectItem value="bkash">bKash</SelectItem>
+                <SelectItem value="nagad">Nagad</SelectItem>
+                <SelectItem value="rocket">Rocket</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
         />
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <Label htmlFor="coin-amount">Coins to Withdraw</Label>
+      <FormField
+        label="Account Number"
+        id="account-number"
+        error={errors.accountNumber?.message}
+        required
+      >
         <Input
-          id="coin-amount"
+          placeholder="Enter your account number"
+          autoComplete="off"
+          {...register("accountNumber")}
+        />
+      </FormField>
+
+      <FormField
+        label="Coins to Withdraw"
+        id="coin-amount"
+        error={errors.coinToWithdraw?.message}
+        required
+        hint={
+          amount > 0
+            ? `You will receive $${(amount / 20).toFixed(2)}`
+            : undefined
+        }
+      >
+        <Input
           type="number"
-          value={coinToWithdraw}
-          onChange={(e) => setCoinToWithdraw(e.target.value)}
           placeholder="Enter amount"
           min={MIN_COINS}
           max={maxCoins}
-          required
+          {...register("coinToWithdraw")}
         />
-        {belowMinimum ? (
-          <div className="flex items-center gap-2">
-            <Badge variant="destructive" className="bg-gradient-error">
-              Minimum {MIN_COINS} coins required
-            </Badge>
-          </div>
-        ) : exceedsBalance ? (
-          <div className="flex items-center gap-2">
-            <Badge variant="destructive" className="bg-gradient-error">
-              You only have {maxCoins} coins
-            </Badge>
-          </div>
-        ) : amount > 0 ? (
-          <p className="text-sm text-muted-foreground">
-            You will receive ${(amount / 20).toFixed(2)}
-          </p>
-        ) : null}
-      </div>
+      </FormField>
 
       <Button
         type="submit"
         className="w-full bg-gradient"
-        disabled={loading || !paymentSystem || !accountNumber || amount <= 0 || invalid}
+        disabled={loading}
       >
         {loading ? "Processing..." : "Submit Withdrawal Request"}
       </Button>

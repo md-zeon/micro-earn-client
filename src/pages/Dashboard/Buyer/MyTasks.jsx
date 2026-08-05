@@ -45,11 +45,6 @@ const MyTasks = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    task_title: "",
-    task_detail: "",
-    submission_info: "",
-  });
 
   const filteredTasks = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -99,20 +94,14 @@ const MyTasks = () => {
 
   const handleEditClick = (task) => {
     setSelectedTask(task);
-    setFormData({
-      task_title: task.task_title,
-      task_detail: task.task_detail,
-      submission_info: task.submission_info,
-    });
     setIsModalOpen(true);
   };
 
-  const handleUpdateSubmit = async (e) => {
-    e.preventDefault();
+  const handleUpdateSubmit = async (data) => {
     if (!selectedTask) return;
     setSubmitting(true);
     try {
-      await axiosSecure.patch(`/tasks/${selectedTask._id}`, formData);
+      await axiosSecure.patch(`/tasks/${selectedTask._id}`, data);
       refetch();
       setIsModalOpen(false);
       setSelectedTask(null);
@@ -237,13 +226,12 @@ const MyTasks = () => {
 
       {/* Update modal */}
       <UpdateTaskModal
+        key={`${selectedTask?._id ?? "closed"}-${isModalOpen}`}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
           setSelectedTask(null);
         }}
-        formData={formData}
-        setFormData={setFormData}
         onSubmit={handleUpdateSubmit}
         submitting={submitting}
       />

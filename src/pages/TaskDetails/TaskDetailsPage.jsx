@@ -24,6 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import RichText from "@/components/shared/RichText";
+import { stripHtml } from "@/lib/utils";
 
 const getDeadlineInfo = (deadline) => {
   const due = new Date(deadline);
@@ -97,7 +99,7 @@ const RelatedTaskCard = ({ task }) => (
         {task.task_title}
       </h3>
       <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-        {task.task_detail}
+        {stripHtml(task.task_detail)}
       </p>
       <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-4">
         <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -277,9 +279,10 @@ const TaskDetailsPage = () => {
                   <LuListChecks className="size-5 text-emerald-500" />
                   About this task
                 </h2>
-                <p className="mt-4 leading-relaxed whitespace-pre-line text-muted-foreground">
-                  {task.task_detail}
-                </p>
+                <RichText
+                  html={task.task_detail}
+                  className="mt-4 text-muted-foreground"
+                />
               </section>
 
               <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
@@ -287,9 +290,10 @@ const TaskDetailsPage = () => {
                   <LuZap className="size-5 text-emerald-500" />
                   Submission requirements
                 </h2>
-                <p className="mt-4 leading-relaxed whitespace-pre-line text-muted-foreground">
-                  {task.submission_info}
-                </p>
+                <RichText
+                  html={task.submission_info}
+                  className="mt-4 text-muted-foreground"
+                />
               </section>
 
               <section className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">

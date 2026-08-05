@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from "sonner";
 import {
   Users,
@@ -17,10 +20,10 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAvailableCoins from "../../../hooks/useAvailableCoins";
 import PageHeader from "../../../components/shared/PageHeader";
+import FormField from "../../../components/Form/FormField";
+import RichTextEditor from "../../../components/Form/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -35,7 +38,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, stripHtml } from "@/lib/utils";
 import PageTitle from "../../../components/PageTitle";
 
 const today = new Date().toISOString().split("T")[0];
@@ -51,39 +54,68 @@ const TASK_CATEGORIES = [
   "Other",
 ];
 
+const addTaskSchema = z.object({
+  task_title: z
+    .string()
+    .trim()
+    .min(5, "Title must be at least 5 characters")
+    .max(120, "Title must be 120 characters or fewer"),
+  category: z.string().min(1, "Please select a category"),
+  task_detail: z
+    .string()
+    .refine(
+      (value) => stripHtml(value).length >= 20,
+      "Description must be at least 20 characters",
+    ),
+  submission_info: z
+    .string()
+    .refine(
+      (value) => stripHtml(value).length >= 10,
+      "Submission instructions must be at least 10 characters",
+    ),
+  requiredWorkers: z.coerce
+    .number()
+    .int("Enter a whole number")
+    .min(1, "At least 1 worker required"),
+  payableAmount: z.coerce
+    .number()
+    .int("Enter a whole number")
+    .min(1, "Payment must be at least 1 coin"),
+  completion_deadline: z.string().min(1, "Choose a completion deadline"),
+});
+
 const AddTask = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { microCoins, refetch } = useAvailableCoins();
 
-  const [form, setForm] = useState({
-    task_title: "",
-    task_detail: "",
-    requiredWorkers: "",
-    payableAmount: "",
-    completion_deadline: "",
-    submission_info: "",
-    category: "",
-  });
   const [taskImageUrl, setTaskImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [imgUploading, setImgUploading] = useState(false);
   const axiosSecure = useAxiosSecure();
 
-  const set = (key) => (e) => {
-    const value = e.target.value;
-    if (key === "requiredWorkers" || key === "payableAmount") {
-      setForm((prev) => ({
-        ...prev,
-        [key]: value === "" ? "" : Math.max(1, parseInt(value, 10) || ""),
-      }));
-      return;
-    }
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(addTaskSchema),
+    mode: "onTouched",
+    defaultValues: {
+      task_title: "",
+      category: "",
+      task_detail: "",
+      submission_info: "",
+      requiredWorkers: "",
+      payableAmount: "",
+      completion_deadline: "",
+    },
+  });
 
-  const requiredWorkers = Number(form.requiredWorkers || 0);
-  const payableAmount = Number(form.payableAmount || 0);
+  const requiredWorkers = Number(watch("requiredWorkers")) || 0;
+  const payableAmount = Number(watch("payableAmount")) || 0;
   const totalCost = requiredWorkers * payableAmount;
   const remaining = (microCoins || 0) - totalCost;
   const insufficientFunds = totalCost > (microCoins || 0);
@@ -104,23 +136,16 @@ const AddTask = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (insufficientFunds || totalCost <= 0) return;
-    if (!form.category) {
-      toast.error("Please select a category");
-      return;
-    }
-
+  const onSubmit = async (data) => {
     setLoading(true);
     const newTask = {
-      task_title: form.task_title.trim(),
-      task_detail: form.task_detail.trim(),
-      required_workers: requiredWorkers,
-      payable_amount: payableAmount,
-      completion_deadline: form.completion_deadline,
-      submission_info: form.submission_info.trim(),
-      category: form.category,
+      task_title: data.task_title.trim(),
+      task_detail: data.task_detail,
+      required_workers: data.requiredWorkers,
+      payable_amount: data.payableAmount,
+      completion_deadline: data.completion_deadline,
+      submission_info: data.submission_info,
+      category: data.category,
       task_image_url: taskImageUrl,
       posted_by: user?.email,
       buyer_name: user?.displayName,
@@ -156,7 +181,7 @@ const AddTask = () => {
         description="Describe the work, set the budget, and publish it for workers."
       />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Main form */}
           <Card className="lg:col-span-2">
@@ -170,70 +195,102 @@ const AddTask = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="task_title">Task Title *</Label>
+              <FormField
+                label="Task Title"
+                id="task_title"
+                error={errors.task_title?.message}
+                required
+              >
                 <Input
-                  id="task_title"
-                  name="task_title"
-                  value={form.task_title}
-                  onChange={set("task_title")}
                   placeholder="Enter a clear, descriptive title"
                   maxLength={120}
-                  required
+                  {...register("task_title")}
                 />
-              </div>
+              </FormField>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="category">Category *</Label>
-                <Select
-                  value={form.category}
-                  onValueChange={(value) =>
-                    setForm((prev) => ({ ...prev, category: value }))
-                  }
-                >
-                  <SelectTrigger
-                    id="category"
-                    className="w-full"
-                    aria-label="Task category"
-                  >
-                    <Tag className="size-4 text-muted-foreground" aria-hidden="true" />
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TASK_CATEGORIES.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <FormField
+                label="Category"
+                id="category"
+                error={errors.category?.message}
+                required
+              >
+                <Controller
+                  name="category"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger
+                        id="category"
+                        className="w-full"
+                        aria-label="Task category"
+                        aria-invalid={!!errors.category}
+                        aria-describedby={
+                          errors.category ? "category-error" : undefined
+                        }
+                      >
+                        <Tag className="size-4 text-muted-foreground" aria-hidden="true" />
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TASK_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </FormField>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="task_detail">Task Description *</Label>
-                <Textarea
-                  id="task_detail"
+              <FormField
+                label="Task Description"
+                id="task_detail"
+                error={errors.task_detail?.message}
+                required
+                hint="Workers see this as formatted text — use headings and lists to keep it clear."
+              >
+                <Controller
                   name="task_detail"
-                  value={form.task_detail}
-                  onChange={set("task_detail")}
-                  placeholder="Explain what workers need to do, step by step"
-                  rows={5}
-                  required
+                  control={control}
+                  render={({ field }) => (
+                    <RichTextEditor
+                      id="task_detail"
+                      value={field.value}
+                      onChange={field.onChange}
+                      ariaLabel="Task description"
+                      error={!!errors.task_detail}
+                      minHeight="min-h-40"
+                    />
+                  )}
                 />
-              </div>
+              </FormField>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="submission_info">Submission Instructions *</Label>
-                <Textarea
-                  id="submission_info"
+              <FormField
+                label="Submission Instructions"
+                id="submission_info"
+                error={errors.submission_info?.message}
+                required
+                hint="What should the worker submit as proof of completion?"
+              >
+                <Controller
                   name="submission_info"
-                  value={form.submission_info}
-                  onChange={set("submission_info")}
-                  placeholder="What should the worker submit as proof of completion?"
-                  rows={3}
-                  required
+                  control={control}
+                  render={({ field }) => (
+                    <RichTextEditor
+                      id="submission_info"
+                      value={field.value}
+                      onChange={field.onChange}
+                      ariaLabel="Submission instructions"
+                      error={!!errors.submission_info}
+                      minHeight="min-h-28"
+                    />
+                  )}
                 />
-              </div>
+              </FormField>
             </CardContent>
           </Card>
 
@@ -248,74 +305,74 @@ const AddTask = () => {
                 <CardDescription>Set workers and payment per worker.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="required_workers">Required Workers *</Label>
-                  <div className="relative">
+                <FormField
+                  label="Required Workers"
+                  id="required_workers"
+                  error={errors.requiredWorkers?.message}
+                  required
+                  trailing={
                     <Users
                       className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
                       aria-hidden="true"
                     />
-                    <Input
-                      id="required_workers"
-                      name="required_workers"
-                      type="number"
-                      inputMode="numeric"
-                      min="1"
-                      value={form.requiredWorkers}
-                      onChange={set("requiredWorkers")}
-                      onWheel={(e) => e.target.blur()}
-                      placeholder="e.g. 100"
-                      className="pl-8"
-                      required
-                    />
-                  </div>
-                </div>
+                  }
+                >
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    min="1"
+                    placeholder="e.g. 100"
+                    className="pl-8"
+                    onWheel={(e) => e.target.blur()}
+                    {...register("requiredWorkers")}
+                  />
+                </FormField>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="payable_amount">Payment per Worker *</Label>
-                  <div className="relative">
+                <FormField
+                  label="Payment per Worker"
+                  id="payable_amount"
+                  error={errors.payableAmount?.message}
+                  required
+                  trailing={
                     <Coins
                       className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
                       aria-hidden="true"
                     />
-                    <Input
-                      id="payable_amount"
-                      name="payable_amount"
-                      type="number"
-                      inputMode="numeric"
-                      min="1"
-                      value={form.payableAmount}
-                      onChange={set("payableAmount")}
-                      onWheel={(e) => e.target.blur()}
-                      placeholder="e.g. 10"
-                      className="pl-8"
-                      required
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Workers earn this many coins per completed task.
-                  </p>
-                </div>
+                  }
+                >
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    min="1"
+                    placeholder="e.g. 10"
+                    className="pl-8"
+                    onWheel={(e) => e.target.blur()}
+                    {...register("payableAmount")}
+                  />
+                </FormField>
+                <p className="text-xs text-muted-foreground">
+                  Workers earn this many coins per completed task.
+                </p>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="completion_deadline">Completion Deadline *</Label>
-                  <div className="relative">
+                <FormField
+                  label="Completion Deadline"
+                  id="completion_deadline"
+                  error={errors.completion_deadline?.message}
+                  required
+                  trailing={
                     <CalendarDays
                       className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
                       aria-hidden="true"
                     />
-                    <Input
-                      id="completion_deadline"
-                      name="completion_deadline"
-                      type="date"
-                      min={today}
-                      value={form.completion_deadline}
-                      onChange={set("completion_deadline")}
-                      className="pl-8"
-                      required
-                    />
-                  </div>
-                </div>
+                  }
+                >
+                  <Input
+                    type="date"
+                    min={today}
+                    className="pl-8"
+                    {...register("completion_deadline")}
+                  />
+                </FormField>
               </CardContent>
             </Card>
 

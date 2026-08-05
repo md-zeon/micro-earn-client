@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -13,8 +15,16 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2, User } from "lucide-react";
+import FormField from "../../components/Form/FormField";
 import GoogleSignIn from "./GoogleSignIn";
 import PageTitle from "../../components/PageTitle";
+
+const loginSchema = z.object({
+  email: z.string().trim().min(1, "Email is required").email("Enter a valid email address"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters"),
+});
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,14 +39,16 @@ const Login = () => {
     ? "/dashboard"
     : location?.state?.from?.pathname || "/dashboard";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(loginSchema), mode: "onTouched" });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setLoading(true);
     try {
-      await signInUser(email, password);
+      await signInUser(data.email, data.password);
       toast.success("Welcome back!");
       navigate(from, { replace: true });
     } catch (err) {
@@ -78,36 +90,33 @@ const Login = () => {
           <CardDescription>Sign in to your MicroEarn account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+            <FormField
+              label="Email"
+              id="email"
+              error={errors.email?.message}
+              required
+            >
               <Input
-                id="email"
-                name="email"
                 type="email"
                 placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                autoComplete="email"
+                {...register("email")}
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+            </FormField>
+
+            <FormField
+              label="Password"
+              id="password"
+              error={errors.password?.message}
+              required
+              trailing={
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
                   className="absolute right-0 top-0 h-full px-3"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -116,8 +125,17 @@ const Login = () => {
                     <Eye className="h-4 w-4" />
                   )}
                 </Button>
-              </div>
-            </div>
+              }
+            >
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                className="pr-10"
+                {...register("password")}
+              />
+            </FormField>
+
             <Button
               type="submit"
               className="w-full bg-gradient text-white"

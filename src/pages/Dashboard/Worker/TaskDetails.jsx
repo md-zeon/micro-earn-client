@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   CalendarDays,
   Coins,
@@ -23,16 +26,36 @@ import { Badge } from "../../../components/ui/badge";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Textarea } from "../../../components/ui/textarea";
+import FormField from "../../../components/Form/FormField";
+import RichText from "../../../components/shared/RichText";
+
+const submissionSchema = z.object({
+  submission_details: z
+    .string()
+    .trim()
+    .min(1, "Submission details cannot be empty")
+    .min(10, "Details must be at least 10 characters"),
+});
 
 const TaskDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const [submissionDetails, setSubmissionDetails] = useState("");
   const [loading, setLoading] = useState(false);
   const [proofImage, setProofImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(submissionSchema),
+    mode: "onTouched",
+    defaultValues: { submission_details: "" },
+  });
 
   const { data: task, isLoading } = useQuery({
     queryKey: ["task", id],
@@ -44,12 +67,7 @@ const TaskDetails = () => {
 
   const deadlinePassed = new Date(task?.completion_deadline) < new Date() + 1;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!submissionDetails.trim()) {
-      toast.error("Submission details cannot be empty");
-      return;
-    }
+  const onSubmit = async (data) => {
     let proof_img_url = "";
     if (proofImage) {
       try {
@@ -67,7 +85,7 @@ const TaskDetails = () => {
       task_title: task?.task_title,
       payable_amount: task?.payable_amount,
       worker_email: user?.email,
-      submission_details: submissionDetails,
+      submission_details: data.submission_details,
       worker_name: user?.displayName,
       buyer_name: task?.buyer_name,
       buyer_email: task?.posted_by,
@@ -78,6 +96,7 @@ const TaskDetails = () => {
     try {
       await axiosSecure.post("/submissions", submission);
       toast.success("Submission successful!");
+      reset();
       navigate("/dashboard/my-submissions");
     } catch (err) {
       console.error("Submission error:", err);
@@ -122,17 +141,19 @@ const TaskDetails = () => {
               )}
               <div>
                 <h2 className="mb-2 text-lg font-semibold">Description</h2>
-                <p className="whitespace-pre-line text-muted-foreground">
-                  {task?.task_detail}
-                </p>
+                <RichText
+                  html={task?.task_detail}
+                  className="text-muted-foreground"
+                />
               </div>
               <div>
                 <h2 className="mb-2 text-lg font-semibold">
                   Submission Requirements
                 </h2>
-                <p className="whitespace-pre-line text-muted-foreground">
-                  {task?.submission_info}
-                </p>
+                <RichText
+                  html={task?.submission_info}
+                  className="text-muted-foreground"
+                />
               </div>
             </CardContent>
           </Card>
@@ -204,7 +225,7 @@ const TaskDetails = () => {
             </Badge>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <div className="space-y-2">
               <Label htmlFor="proof">Upload Screenshot (optional)</Label>
               <Input
@@ -233,17 +254,18 @@ const TaskDetails = () => {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="details">Submission Details</Label>
+            <FormField
+              label="Submission Details"
+              id="details"
+              error={errors.submission_details?.message}
+              required
+            >
               <Textarea
-                id="details"
-                name="submission_details"
-                value={submissionDetails}
-                onChange={(e) => setSubmissionDetails(e.target.value)}
                 placeholder="Describe your completed task, include necessary links or proof..."
                 className="min-h-32"
+                {...register("submission_details")}
               />
-            </div>
+            </FormField>
 
             <Button
               type="submit"

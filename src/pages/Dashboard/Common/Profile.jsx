@@ -1,5 +1,8 @@
 import { useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from "sonner";
 import {
   BadgeCheck,
@@ -36,8 +39,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import FormField from "../../../components/Form/FormField";
 import PageHeader from "../../../components/shared/PageHeader";
 import StatsCard from "../../../components/shared/StatsCard";
 import ProfileSkeleton from "../../../components/ui/ProfileSkeleton";
@@ -51,6 +54,14 @@ const ROLE_BADGE = {
   worker:
     "bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/25 dark:text-emerald-400",
 };
+
+const profileSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name cannot be empty")
+    .min(2, "Name must be at least 2 characters"),
+});
 
 const EMPTY_STATS = {};
 
@@ -96,10 +107,20 @@ const Profile = () => {
   const fileInputRef = useRef(null);
 
   const [editOpen, setEditOpen] = useState(false);
-  const [name, setName] = useState("");
   const [photoFile, setPhotoFile] = useState(null);
   const [preview, setPreview] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(profileSchema),
+    mode: "onTouched",
+    defaultValues: { name: "" },
+  });
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["profile", user?.email],
@@ -196,7 +217,7 @@ const Profile = () => {
   if (loading || profileLoading) return <ProfileSkeleton />;
 
   const openEdit = () => {
-    setName(displayName);
+    reset({ name: displayName });
     setPreview(photoURL);
     setPhotoFile(null);
     setEditOpen(true);
@@ -214,12 +235,8 @@ const Profile = () => {
     setPhotoFile(null);
   };
 
-  const handleSave = async () => {
-    const trimmed = name.trim();
-    if (!trimmed) {
-      toast.error("Name cannot be empty.");
-      return;
-    }
+  const onSubmit = async (data) => {
+    const trimmed = data.name.trim();
 
     setIsSaving(true);
     try {
@@ -368,20 +385,21 @@ const Profile = () => {
           <Separator />
 
           <div className="space-y-2">
-            <Label htmlFor="profile-name">Display name</Label>
-            <Input
+            <FormField
+              label="Display name"
               id="profile-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
-            />
+              error={errors.name?.message}
+              required
+            >
+              <Input placeholder="Your name" {...register("name")} />
+            </FormField>
           </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={closeEdit} disabled={isSaving}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={isSaving}>
+            <Button onClick={handleSubmit(onSubmit)} disabled={isSaving}>
               {isSaving ? "Saving…" : "Save changes"}
             </Button>
           </DialogFooter>
