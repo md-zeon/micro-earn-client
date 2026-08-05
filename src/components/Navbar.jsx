@@ -141,8 +141,10 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className={`sticky top-0 z-50 transition-all duration-300 ${
-          scrolled
+        className={`sticky top-0 transition-all duration-300 ${
+          mobileMenuOpen ? "z-[70]" : "z-50"
+        } ${
+          !mobileMenuOpen && scrolled
             ? "border-b border-border/50 bg-background/80 shadow-lg backdrop-blur-xl"
             : "bg-transparent"
         }`}
@@ -182,9 +184,11 @@ const Navbar = () => {
 
             {/* Right section */}
             <div className="flex items-center gap-2 sm:gap-3">
-              {user ? (
+              {!mobileMenuOpen && (
                 <>
-                  <AvailableCoins />
+                  {user ? (
+                    <>
+                      <AvailableCoins />
                   <ThemeController />
                   <DropdownMenu>
                     <DropdownMenuTrigger
@@ -308,16 +312,28 @@ const Navbar = () => {
                   </div>
                 </>
               )}
+                </>
+              )}
 
               {/* Mobile menu trigger */}
               <Button
                 variant="ghost"
                 className="gap-1.5 rounded-full lg:hidden"
-                aria-label="Open menu"
-                onClick={() => setMobileMenuOpen(true)}
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileMenuOpen}
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
               >
-                <Menu className="h-5 w-5" />
-                <span className="text-xs font-medium">Menu</span>
+                {mobileMenuOpen ? (
+                  <>
+                    <X className="h-5 w-5" />
+                    <span className="text-xs font-medium">Close</span>
+                  </>
+                ) : (
+                  <>
+                    <Menu className="h-5 w-5" />
+                    <span className="text-xs font-medium">Menu</span>
+                  </>
+                )}
               </Button>
             </div>
           </nav>
@@ -337,33 +353,11 @@ const Navbar = () => {
             aria-label="Mobile navigation"
             className="fixed inset-0 z-[60] flex flex-col bg-background/98 backdrop-blur-2xl lg:hidden"
           >
-            {/* Mobile header */}
-            <Container>
-              <div className="flex items-center justify-between px-2 py-4">
-                <Logo />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-full focus-visible:ring-2 focus-visible:ring-emerald-500"
-                  aria-label="Close menu"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <motion.div
-                    initial={{ rotate: 0 }}
-                    animate={{ rotate: 90 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="h-6 w-6" />
-                  </motion.div>
-                </Button>
-              </div>
-            </Container>
-
             {/* Mobile nav items */}
             <div className="flex-1 overflow-y-auto">
               <Container>
                 <nav
-                  className="mt-4 flex flex-col gap-1"
+                  className="mt-20 flex flex-col gap-1"
                   aria-label="Mobile navigation"
                 >
                   {visibleNavItems.map((item, i) => (

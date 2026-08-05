@@ -15,7 +15,7 @@ import ScrollProgress from "../../components/Home/ScrollProgress";
 
 const Home = () => {
 	return (
-		<Container>
+		<>
 			<ScrollProgress />
 			<PageTitle
 				title='MicroEarn | Earn Money from Small Online Tasks'
@@ -23,6 +23,8 @@ const Home = () => {
 			/>
 			<div className='overflow-hidden'>
 				<Hero />
+			</div>
+			<Container>
 				<TrustBar />
 				<StatsSection />
 				<HowItWorks />
@@ -33,8 +35,8 @@ const Home = () => {
 				<FAQ />
 				<CTA />
 				<Newsletter />
-			</div>
-		</Container>
+			</Container>
+		</>
 	);
 };
 
